@@ -1,0 +1,24 @@
+{
+  "name": "msprogramandcontrol",
+  "version": "1.0.0",
+  "description": "Ms. Pac-man clone",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --watch --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kat-onyx/MsProgramAndControl.git"
+  },
+  "author": "Sarah (Kat) Peters",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kat-onyx/MsProgramAndControl/issues"
+  },
+  "homepage": "https://github.com/kat-onyx/MsProgramAndControl#readme",
+  "dependencies": {
+    "webpack": "^4.28.1",
+    "webpack-cli": "^3.2.1"
+  }
+}
