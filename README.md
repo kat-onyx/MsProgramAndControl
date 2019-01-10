@@ -21,8 +21,8 @@
     * Game logic
     * Class behavior
 * HTML5
-    * Map render (maze)
-    * Ghost/Player render
+    * Map render (maze) -- Canvas
+    * Ghost/Player render -- Canvas
 * Webpack
     * Bundle and install scripts
    
