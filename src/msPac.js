@@ -5,6 +5,8 @@ class MsPac {
         this.radius = 20;
         this.posX = 100;
         this.posY = 75;
+        this.speed = 10;
+        this.dx;
     }
 
     draw(ctx) {

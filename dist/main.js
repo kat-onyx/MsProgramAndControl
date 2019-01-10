@@ -91,9 +91,9 @@
   !*** ./src/game.js ***!
   \*********************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-eval("const msPac = __webpack_require__(/*! ./msPac */ \"./src/msPac.js\");\n\nclass Game {\n    constructor(ctx) {\n        this.ctx = ctx;\n        this.msPac = new msPac(this.ctx);\n    }\n    \n    draw(ctx) {\n        ctx.beginPath()\n        ctx.fillStyle = \"#000000\";\n        ctx.fillRect(0,0, 800, 600);\n        this.msPac.draw(ctx);\n    }\n}\n\n// const boardHeight = 1000;\n// const boardWidth = 600;\nmodule.exports = Game;\n\n\n//# sourceURL=webpack:///./src/game.js?");
+eval("// const msPac = require('./msPac');\n\nclass Game {\n    constructor(ctx) {\n        this.ctx = ctx;\n        // this.msPac = new msPac(this.ctx);\n    }\n    \n\n    draw(ctx) {\n        ctx.beginPath()\n        ctx.fillStyle = \"#000000\";\n        ctx.fillRect(0,0, 800, 600);\n    }\n\n\n}\n\n// const boardHeight = 1000;\n// const boardWidth = 600;\nmodule.exports = Game;\n\n\n//# sourceURL=webpack:///./src/game.js?");
 
 /***/ }),
 
@@ -104,7 +104,7 @@ eval("const msPac = __webpack_require__(/*! ./msPac */ \"./src/msPac.js\");\n\nc
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const Game = __webpack_require__(/*! ./game */ \"./src/game.js\")\n\nclass GameView {\n    constructor(game, ctx) {\n        this.game = game;\n        this.ctx = ctx;\n    }\n\n    animate() {\n        this.game.draw(this.ctx);\n\n        requestAnimationFrame(this.animate.bind(this));\n    }\n}\n\nmodule.exports = GameView;\n\n//# sourceURL=webpack:///./src/gameView.js?");
+eval("const Game = __webpack_require__(/*! ./game */ \"./src/game.js\")\nconst MsPac = __webpack_require__(/*! ./msPac */ \"./src/msPac.js\");\n\nclass GameView {\n    constructor(game, ctx) {\n        this.game = game;\n        this.ctx = ctx;\n        this.msPac = new MsPac(ctx);\n\n        this.keyBinds = this.keyBinds.bind(this);\n    }\n\n    keyBinds() {\n        //keyCodes obtained here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode\n        document.addEventListener(\"keydown\", (e) => {\n            if (e.key === \"KeyD\") {\n                this.msPac.moveRight();\n            } else if (e.key === \"KeyA\") {\n                this.msPac.moveLeft();\n            } else if (e.key === \"KeyW\") {\n                this.msPac.moveUp();\n            } else if (e.key === \"KeyS\") {\n                this.msPac.moveDown();\n            }\n        })\n    }\n    play() {\n        // debugger\n        document.addEventListener(\"keydown\", (e) => {\n            if (e.code === \"KeyD\") {\n                this.msPac.moveRight();\n            } else if (e.code === \"KeyA\") {\n                this.msPac.moveLeft();\n            } else if (e.code === \"KeyW\") {\n                this.msPac.moveUp();\n            } else if (e.code === \"KeyS\") {\n                this.msPac.moveDown();\n            }\n        })\n        this.keyBinds();\n        requestAnimationFrame(this.animate.bind(this));\n    }\n\n    animate() {\n        this.game.draw(this.ctx);\n        this.msPac.draw(this.ctx);\n        requestAnimationFrame(this.animate.bind(this));\n    }\n}\n\nmodule.exports = GameView;\n\n//# sourceURL=webpack:///./src/gameView.js?");
 
 /***/ }),
 
@@ -115,7 +115,7 @@ eval("const Game = __webpack_require__(/*! ./game */ \"./src/game.js\")\n\nclass
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const Game = __webpack_require__(/*! ./game */ \"./src/game.js\");\nconst GameView = __webpack_require__(/*! ./gameView */ \"./src/gameView.js\");\n\ndocument.addEventListener(\"DOMContentLoaded\", function () {\n    const canvasEl = document.getElementsByTagName(\"canvas\")[0];\n    canvasEl.width = 800;\n    canvasEl.height = 600;\n\n    const ctx = canvasEl.getContext(\"2d\");\n    const game = new Game();\n    new GameView(game, ctx).animate();\n});\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("const Game = __webpack_require__(/*! ./game */ \"./src/game.js\");\nconst GameView = __webpack_require__(/*! ./gameView */ \"./src/gameView.js\");\n\ndocument.addEventListener(\"DOMContentLoaded\", function () {\n    const canvasEl = document.getElementsByTagName(\"canvas\")[0];\n    canvasEl.width = 800;\n    canvasEl.height = 600;\n\n    const ctx = canvasEl.getContext(\"2d\");\n    const game = new Game(ctx);\n    new GameView(game, ctx).play();\n});\n\n//# sourceURL=webpack:///./src/index.js?");
 
 /***/ }),
 
@@ -126,7 +126,7 @@ eval("const Game = __webpack_require__(/*! ./game */ \"./src/game.js\");\nconst 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("\nclass MsPac {\n    constructor(ctx) {\n        this.ctx = ctx;\n        this.radius = 20;\n        this.posX = 100;\n        this.posY = 75;\n    }\n\n    draw(ctx) {\n        ctx.fillStyle = \"yellow\";\n        ctx.beginPath();\n        ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);\n        ctx.fill();\n        ctx.stroke()\n    }\n\n    moveLeft() {\n        this.posX = this.posX - 1;\n    }\n\n    moveRight() {\n        this.posX = this.posX + 1;\n    }\n\n    moveUp() {\n        this.posY = this.posY - 1;\n    }\n\n    moveDown() {\n        this.posY = this.posY + 1;\n    }\n}\n\nmodule.exports = MsPac;\n\n//# sourceURL=webpack:///./src/msPac.js?");
+eval("\nclass MsPac {\n    constructor(ctx) {\n        this.ctx = ctx;\n        this.radius = 20;\n        this.posX = 100;\n        this.posY = 75;\n        this.speed = 10;\n        this.dx;\n    }\n\n    draw(ctx) {\n        ctx.fillStyle = \"yellow\";\n        ctx.beginPath();\n        ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);\n        ctx.fill();\n        ctx.stroke()\n    }\n\n    moveLeft() {\n        this.posX = this.posX - 1;\n    }\n\n    moveRight() {\n        this.posX = this.posX + 1;\n    }\n\n    moveUp() {\n        this.posY = this.posY - 1;\n    }\n\n    moveDown() {\n        this.posY = this.posY + 1;\n    }\n}\n\nmodule.exports = MsPac;\n\n//# sourceURL=webpack:///./src/msPac.js?");
 
 /***/ })
 
