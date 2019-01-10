@@ -6,10 +6,17 @@ class MsPac {
         this.posX = 100;
         this.posY = 75;
         this.speed = 10;
-        this.dx;
+        this.velX = 0;
+        this.velY = 0;
+
+        this.newPos = function() {
+            this.posX += this.velX;
+            this.posY += this.velY;
+        }
     }
 
     draw(ctx) {
+        this.newPos();
         ctx.fillStyle = "yellow";
         ctx.beginPath();
         ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);
@@ -18,19 +25,24 @@ class MsPac {
     }
 
     moveLeft() {
-        this.posX = this.posX - 1;
+        this.velX = this.velX - 1;
     }
 
     moveRight() {
-        this.posX = this.posX + 1;
+        this.velX = this.velX + 1;
     }
 
     moveUp() {
-        this.posY = this.posY - 1;
+        this.velY = this.velY - 1;
     }
 
     moveDown() {
-        this.posY = this.posY + 1;
+        this.velY = this.velY + 1;
+    }
+
+    moveStop() {
+        this.velX = 0;
+        this.velY = 0;
     }
 }
 

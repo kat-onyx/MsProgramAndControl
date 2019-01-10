@@ -13,30 +13,26 @@ class GameView {
     keyBinds() {
         //keyCodes obtained here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode
         document.addEventListener("keydown", (e) => {
-            if (e.key === "KeyD") {
+
+            if (e.code === "KeyD") {
                 this.msPac.moveRight();
-            } else if (e.key === "KeyA") {
+            } 
+            if (e.code === "KeyA") {
                 this.msPac.moveLeft();
-            } else if (e.key === "KeyW") {
+            } 
+            if (e.code === "KeyW") {
                 this.msPac.moveUp();
-            } else if (e.key === "KeyS") {
+            } 
+            if (e.code === "KeyS") {
                 this.msPac.moveDown();
             }
+        })
+
+        document.addEventListener("keyup", (e) => {
+            this.msPac.moveStop();
         })
     }
     play() {
-        // debugger
-        document.addEventListener("keydown", (e) => {
-            if (e.code === "KeyD") {
-                this.msPac.moveRight();
-            } else if (e.code === "KeyA") {
-                this.msPac.moveLeft();
-            } else if (e.code === "KeyW") {
-                this.msPac.moveUp();
-            } else if (e.code === "KeyS") {
-                this.msPac.moveDown();
-            }
-        })
         this.keyBinds();
         requestAnimationFrame(this.animate.bind(this));
     }
