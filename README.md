@@ -5,6 +5,7 @@
 
 * Striving for greater knowledge of the class system, better understanding of canvas, player movement, and AI movement.
 * Ms.Program And Control is a top-down maze-traverser, where players must eat all food-pellets in the maze in order to progress to the next level.  Players earn points for eating pellets, fruit, and scared ghosts.  Players may only eat scared ghosts after consuming larger "Power Pellets", otherwise; if a player comes into contact with a ghost, the player must restart the current level.  Ghosts will attempt to seek out the player.
+* This is a clone of Ms. Pac-man.
 
 ## Functionality and MVP Features
 
@@ -30,15 +31,14 @@
 * Day 1 (9/9/2019):
     * Finish up proposal for project, brainstorming. 
     * Create basic project skeleton.
-* Day 2 (9/10/2019):
     * Set up webpack and rest of file structure.
-    * Review Canvas
+* Day 2 (9/10/2019):
     * Set up basic page and functionality (Canvas render)
-* Day 3 (9/11/2019):
     * Set up player input
+* Day 3 (9/11/2019):
     * Make board/maze class
-* Day 4 (9/12/2019):
     * Make player class
+* Day 4 (9/12/2019):
     * Make Game class
     * Make ghost class
     * Starting implementing collision logic
