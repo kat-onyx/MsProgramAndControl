@@ -91,9 +91,36 @@
   !*** ./src/game.js ***!
   \*********************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-eval("// const msPac = require('./msPac');\n\nclass Game {\n    constructor(ctx) {\n        this.ctx = ctx;\n        // this.msPac = new msPac(this.ctx);\n    }\n    \n\n    draw(ctx) {\n        ctx.beginPath()\n        ctx.fillStyle = \"#000000\";\n        ctx.fillRect(0,0, 800, 600);\n    }\n\n\n}\n\n// const boardHeight = 1000;\n// const boardWidth = 600;\nmodule.exports = Game;\n\n\n//# sourceURL=webpack:///./src/game.js?");
+const msPac = __webpack_require__(/*! ./msPac */ "./src/msPac.js");
+// const Maze = require('./maze');
+
+// class Game {
+//     constructor(ctx, msPac) {
+//         this.ctx = ctx;
+//         this.msPac = msPac;
+//         // this.maze = new Maze(ctx);
+//     }
+
+//     draw(ctx) {
+//         // this.maze.draw(this.ctx);
+//         // ctx.beginPath()
+//         // ctx.fillStyle = "#000000";
+//         // ctx.fillRect(0,0, 700, 700);
+//     }
+
+//     positionToBounds() {
+//         //hash obj that stores updated TOP/BOTTOM/LEFY/RIGHT
+//         //can use this
+//     }
+
+// }
+
+// // const boardHeight = 1000;
+// // const boardWidth = 600;
+// module.exports = Game;
+
 
 /***/ }),
 
@@ -104,7 +131,89 @@ eval("// const msPac = require('./msPac');\n\nclass Game {\n    constructor(ctx)
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const Game = __webpack_require__(/*! ./game */ \"./src/game.js\")\nconst MsPac = __webpack_require__(/*! ./msPac */ \"./src/msPac.js\");\n\nclass GameView {\n    constructor(game, ctx) {\n        this.game = game;\n        this.ctx = ctx;\n        this.msPac = new MsPac(ctx);\n\n        this.keyBinds = this.keyBinds.bind(this);\n    }\n\n    keyBinds() {\n        //keyCodes obtained here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode\n        document.addEventListener(\"keydown\", (e) => {\n\n            if (e.code === \"KeyD\") {\n                this.msPac.moveRight();\n            } \n            if (e.code === \"KeyA\") {\n                this.msPac.moveLeft();\n            } \n            if (e.code === \"KeyW\") {\n                this.msPac.moveUp();\n            } \n            if (e.code === \"KeyS\") {\n                this.msPac.moveDown();\n            }\n        })\n\n        document.addEventListener(\"keyup\", (e) => {\n            this.msPac.moveStop();\n        })\n    }\n    play() {\n        this.keyBinds();\n        requestAnimationFrame(this.animate.bind(this));\n    }\n\n    animate() {\n        this.game.draw(this.ctx);\n        this.msPac.draw(this.ctx);\n        requestAnimationFrame(this.animate.bind(this));\n    }\n}\n\nmodule.exports = GameView;\n\n//# sourceURL=webpack:///./src/gameView.js?");
+const Game = __webpack_require__(/*! ./game */ "./src/game.js")
+const MsPac = __webpack_require__(/*! ./msPac */ "./src/msPac.js");
+const Maze = __webpack_require__(/*! ./maze */ "./src/maze.js");
+const Util = __webpack_require__(/*! ./util */ "./src/util.js");
+
+class GameView {
+    constructor(ctx) {
+        this.ctx = ctx;
+        this.msPac = new MsPac(this.ctx);
+        // this.game = new Game(this.ctx, this.msPac);
+        this.keyPressed = [];
+        this.maze = new Maze(this.ctx);
+
+        this.keyBinds = this.keyBinds.bind(this);
+    }
+
+    keyBinds() {
+        //keyCodes obtained here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode
+        document.addEventListener("keydown", (e) => {
+
+            if (e.code === "KeyD" && this.keyPressed.length <= 1) {
+                // this.keyPressed.push(e.code)
+                this.msPac.moveRight();
+            } 
+            if (e.code === "KeyA" && this.keyPressed.length <= 1) {
+                // this.keyPressed.push(e.code)
+                this.msPac.moveLeft();
+            } 
+            if (e.code === "KeyW" && this.keyPressed.length <= 1) {
+                // this.keyPressed.push(e.code)
+                this.msPac.moveUp();
+            } 
+            if (e.code === "KeyS" && this.keyPressed.length <= 1) {
+                // this.keyPressed.push(e.code)
+                this.msPac.moveDown();
+            }
+        })
+
+        // document.addEventListener("keyup", (e) => {
+        //     this.msPac.moveStop();
+        //     this.keyPressed.pop();
+        // })
+    }
+
+    play() {
+        // debugger
+        this.keyBinds();
+        requestAnimationFrame(this.animate.bind(this));
+    }
+
+    animate() {
+        // this.game.draw(this.ctx);
+        this.detectWallCollision();
+        this.maze.draw(this.ctx);
+        this.msPac.draw(this.ctx);
+       
+
+        requestAnimationFrame(this.animate.bind(this));
+    }
+
+    detectWallCollision() {
+        // debugger
+        let distanceBetween;
+        let tileCenter = new Array(2);
+        this.maze.tiles.forEach( (tile, i) => {
+            tileCenter[0] = tile.xPos + (tile.width / 2);
+            tileCenter[1] = tile.yPos + (tile.height / 2);
+            // console.log(tileCenter)
+            distanceBetween = Util.distance(tileCenter, [this.msPac.posX, this.msPac.posY])
+            if (distanceBetween < this.msPac.radius * 2) {
+                // debugger
+                console.log("collision detect")
+                this.msPac.posX -= this.msPac.velX;
+                this.msPac.posY -= this.msPac.velY;
+                this.msPac.moveStop();
+                
+            }
+        })
+    }
+}
+
+module.exports = GameView;
+
 
 /***/ }),
 
@@ -115,7 +224,103 @@ eval("const Game = __webpack_require__(/*! ./game */ \"./src/game.js\")\nconst M
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const Game = __webpack_require__(/*! ./game */ \"./src/game.js\");\nconst GameView = __webpack_require__(/*! ./gameView */ \"./src/gameView.js\");\n\ndocument.addEventListener(\"DOMContentLoaded\", function () {\n    const canvasEl = document.getElementsByTagName(\"canvas\")[0];\n    canvasEl.width = 800;\n    canvasEl.height = 600;\n\n    const ctx = canvasEl.getContext(\"2d\");\n    const game = new Game(ctx);\n    new GameView(game, ctx).play();\n});\n\n//# sourceURL=webpack:///./src/index.js?");
+const Game = __webpack_require__(/*! ./game */ "./src/game.js");
+const GameView = __webpack_require__(/*! ./gameView */ "./src/gameView.js");
+
+document.addEventListener("DOMContentLoaded", function () {
+    const canvasEl = document.getElementsByTagName("canvas")[0];
+    canvasEl.width = 630;
+    canvasEl.height = 750;
+
+    const ctx = canvasEl.getContext("2d");
+    // const game = new Game(ctx);
+    new GameView(ctx).play();
+});
+
+
+
+/***/ }),
+
+/***/ "./src/maze.js":
+/*!*********************!*\
+  !*** ./src/maze.js ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Tile = __webpack_require__(/*! ./tile */ "./src/tile.js");
+
+class Maze {
+    constructor(ctx) {
+        this.radius = 10;
+        this.ctx = ctx;
+        this.width = 700;
+        this.height = 750;
+        // bitmap for the grid
+        this.grid = [
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1],
+                [1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 4, 5, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 6, 7, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
+                [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+                [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+                [1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1],
+                [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+                [1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1],
+                [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+            ],
+            this.blocksize = this.width / (this.grid.length);
+        this.tiles = this.tiles();
+    }
+
+    tiles() {
+        let tiles = [];
+        for (let i = 0; i < this.grid.length; i++) {
+            for (let j = 0; j < this.grid[i].length; j++) {
+                // .75 modifier added to reduce gridlines
+                if (this.grid[i][j] === 1) {
+                    let tile = new Tile(j * this.blocksize, i * this.blocksize, this.blocksize, this.blocksize);
+                    // tile.draw(ctx);
+                    tiles.push(tile)
+                }
+            }
+        }
+        return tiles;
+    }
+
+    draw(ctx) {
+        ctx.beginPath()
+        ctx.fillStyle = "#000000";
+        ctx.fillRect(0, 0, 700, 700);
+        // debugger
+
+        this.tiles.forEach( tile => tile.draw(ctx))
+    }
+
+}
+
+module.exports = Maze;
 
 /***/ }),
 
@@ -126,8 +331,108 @@ eval("const Game = __webpack_require__(/*! ./game */ \"./src/game.js\");\nconst 
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("\nclass MsPac {\n    constructor(ctx) {\n        this.ctx = ctx;\n        this.radius = 20;\n        this.posX = 100;\n        this.posY = 75;\n        this.speed = 10;\n        this.velX = 0;\n        this.velY = 0;\n\n        this.newPos = function() {\n            this.posX += this.velX;\n            this.posY += this.velY;\n        }\n    }\n\n    draw(ctx) {\n        this.newPos();\n        ctx.fillStyle = \"yellow\";\n        ctx.beginPath();\n        ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);\n        ctx.fill();\n        ctx.stroke()\n    }\n\n    moveLeft() {\n        this.velX = this.velX - 1;\n    }\n\n    moveRight() {\n        this.velX = this.velX + 1;\n    }\n\n    moveUp() {\n        this.velY = this.velY - 1;\n    }\n\n    moveDown() {\n        this.velY = this.velY + 1;\n    }\n\n    moveStop() {\n        this.velX = 0;\n        this.velY = 0;\n    }\n}\n\nmodule.exports = MsPac;\n\n//# sourceURL=webpack:///./src/msPac.js?");
+
+class MsPac {
+    constructor(ctx) {
+        this.ctx = ctx;
+        this.radius = 15;
+        this.posX = 315;
+        this.posY = 405;
+        // this.position = [this.posX, this.posY]
+        this.speed = 10;
+        this.velX = 0;
+        this.velY = 0;
+        this.lives = 3;
+        this.score = 0;
+
+        this.newPos = function() {
+            this.posX += this.velX;
+            this.posY += this.velY;
+            // this.position = [this.posX, this.posY]
+        }
+    }
+
+    draw(ctx) {
+        this.newPos();
+        ctx.fillStyle = "yellow";
+        ctx.beginPath();
+        ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke()
+    }
+
+    //currently incrementing by 3 due to a bug caused by the keyPressed arr in gameView
+    moveLeft() {
+        this.velX = this.velX - 3;
+    }
+
+    moveRight() {
+        this.velX = this.velX + 3;
+    }
+
+    moveUp() {
+        this.velY = this.velY - 3;
+    }
+
+    moveDown() {
+        this.velY = this.velY + 3;
+    }
+
+    moveStop() {
+        this.velX = 0;
+        this.velY = 0;
+    }
+}
+
+module.exports = MsPac;
+
+/***/ }),
+
+/***/ "./src/tile.js":
+/*!*********************!*\
+  !*** ./src/tile.js ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+class Tile {
+    constructor(xPos, yPos, width, height) {
+        // debugger
+        this.width = width;
+        this.height = height;
+        this.xPos = xPos;
+        this.yPos = yPos;
+    }
+
+    draw(ctx) {
+        ctx.fillStyle = "pink";
+        ctx.fillRect(this.xPos, this.yPos, this.width, this.height);
+    }
+}
+
+module.exports = Tile;
+
+/***/ }),
+
+/***/ "./src/util.js":
+/*!*********************!*\
+  !*** ./src/util.js ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+const Util = {
+    distance(pos1, pos2) {
+        return Math.sqrt(
+            Math.pow((pos2[0] - pos1[0]), 2) + Math.pow((pos2[1] - pos1[1]), 2)
+        )
+    }
+}
+
+module.exports = Util;
 
 /***/ })
 
 /******/ });
+//# sourceMappingURL=main.js.map

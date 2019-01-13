@@ -2,16 +2,20 @@
 class MsPac {
     constructor(ctx) {
         this.ctx = ctx;
-        this.radius = 20;
-        this.posX = 100;
-        this.posY = 75;
+        this.radius = 15;
+        this.posX = 315;
+        this.posY = 405;
+        // this.position = [this.posX, this.posY]
         this.speed = 10;
         this.velX = 0;
         this.velY = 0;
+        this.lives = 3;
+        this.score = 0;
 
         this.newPos = function() {
             this.posX += this.velX;
             this.posY += this.velY;
+            // this.position = [this.posX, this.posY]
         }
     }
 
@@ -24,20 +28,21 @@ class MsPac {
         ctx.stroke()
     }
 
+    //currently incrementing by 3 due to a bug caused by the keyPressed arr in gameView
     moveLeft() {
-        this.velX = this.velX - 1;
+        this.velX = this.velX - 3;
     }
 
     moveRight() {
-        this.velX = this.velX + 1;
+        this.velX = this.velX + 3;
     }
 
     moveUp() {
-        this.velY = this.velY - 1;
+        this.velY = this.velY - 3;
     }
 
     moveDown() {
-        this.velY = this.velY + 1;
+        this.velY = this.velY + 3;
     }
 
     moveStop() {
