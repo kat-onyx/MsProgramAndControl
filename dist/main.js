@@ -133,6 +133,7 @@ const msPac = __webpack_require__(/*! ./msPac */ "./src/msPac.js");
 
 const Game = __webpack_require__(/*! ./game */ "./src/game.js")
 const MsPac = __webpack_require__(/*! ./msPac */ "./src/msPac.js");
+const Inky = __webpack_require__(/*! ./ghost */ "./src/ghost.js");
 const Maze = __webpack_require__(/*! ./maze */ "./src/maze.js");
 const Util = __webpack_require__(/*! ./util */ "./src/util.js");
 
@@ -140,6 +141,8 @@ class GameView {
     constructor(ctx) {
         this.ctx = ctx;
         this.msPac = new MsPac(this.ctx);
+        this.ghostHouse = [];
+        this.inky = new Inky(this.ctx);
         // this.game = new Game(this.ctx, this.msPac);
         this.keyPressed = [];
         this.maze = new Maze(this.ctx);
@@ -150,7 +153,6 @@ class GameView {
     keyBinds() {
         //keyCodes obtained here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode
         document.addEventListener("keydown", (e) => {
-            console.log(this.keyPressed)
             if (e.code === "KeyD" && this.keyPressed.length <= 1) {
                 this.keyPressed.push(e.code)
                 this.msPac.moveRight();
@@ -184,36 +186,138 @@ class GameView {
     animate() {
         // this.game.draw(this.ctx);
         this.detectWallCollision();
+        this.updatePos();
+        this.drawUnits();
+        requestAnimationFrame(this.animate.bind(this));
+    }
+
+    updatePos() {
+        this.msPac.newPos();
+    }
+
+    drawUnits() {
         this.maze.draw(this.ctx);
         this.msPac.draw(this.ctx);
-       
 
-        requestAnimationFrame(this.animate.bind(this));
+        // debugger
+        // this.inky.draw(this.ctx);
     }
 
     detectWallCollision() {
         // debugger
-        let distanceBetween;
-        let tileCenter = new Array(2);
+        // let distanceBetween;
+        // let tileCenter = new Array(2);
         this.maze.tiles.forEach( (tile) => {
-            tileCenter[0] = Math.floor(tile.xPos) + (Math.floor(tile.width / 2));
-            tileCenter[1] = Math.floor(tile.yPos) + (Math.floor(tile.height / 2));
-            // console.log(tileCenter)
-            distanceBetween = Util.distance(tileCenter, [this.msPac.posX, this.msPac.posY])
-            if (Math.floor(distanceBetween) < this.msPac.radius * 1.5) {
-                // debugger
-                console.log("collision detect")
+            // debugger
+            // tileCenter[0] = Math.floor(tile.xPos) + (Math.floor(tile.width / 2));
+            // tileCenter[1] = Math.floor(tile.yPos) + (Math.floor(tile.height / 2));
+            // // console.log(tileCenter)
+            // distanceBetween = Util.distance(tileCenter, [this.msPac.posX, this.msPac.posY])
+            // if (Math.floor(distanceBetween) < this.msPac.radius) {
+            //     // debugger
+            //     console.log("collision detect")
+            //     this.msPac.posX -= this.msPac.velX;
+            //     this.msPac.posY -= this.msPac.velY;
+            //     this.msPac.moveStop();
+                
+            // }
+            
+            if (this.isPointInTile(this.msPac, tile)) {
+                console.log(this.msPac.posX)
+                console.log("collision")
                 this.msPac.posX -= this.msPac.velX;
                 this.msPac.posY -= this.msPac.velY;
                 this.msPac.moveStop();
-                
             }
         })
+    }
+
+    isPointInTile(critter, tile) {
+        let tileXMin = tile.xPos;
+        let tileXMax = tile.xPos + tile.width;;
+        let tileYMin = tile.yPos;
+        let tileYMax = tile.yPos + tile.height;
+
+        let critterXMin = critter.posX;
+        let critterXMax = critter.posX + critter.width;
+        let critterYMin = critter.posY;
+        let critterYMax = critter.posY + critter.width;
+        // console.log(critterXMax, critterXMin)
+        return (
+            ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
+             (critterXMax > tileXMin && critterXMax <= tileXMax)) && 
+            ((critterYMin >= tileYMin && critterYMin < tileYMax) ||
+             (critterYMax > tileYMin && critterYMax <= tileYMax))
+        )
+    }
+
+    detectTunnelTravel() {
+        
     }
 }
 
 module.exports = GameView;
 
+
+/***/ }),
+
+/***/ "./src/ghost.js":
+/*!**********************!*\
+  !*** ./src/ghost.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+class Ghost {
+    constructor(ctx) {
+    this.ctx = ctx;
+    this.radius = 15;
+    this.scared = false;
+    // this.color = 'yellow';
+    // this.posX = 100;
+    // this.posY = 100;
+    this.velX = 0;
+    this.velY = 0;
+
+    this.newPos = function () {
+        this.posX += this.velX;
+        this.posY += this.velY;
+        }
+    }
+
+
+    draw(ctx) {
+        // debugger
+       this.newPos();
+       ctx.fillStyle = `${this.color}`;
+       ctx.beginPath();
+       ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI)
+       ctx.fill();
+       ctx.stroke();
+    }
+
+    chaseMsPac(msPacPos) {
+
+    }
+    
+    validMove() {
+
+    }
+}
+
+class Inky extends Ghost {
+    constructor(ctx) {
+        super();
+        this.ctx = ctx;
+
+        this.posX = 280;
+        this.posY = 310;
+        this.color = "blue";
+    }
+}
+
+module.exports = Ghost;
+module.exports = Inky;
 
 /***/ }),
 
@@ -229,7 +333,7 @@ const GameView = __webpack_require__(/*! ./gameView */ "./src/gameView.js");
 
 document.addEventListener("DOMContentLoaded", function () {
     const canvasEl = document.getElementsByTagName("canvas")[0];
-    canvasEl.width = 630;
+    canvasEl.width = 700;
     canvasEl.height = 750;
 
     const ctx = canvasEl.getContext("2d");
@@ -290,7 +394,7 @@ class Maze {
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
             ],
-            this.blocksize = this.width / (this.grid.length);
+            this.blocksize = this.width / (this.grid[0].length);
         this.tiles = this.tiles();
     }
 
@@ -312,7 +416,7 @@ class Maze {
     draw(ctx) {
         ctx.beginPath()
         ctx.fillStyle = "#000000";
-        ctx.fillRect(0, 0, 700, 700);
+        ctx.fillRect(0, 0, this.width, this.height);
         // debugger
 
         this.tiles.forEach( tile => tile.draw(ctx))
@@ -335,11 +439,12 @@ module.exports = Maze;
 class MsPac {
     constructor(ctx) {
         this.ctx = ctx;
-        this.radius = 17;
-        this.posX = 315;
-        this.posY = 405;
+        this.width = 50;
+        this.radius = 25;
+        this.posX = 325;
+        this.posY = 425;
         // this.position = [this.posX, this.posY]
-        this.speed = 10;
+        // this.speed = 5;
         this.velX = 0;
         this.velY = 0;
         this.lives = 3;
@@ -353,33 +458,36 @@ class MsPac {
     }
 
     draw(ctx) {
-        this.newPos();
         ctx.fillStyle = "yellow";
-        ctx.beginPath();
-        ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.stroke()
+        ctx.fillRect(this.posX, this.posY, this.width, this.width);
+
+        // ctx.fillStyle = "yellow"
+        // ctx.beginPath();
+        // ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);
+        // ctx.fill();
+        // ctx.stroke()
+        
     }
 
     //currently incrementing by 3 due to a bug caused by the keyPressed arr in gameView
     moveLeft() {
         this.velY = 0;
-        this.velX = this.velX - 2;
+        this.velX = this.velX - 1;
     }
 
     moveRight() {
         this.velY = 0;
-        this.velX = this.velX + 2;
+        this.velX = this.velX + 1;
     }
 
     moveUp() {
         this.velX = 0;
-        this.velY = this.velY - 2;
+        this.velY = this.velY - 1;
     }
 
     moveDown() {
         this.velX = 0;
-        this.velY = this.velY + 2;
+        this.velY = this.velY + 1;
     }
 
     moveStop() {

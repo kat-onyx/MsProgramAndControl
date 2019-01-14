@@ -40,7 +40,7 @@ class Maze {
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
             ],
-            this.blocksize = this.width / (this.grid.length);
+            this.blocksize = this.width / (this.grid[0].length);
         this.tiles = this.tiles();
     }
 
@@ -62,7 +62,7 @@ class Maze {
     draw(ctx) {
         ctx.beginPath()
         ctx.fillStyle = "#000000";
-        ctx.fillRect(0, 0, 700, 700);
+        ctx.fillRect(0, 0, this.width, this.height);
         // debugger
 
         this.tiles.forEach( tile => tile.draw(ctx))
