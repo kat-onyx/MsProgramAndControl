@@ -7,6 +7,10 @@
 * Ms.Program And Control is a top-down maze-traverser, where players must eat all food-pellets in the maze in order to progress to the next level.  Players earn points for eating pellets, fruit, and scared ghosts.  Players may only eat scared ghosts after consuming larger "Power Pellets", otherwise; if a player comes into contact with a ghost, the player must restart the current level.  Ghosts will attempt to seek out the player.
 * This is a clone of Ms. Pac-man.
 
+## Wireframe
+
+![Screenshot](wireframe.png)
+
 ## Functionality and MVP Features
 
 * Users can press arrow keys or WASD in order to move left/right, up/down.
