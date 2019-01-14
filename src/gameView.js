@@ -13,8 +13,11 @@ class GameView {
         // this.game = new Game(this.ctx, this.msPac);
         this.keyPressed = [];
         this.maze = new Maze(this.ctx);
+        this.collisionDetected = false;
 
         this.keyBinds = this.keyBinds.bind(this);
+
+        this.detectWallCollision = this.detectWallCollision.bind(this);
     }
 
     keyBinds() {
@@ -52,7 +55,10 @@ class GameView {
 
     animate() {
         // this.game.draw(this.ctx);
-        this.detectWallCollision();
+        
+        // this.detectWallCollision(this.msPac);
+        
+        this.checkDir();
         this.updatePos();
         this.drawUnits();
         requestAnimationFrame(this.animate.bind(this));
@@ -67,35 +73,43 @@ class GameView {
         this.msPac.draw(this.ctx);
 
         // debugger
-        // this.inky.draw(this.ctx);
+        this.inky.draw(this.ctx);
     }
-
-    detectWallCollision() {
+    checkDir() {
+        // console.log("loop")
         // debugger
-        // let distanceBetween;
-        // let tileCenter = new Array(2);
+        this.detectWallCollision(this.msPac);
+        if (this.collisionDetected === true) {
+            this.msPac.moveStop();
+        }
+        this.collisionDetected = false;
+
+        let ghostDirs = {
+            "Up": [0, 1],
+            "Down": [-1, 0],
+            "Left": [0, 1],
+            "Right": [0, -1]
+        }
+
+        
+
+    }
+    detectWallCollision(critter) {
+        // debugger
         this.maze.tiles.forEach( (tile) => {
-            // debugger
-            // tileCenter[0] = Math.floor(tile.xPos) + (Math.floor(tile.width / 2));
-            // tileCenter[1] = Math.floor(tile.yPos) + (Math.floor(tile.height / 2));
-            // // console.log(tileCenter)
-            // distanceBetween = Util.distance(tileCenter, [this.msPac.posX, this.msPac.posY])
-            // if (Math.floor(distanceBetween) < this.msPac.radius) {
-            //     // debugger
-            //     console.log("collision detect")
-            //     this.msPac.posX -= this.msPac.velX;
-            //     this.msPac.posY -= this.msPac.velY;
-            //     this.msPac.moveStop();
-                
-            // }
             
-            if (this.isPointInTile(this.msPac, tile)) {
-                console.log(this.msPac.posX)
-                console.log("collision")
-                this.msPac.posX -= this.msPac.velX;
-                this.msPac.posY -= this.msPac.velY;
-                this.msPac.moveStop();
+            if (this.isPointInTile(critter, tile)) {
+                // console.log(this.msPac.posX)
+                // console.log("collision")
+                this.collisionDetected = true;
+                console.log(this.collisionDetected)
+                // this.msPac.moveStop();
+                return 
+                
             }
+            // this.collisionDetected = false;
+            // console.log(this.collisionDetected)
+            // return 
         })
     }
 

@@ -146,8 +146,11 @@ class GameView {
         // this.game = new Game(this.ctx, this.msPac);
         this.keyPressed = [];
         this.maze = new Maze(this.ctx);
+        this.collisionDetected = false;
 
         this.keyBinds = this.keyBinds.bind(this);
+
+        this.detectWallCollision = this.detectWallCollision.bind(this);
     }
 
     keyBinds() {
@@ -185,7 +188,10 @@ class GameView {
 
     animate() {
         // this.game.draw(this.ctx);
-        this.detectWallCollision();
+        
+        // this.detectWallCollision(this.msPac);
+        
+        this.checkDir();
         this.updatePos();
         this.drawUnits();
         requestAnimationFrame(this.animate.bind(this));
@@ -200,35 +206,43 @@ class GameView {
         this.msPac.draw(this.ctx);
 
         // debugger
-        // this.inky.draw(this.ctx);
+        this.inky.draw(this.ctx);
     }
-
-    detectWallCollision() {
+    checkDir() {
+        // console.log("loop")
         // debugger
-        // let distanceBetween;
-        // let tileCenter = new Array(2);
+        this.detectWallCollision(this.msPac);
+        if (this.collisionDetected === true) {
+            this.msPac.moveStop();
+        }
+        this.collisionDetected = false;
+
+        let ghostDirs = {
+            "Up": [0, 1],
+            "Down": [-1, 0],
+            "Left": [0, 1],
+            "Right": [0, -1]
+        }
+
+        
+
+    }
+    detectWallCollision(critter) {
+        // debugger
         this.maze.tiles.forEach( (tile) => {
-            // debugger
-            // tileCenter[0] = Math.floor(tile.xPos) + (Math.floor(tile.width / 2));
-            // tileCenter[1] = Math.floor(tile.yPos) + (Math.floor(tile.height / 2));
-            // // console.log(tileCenter)
-            // distanceBetween = Util.distance(tileCenter, [this.msPac.posX, this.msPac.posY])
-            // if (Math.floor(distanceBetween) < this.msPac.radius) {
-            //     // debugger
-            //     console.log("collision detect")
-            //     this.msPac.posX -= this.msPac.velX;
-            //     this.msPac.posY -= this.msPac.velY;
-            //     this.msPac.moveStop();
-                
-            // }
             
-            if (this.isPointInTile(this.msPac, tile)) {
-                console.log(this.msPac.posX)
-                console.log("collision")
-                this.msPac.posX -= this.msPac.velX;
-                this.msPac.posY -= this.msPac.velY;
-                this.msPac.moveStop();
+            if (this.isPointInTile(critter, tile)) {
+                // console.log(this.msPac.posX)
+                // console.log("collision")
+                this.collisionDetected = true;
+                console.log(this.collisionDetected)
+                // this.msPac.moveStop();
+                return 
+                
             }
+            // this.collisionDetected = false;
+            // console.log(this.collisionDetected)
+            // return 
         })
     }
 
@@ -266,18 +280,21 @@ module.exports = GameView;
   !*** ./src/ghost.js ***!
   \**********************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-class Ghost {
-    constructor(ctx) {
+const MovingCritter = __webpack_require__(/*! ./movingCritter */ "./src/movingCritter.js");
+
+class Ghost extends MovingCritter {
+    constructor(ctx, velX, velY) {
+    super(ctx, velX, velY);
     this.ctx = ctx;
-    this.radius = 15;
+    this.radius = 20;
     this.scared = false;
     // this.color = 'yellow';
     // this.posX = 100;
     // this.posY = 100;
-    this.velX = 0;
-    this.velY = 0;
+    // this.velX = 0;
+    // this.velY = 0;
 
     this.newPos = function () {
         this.posX += this.velX;
@@ -288,7 +305,9 @@ class Ghost {
 
     draw(ctx) {
         // debugger
+       this.randomMove();
        this.newPos();
+       
        ctx.fillStyle = `${this.color}`;
        ctx.beginPath();
        ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI)
@@ -299,9 +318,24 @@ class Ghost {
     chaseMsPac(msPacPos) {
 
     }
-    
+
     validMove() {
 
+    }
+
+    randomMove() {
+        let selected = Math.floor(Math.random() * 4)
+        // console.log(selected)
+        if (selected === 3) {
+            this.moveDown();
+        } else if (selected === 2) {
+            this.moveUp();
+        } else if (selected === 1) {
+            this.moveLeft();
+        } else {
+            this.moveRight();
+        }
+        
     }
 }
 
@@ -310,9 +344,11 @@ class Inky extends Ghost {
         super();
         this.ctx = ctx;
 
-        this.posX = 280;
-        this.posY = 310;
+        this.posX = 300;
+        this.posY = 375;
         this.color = "blue";
+
+        this.randomMove();
     }
 }
 
@@ -428,25 +464,73 @@ module.exports = Maze;
 
 /***/ }),
 
+/***/ "./src/movingCritter.js":
+/*!******************************!*\
+  !*** ./src/movingCritter.js ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+class MovingCritter {
+    constructor() {
+        this.velX = 0;
+        this.velY = 0;
+    }
+
+
+    moveLeft() {
+        this.velY = 0;
+        this.velX = this.velX - 3;
+    }
+
+    moveRight() {
+        this.velY = 0;
+        this.velX = this.velX + 3;
+    }
+
+    moveUp() {
+        this.velX = 0;
+        this.velY = this.velY - 3;
+    }
+
+    moveDown() {
+        this.velX = 0;
+        this.velY = this.velY + 3;
+    }
+
+    moveStop() {
+        this.posX -= this.velX;
+        this.posY -= this.velY;
+        this.velX = 0;
+        this.velY = 0;
+    }
+}
+
+module.exports = MovingCritter;
+
+/***/ }),
+
 /***/ "./src/msPac.js":
 /*!**********************!*\
   !*** ./src/msPac.js ***!
   \**********************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
+const MovingCritter = __webpack_require__(/*! ./movingCritter */ "./src/movingCritter.js");
 
-class MsPac {
-    constructor(ctx) {
+class MsPac extends MovingCritter{
+    constructor(ctx, velX, velY) {
+        super(velX, velY);
         this.ctx = ctx;
-        this.width = 50;
+        this.width = 45;
         this.radius = 25;
         this.posX = 325;
         this.posY = 425;
         // this.position = [this.posX, this.posY]
         // this.speed = 5;
-        this.velX = 0;
-        this.velY = 0;
+        // this.velX = 0;
+        // this.velY = 0;
         this.lives = 3;
         this.score = 0;
 
@@ -470,30 +554,32 @@ class MsPac {
     }
 
     //currently incrementing by 3 due to a bug caused by the keyPressed arr in gameView
-    moveLeft() {
-        this.velY = 0;
-        this.velX = this.velX - 1;
-    }
+    // moveLeft() {
+    //     this.velY = 0;
+    //     this.velX = this.velX - 3;
+    // }
 
-    moveRight() {
-        this.velY = 0;
-        this.velX = this.velX + 1;
-    }
+    // moveRight() {
+    //     this.velY = 0;
+    //     this.velX = this.velX + 3;
+    // }
 
-    moveUp() {
-        this.velX = 0;
-        this.velY = this.velY - 1;
-    }
+    // moveUp() {
+    //     this.velX = 0;
+    //     this.velY = this.velY - 3;
+    // }
 
-    moveDown() {
-        this.velX = 0;
-        this.velY = this.velY + 1;
-    }
+    // moveDown() {
+    //     // this.velX = 0;
+    //     this.velY = this.velY + 3;
+    // }
 
-    moveStop() {
-        this.velX = 0;
-        this.velY = 0;
-    }
+    // moveStop() {
+    //     this.posX -= this.velX;
+    //     this.posY -= this.velY;
+    //     this.velX = 0;
+    //     this.velY = 0;
+    // }
 }
 
 module.exports = MsPac;

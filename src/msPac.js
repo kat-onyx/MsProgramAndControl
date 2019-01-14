@@ -1,15 +1,17 @@
+const MovingCritter = require('./movingCritter');
 
-class MsPac {
-    constructor(ctx) {
+class MsPac extends MovingCritter{
+    constructor(ctx, velX, velY) {
+        super(velX, velY);
         this.ctx = ctx;
-        this.width = 50;
+        this.width = 45;
         this.radius = 25;
         this.posX = 325;
         this.posY = 425;
         // this.position = [this.posX, this.posY]
         // this.speed = 5;
-        this.velX = 0;
-        this.velY = 0;
+        // this.velX = 0;
+        // this.velY = 0;
         this.lives = 3;
         this.score = 0;
 
@@ -33,30 +35,32 @@ class MsPac {
     }
 
     //currently incrementing by 3 due to a bug caused by the keyPressed arr in gameView
-    moveLeft() {
-        this.velY = 0;
-        this.velX = this.velX - 1;
-    }
+    // moveLeft() {
+    //     this.velY = 0;
+    //     this.velX = this.velX - 3;
+    // }
 
-    moveRight() {
-        this.velY = 0;
-        this.velX = this.velX + 1;
-    }
+    // moveRight() {
+    //     this.velY = 0;
+    //     this.velX = this.velX + 3;
+    // }
 
-    moveUp() {
-        this.velX = 0;
-        this.velY = this.velY - 1;
-    }
+    // moveUp() {
+    //     this.velX = 0;
+    //     this.velY = this.velY - 3;
+    // }
 
-    moveDown() {
-        this.velX = 0;
-        this.velY = this.velY + 1;
-    }
+    // moveDown() {
+    //     // this.velX = 0;
+    //     this.velY = this.velY + 3;
+    // }
 
-    moveStop() {
-        this.velX = 0;
-        this.velY = 0;
-    }
+    // moveStop() {
+    //     this.posX -= this.velX;
+    //     this.posY -= this.velY;
+    //     this.velX = 0;
+    //     this.velY = 0;
+    // }
 }
 
 module.exports = MsPac;
