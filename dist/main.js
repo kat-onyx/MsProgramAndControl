@@ -150,29 +150,29 @@ class GameView {
     keyBinds() {
         //keyCodes obtained here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode
         document.addEventListener("keydown", (e) => {
-
+            console.log(this.keyPressed)
             if (e.code === "KeyD" && this.keyPressed.length <= 1) {
-                // this.keyPressed.push(e.code)
+                this.keyPressed.push(e.code)
                 this.msPac.moveRight();
             } 
             if (e.code === "KeyA" && this.keyPressed.length <= 1) {
-                // this.keyPressed.push(e.code)
+                this.keyPressed.push(e.code)
                 this.msPac.moveLeft();
             } 
             if (e.code === "KeyW" && this.keyPressed.length <= 1) {
-                // this.keyPressed.push(e.code)
+                this.keyPressed.push(e.code)
                 this.msPac.moveUp();
             } 
             if (e.code === "KeyS" && this.keyPressed.length <= 1) {
-                // this.keyPressed.push(e.code)
+                this.keyPressed.push(e.code)
                 this.msPac.moveDown();
             }
         })
 
-        // document.addEventListener("keyup", (e) => {
-        //     this.msPac.moveStop();
-        //     this.keyPressed.pop();
-        // })
+        document.addEventListener("keyup", (e) => {
+            // this.msPac.moveStop();
+            this.keyPressed.pop();
+        })
     }
 
     play() {
@@ -195,12 +195,12 @@ class GameView {
         // debugger
         let distanceBetween;
         let tileCenter = new Array(2);
-        this.maze.tiles.forEach( (tile, i) => {
-            tileCenter[0] = tile.xPos + (tile.width / 2);
-            tileCenter[1] = tile.yPos + (tile.height / 2);
+        this.maze.tiles.forEach( (tile) => {
+            tileCenter[0] = Math.floor(tile.xPos) + (Math.floor(tile.width / 2));
+            tileCenter[1] = Math.floor(tile.yPos) + (Math.floor(tile.height / 2));
             // console.log(tileCenter)
             distanceBetween = Util.distance(tileCenter, [this.msPac.posX, this.msPac.posY])
-            if (distanceBetween < this.msPac.radius * 2) {
+            if (Math.floor(distanceBetween) < this.msPac.radius * 1.5) {
                 // debugger
                 console.log("collision detect")
                 this.msPac.posX -= this.msPac.velX;
@@ -335,7 +335,7 @@ module.exports = Maze;
 class MsPac {
     constructor(ctx) {
         this.ctx = ctx;
-        this.radius = 15;
+        this.radius = 17;
         this.posX = 315;
         this.posY = 405;
         // this.position = [this.posX, this.posY]
@@ -363,19 +363,23 @@ class MsPac {
 
     //currently incrementing by 3 due to a bug caused by the keyPressed arr in gameView
     moveLeft() {
-        this.velX = this.velX - 3;
+        this.velY = 0;
+        this.velX = this.velX - 2;
     }
 
     moveRight() {
-        this.velX = this.velX + 3;
+        this.velY = 0;
+        this.velX = this.velX + 2;
     }
 
     moveUp() {
-        this.velY = this.velY - 3;
+        this.velX = 0;
+        this.velY = this.velY - 2;
     }
 
     moveDown() {
-        this.velY = this.velY + 3;
+        this.velX = 0;
+        this.velY = this.velY + 2;
     }
 
     moveStop() {
