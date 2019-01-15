@@ -140,7 +140,7 @@ class Pinky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "pink";
-        this.purposePath = [125, 145];
+        this.purposePath = [666, 145];
         // this.randomMove();
     }
 }
@@ -152,7 +152,7 @@ class Blinky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "red";
-        this.purposePath = [125, 400];
+        this.purposePath = [500, 300];
         // this.randomMove();
     }
 }
@@ -169,8 +169,14 @@ class Clyde extends Ghost {
     }
 }
 
-module.exports = Ghost;
-module.exports = Inky;
-module.exports = Pinky;
-module.exports = Blinky;
-module.exports = Clyde;
+module.exports = { 
+    ghost: Ghost,
+    inky: Inky,
+    pinky: Pinky,
+    clyde: Clyde,
+    blinky: Blinky
+ }
+// module.exports = Inky;
+// module.exports = Pinky;
+// module.exports = Blinky;
+// module.exports = Clyde;

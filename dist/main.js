@@ -133,10 +133,10 @@ const msPac = __webpack_require__(/*! ./msPac */ "./src/msPac.js");
 
 const Game = __webpack_require__(/*! ./game */ "./src/game.js")
 const MsPac = __webpack_require__(/*! ./msPac */ "./src/msPac.js");
-const Inky = __webpack_require__(/*! ./ghost */ "./src/ghost.js");
-const Pinky = __webpack_require__(/*! ./ghost */ "./src/ghost.js");
-const Clyde = __webpack_require__(/*! ./ghost */ "./src/ghost.js");
-const Blinky = __webpack_require__(/*! ./ghost */ "./src/ghost.js");
+const Inky = __webpack_require__(/*! ./ghost */ "./src/ghost.js").inky;
+const Pinky = __webpack_require__(/*! ./ghost */ "./src/ghost.js").pinky;
+const Clyde = __webpack_require__(/*! ./ghost */ "./src/ghost.js").clyde;
+const Blinky = __webpack_require__(/*! ./ghost */ "./src/ghost.js").blinky;
 const Maze = __webpack_require__(/*! ./maze */ "./src/maze.js");
 const Util = __webpack_require__(/*! ./util */ "./src/util.js");
 
@@ -212,6 +212,7 @@ class GameView {
     }
 
     drawUnits() {
+        // debugger
         this.maze.draw(this.ctx);
         this.msPac.draw(this.ctx);
 
@@ -432,7 +433,7 @@ class Pinky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "pink";
-        this.purposePath = [125, 145];
+        this.purposePath = [666, 145];
         // this.randomMove();
     }
 }
@@ -444,7 +445,7 @@ class Blinky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "red";
-        this.purposePath = [125, 400];
+        this.purposePath = [500, 300];
         // this.randomMove();
     }
 }
@@ -461,11 +462,17 @@ class Clyde extends Ghost {
     }
 }
 
-module.exports = Ghost;
-module.exports = Inky;
-module.exports = Pinky;
-module.exports = Blinky;
-module.exports = Clyde;
+module.exports = { 
+    ghost: Ghost,
+    inky: Inky,
+    pinky: Pinky,
+    clyde: Clyde,
+    blinky: Blinky
+ }
+// module.exports = Inky;
+// module.exports = Pinky;
+// module.exports = Blinky;
+// module.exports = Clyde;
 
 /***/ }),
 
@@ -707,34 +714,6 @@ class MsPac extends MovingCritter{
         // ctx.stroke()
         
     }
-
-    //currently incrementing by 3 due to a bug caused by the keyPressed arr in gameView
-    // moveLeft() {
-    //     this.velY = 0;
-    //     this.velX = this.velX - 3;
-    // }
-
-    // moveRight() {
-    //     this.velY = 0;
-    //     this.velX = this.velX + 3;
-    // }
-
-    // moveUp() {
-    //     this.velX = 0;
-    //     this.velY = this.velY - 3;
-    // }
-
-    // moveDown() {
-    //     // this.velX = 0;
-    //     this.velY = this.velY + 3;
-    // }
-
-    // moveStop() {
-    //     this.posX -= this.velX;
-    //     this.posY -= this.velY;
-    //     this.velX = 0;
-    //     this.velY = 0;
-    // }
 }
 
 module.exports = MsPac;

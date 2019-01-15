@@ -1,9 +1,9 @@
 const Game = require('./game')
 const MsPac = require('./msPac');
-const Inky = require('./ghost');
-const Pinky = require('./ghost');
-const Clyde = require('./ghost');
-const Blinky = require('./ghost');
+const Inky = require('./ghost').inky;
+const Pinky = require('./ghost').pinky;
+const Clyde = require('./ghost').clyde;
+const Blinky = require('./ghost').blinky;
 const Maze = require('./maze');
 const Util = require('./util');
 
@@ -79,6 +79,7 @@ class GameView {
     }
 
     drawUnits() {
+        // debugger
         this.maze.draw(this.ctx);
         this.msPac.draw(this.ctx);
 
