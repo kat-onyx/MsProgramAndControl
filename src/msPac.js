@@ -1,8 +1,8 @@
 const MovingCritter = require('./movingCritter');
 
 class MsPac extends MovingCritter{
-    constructor(ctx, velX, velY) {
-        super(velX, velY);
+    constructor(ctx, velX, velY, maze) {
+        super(velX, velY, maze);
         this.ctx = ctx;
         this.width = 45;
         this.radius = 25;

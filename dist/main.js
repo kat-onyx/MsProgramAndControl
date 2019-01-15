@@ -140,17 +140,18 @@ const Util = __webpack_require__(/*! ./util */ "./src/util.js");
 class GameView {
     constructor(ctx) {
         this.ctx = ctx;
-        this.msPac = new MsPac(this.ctx);
+        
         this.ghostHouse = [];
-        this.inky = new Inky(this.ctx);
+        
         // this.game = new Game(this.ctx, this.msPac);
         this.keyPressed = [];
         this.maze = new Maze(this.ctx);
-        this.collisionDetected = false;
+        this.msPac = new MsPac(this.ctx, this.maze);
+        this.inky = new Inky(this.ctx, this.maze);
 
         this.keyBinds = this.keyBinds.bind(this);
 
-        this.detectWallCollision = this.detectWallCollision.bind(this);
+        // this.detectWallCollision = this.detectWallCollision.bind(this);
     }
 
     keyBinds() {
@@ -190,15 +191,16 @@ class GameView {
         // this.game.draw(this.ctx);
         
         // this.detectWallCollision(this.msPac);
-        
-        this.checkDir();
-        this.updatePos();
+        this.msPac.checkDir();
+        this.inky.checkDir();
         this.drawUnits();
+        this.updatePos();
         requestAnimationFrame(this.animate.bind(this));
     }
 
     updatePos() {
         this.msPac.newPos();
+        // this.inky.newPos();
     }
 
     drawUnits() {
@@ -208,62 +210,57 @@ class GameView {
         // debugger
         this.inky.draw(this.ctx);
     }
-    checkDir() {
-        // console.log("loop")
-        // debugger
-        this.detectWallCollision(this.msPac);
-        if (this.collisionDetected === true) {
-            this.msPac.moveStop();
-        }
-        this.collisionDetected = false;
 
-        let ghostDirs = {
-            "Up": [0, 1],
-            "Down": [-1, 0],
-            "Left": [0, 1],
-            "Right": [0, -1]
-        }
+    // checkDir(critter) {
+    //     // console.log("loop")
+    //     // debugger
+    //     this.detectWallCollision(critter);
+    //     if (this.collisionDetected === true) {
+    //         critter.moveStop();
+    //     }
+    //     this.collisionDetected = false;
 
-        
-
-    }
-    detectWallCollision(critter) {
-        // debugger
-        this.maze.tiles.forEach( (tile) => {
+    //     let ghostDirs = {
+    //         "Up": [0, 1],
+    //         "Down": [-1, 0],
+    //         "Left": [0, 1],
+    //         "Right": [0, -1]
+    //     }
+    // }
+    // detectWallCollision(critter) {
+    //     // debugger
+    //     this.maze.tiles.forEach( (tile) => {
             
-            if (this.isPointInTile(critter, tile)) {
-                // console.log(this.msPac.posX)
-                // console.log("collision")
-                this.collisionDetected = true;
-                console.log(this.collisionDetected)
-                // this.msPac.moveStop();
-                return 
+    //         if (this.isPointInTile(critter, tile)) {
+    //             // console.log(this.msPac.posX)
+    //             // console.log("collision")
+    //             this.collisionDetected = true;
+    //             console.log(this.collisionDetected)
+    //             // this.msPac.moveStop();
+    //             return 
                 
-            }
-            // this.collisionDetected = false;
-            // console.log(this.collisionDetected)
-            // return 
-        })
-    }
+    //         }
+    //     })
+    // }
 
-    isPointInTile(critter, tile) {
-        let tileXMin = tile.xPos;
-        let tileXMax = tile.xPos + tile.width;;
-        let tileYMin = tile.yPos;
-        let tileYMax = tile.yPos + tile.height;
+    // isPointInTile(critter, tile) {
+    //     let tileXMin = tile.xPos;
+    //     let tileXMax = tile.xPos + tile.width;;
+    //     let tileYMin = tile.yPos;
+    //     let tileYMax = tile.yPos + tile.height;
 
-        let critterXMin = critter.posX;
-        let critterXMax = critter.posX + critter.width;
-        let critterYMin = critter.posY;
-        let critterYMax = critter.posY + critter.width;
-        // console.log(critterXMax, critterXMin)
-        return (
-            ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
-             (critterXMax > tileXMin && critterXMax <= tileXMax)) && 
-            ((critterYMin >= tileYMin && critterYMin < tileYMax) ||
-             (critterYMax > tileYMin && critterYMax <= tileYMax))
-        )
-    }
+    //     let critterXMin = critter.posX;
+    //     let critterXMax = critter.posX + critter.width;
+    //     let critterYMin = critter.posY;
+    //     let critterYMax = critter.posY + critter.width;
+    //     // console.log(critterXMax, critterXMin)
+    //     return (
+    //         ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
+    //          (critterXMax > tileXMin && critterXMax <= tileXMax)) && 
+    //         ((critterYMin >= tileYMin && critterYMin < tileYMax) ||
+    //          (critterYMax > tileYMin && critterYMax <= tileYMax))
+    //     )
+    // }
 
     detectTunnelTravel() {
         
@@ -289,12 +286,17 @@ class Ghost extends MovingCritter {
     super(ctx, velX, velY);
     this.ctx = ctx;
     this.radius = 20;
+    this.width = 45;
     this.scared = false;
-    // this.color = 'yellow';
-    // this.posX = 100;
-    // this.posY = 100;
-    // this.velX = 0;
-    // this.velY = 0;
+    this.randomPath = this.randomMoveDir();
+    this.purposePath = null;
+    this.possiblePaths = [];
+    this.ghostDirs = {
+        "up": [0, -1],
+        "down": [0, 1],
+        "left": [-1, 0],
+        "right": [1, 0]
+    }
 
     this.newPos = function () {
         this.posX += this.velX;
@@ -305,50 +307,113 @@ class Ghost extends MovingCritter {
 
     draw(ctx) {
         // debugger
-       this.randomMove();
+    //    this.tryMove();
+       this.routeToDestination();
        this.newPos();
        
        ctx.fillStyle = `${this.color}`;
-       ctx.beginPath();
-       ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI)
-       ctx.fill();
-       ctx.stroke();
+       ctx.fillRect(this.posX, this.posY, this.width, this.width);
+    //    ctx.fillStyle = `${this.color}`;
+    //    ctx.beginPath();
+    //    ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI)
+    //    ctx.fill();
+    //    ctx.stroke();
     }
 
     chaseMsPac(msPacPos) {
 
     }
 
-    validMove() {
+    tryMove() {
+        if (this.collisionDetectedGhost === false ) {
+            // console.log(this.collisionDetected)
+            this.posX += this.ghostDirs[this.randomPath][0];
+            this.posY += this.ghostDirs[this.randomPath][1];
+        } else {
+            this.posX -= this.ghostDirs[this.randomPath][0];
+            this.posY -= this.ghostDirs[this.randomPath][1];
+            this.collisionDetectedGhost = false;
+            this.randomPath = this.randomMoveDir();
+        }
 
     }
 
-    randomMove() {
-        let selected = Math.floor(Math.random() * 4)
-        // console.log(selected)
-        if (selected === 3) {
-            this.moveDown();
-        } else if (selected === 2) {
-            this.moveUp();
-        } else if (selected === 1) {
-            this.moveLeft();
-        } else {
-            this.moveRight();
+    calculateDestPath() {
+        this.destination = [125, 116];
+        // debugger
+
+        // if ()
+        for (let k in this.ghostDirs) {
+            let possibleDest = [
+                this.posX + this.ghostDirs[k][0],
+                this.posY + this.ghostDirs[k][1]
+            ]
+            if (possibleDest[0] < this.posX && this.destination[0] < this.posX) {
+                if (this.possiblePaths.indexOf(this.ghostDirs["left"]) === -1) {
+                    this.possiblePaths.push(this.ghostDirs["left"])
+                } 
+            } else if (possibleDest[0] > this.posX && this.destination[0] > this.posX) {
+                if (this.possiblePaths.indexOf(this.ghostDirs["right"]) === -1) {
+                    this.possiblePaths.push(this.ghostDirs["right"])
+                }
+            } else if (possibleDest[1] > this.posY && this.destination[1] > this.posY) {
+                // console.log(possibleDest[1], this.destination[1])
+                if (this.possiblePaths.indexOf(this.ghostDirs["down"]) === -1) {
+                    this.possiblePaths.push(this.ghostDirs["down"])
+                }
+            } else if (possibleDest[1] < this.posY && this.destination[1] < this.posY) {
+                if (this.possiblePaths.indexOf(this.ghostDirs["up"]) === -1) {
+                this.possiblePaths.push(this.ghostDirs["up"])
+                }
+            }
+        }
+    }
+
+
+    routeToDestination() {
+        // debugger
+        // console.log(this.collisionDetectedGhost)
+        this.calculateDestPath();
+        if (this.possiblePaths.length === 0 || this.collisionDetectedGhost) {
+            // debugger
+            // this.possiblePaths.push(this.ghostDirs["up"]);
+            // this.possiblePaths.push(this.ghostDirs["down"]);
+            // this.possiblePaths.push(this.ghostDirs["left"]);
+            // this.possiblePaths.push(this.ghostDirs["right"]);
+            
+            // return this.tryMove();
         }
         
+        // for(let i = 0; i < this.possiblePaths.length; i++) {
+            if (this.collisionDetectedGhost === false) {
+                this.posX += this.possiblePaths[0][0];
+                this.posY += this.possiblePaths[0][1];
+            } else {
+                this.posX -= this.possiblePaths[0][0];
+                this.posY -= this.possiblePaths[0][1];
+                this.collisionDetectedGhost = false;
+                this.possiblePaths.splice(0, 1);
+                
+                // return
+            }
+        // }
+    }
+
+    randomMoveDir() {
+        let selected = Math.floor(Math.random() * 4)
+        let dirs = ["up", "down", "left", "right"]
+        return dirs[selected]
     }
 }
 
 class Inky extends Ghost {
-    constructor(ctx) {
-        super();
+    constructor(ctx, maze) {
+        super(maze);
         this.ctx = ctx;
-
-        this.posX = 300;
-        this.posY = 375;
+        this.posX = 325;
+        this.posY = 350;
         this.color = "blue";
-
-        this.randomMove();
+        // this.randomMove();
     }
 }
 
@@ -472,12 +537,55 @@ module.exports = Maze;
 /***/ (function(module, exports) {
 
 class MovingCritter {
-    constructor() {
+    constructor(maze) {
+        // debugger
+        this.maze = maze;
         this.velX = 0;
         this.velY = 0;
+        this.posX = 0;
+        this.posY = 0;
+        this.collisionDetected = false;
+        this.collisionDetectedGhost = false;
+        // this.collisionDetectedmsPac = false;
+        this.detectWallCollision = this.detectWallCollision.bind(this);
     }
 
+    checkDir() {
+        // debugger
+        this.detectWallCollision();
+        if (this.collisionDetected === true) {
+            this.collisionDetectedGhost = true;
+            this.moveStop();
+        } 
+        this.collisionDetected = false;
+    }
+    detectWallCollision() {
+        // debugger
+        this.maze.tiles.forEach((tile) => {
+            if (this.isPointInTile(tile)) {
+                this.collisionDetected = true;
+            }
+        })
+    }
 
+    isPointInTile(tile) {
+        let tileXMin = tile.xPos;
+        let tileXMax = tile.xPos + tile.width;;
+        let tileYMin = tile.yPos;
+        let tileYMax = tile.yPos + tile.height;
+
+        let critterXMin = this.posX;
+        let critterXMax = this.posX + this.width;
+        let critterYMin = this.posY;
+        let critterYMax = this.posY + this.width;
+        // console.log(critterXMax, critterXMin)
+        return (
+            ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
+                (critterXMax > tileXMin && critterXMax <= tileXMax)) &&
+            ((critterYMin >= tileYMin && critterYMin < tileYMax) ||
+                (critterYMax > tileYMin && critterYMax <= tileYMax))
+        )
+    }
     moveLeft() {
         this.velY = 0;
         this.velX = this.velX - 3;
@@ -520,8 +628,8 @@ module.exports = MovingCritter;
 const MovingCritter = __webpack_require__(/*! ./movingCritter */ "./src/movingCritter.js");
 
 class MsPac extends MovingCritter{
-    constructor(ctx, velX, velY) {
-        super(velX, velY);
+    constructor(ctx, velX, velY, maze) {
+        super(velX, velY, maze);
         this.ctx = ctx;
         this.width = 45;
         this.radius = 25;

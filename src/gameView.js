@@ -7,17 +7,18 @@ const Util = require('./util');
 class GameView {
     constructor(ctx) {
         this.ctx = ctx;
-        this.msPac = new MsPac(this.ctx);
+        
         this.ghostHouse = [];
-        this.inky = new Inky(this.ctx);
+        
         // this.game = new Game(this.ctx, this.msPac);
         this.keyPressed = [];
         this.maze = new Maze(this.ctx);
-        this.collisionDetected = false;
+        this.msPac = new MsPac(this.ctx, this.maze);
+        this.inky = new Inky(this.ctx, this.maze);
 
         this.keyBinds = this.keyBinds.bind(this);
 
-        this.detectWallCollision = this.detectWallCollision.bind(this);
+        // this.detectWallCollision = this.detectWallCollision.bind(this);
     }
 
     keyBinds() {
@@ -57,15 +58,16 @@ class GameView {
         // this.game.draw(this.ctx);
         
         // this.detectWallCollision(this.msPac);
-        
-        this.checkDir();
-        this.updatePos();
+        this.msPac.checkDir();
+        this.inky.checkDir();
         this.drawUnits();
+        this.updatePos();
         requestAnimationFrame(this.animate.bind(this));
     }
 
     updatePos() {
         this.msPac.newPos();
+        // this.inky.newPos();
     }
 
     drawUnits() {
@@ -75,62 +77,57 @@ class GameView {
         // debugger
         this.inky.draw(this.ctx);
     }
-    checkDir() {
-        // console.log("loop")
-        // debugger
-        this.detectWallCollision(this.msPac);
-        if (this.collisionDetected === true) {
-            this.msPac.moveStop();
-        }
-        this.collisionDetected = false;
 
-        let ghostDirs = {
-            "Up": [0, 1],
-            "Down": [-1, 0],
-            "Left": [0, 1],
-            "Right": [0, -1]
-        }
+    // checkDir(critter) {
+    //     // console.log("loop")
+    //     // debugger
+    //     this.detectWallCollision(critter);
+    //     if (this.collisionDetected === true) {
+    //         critter.moveStop();
+    //     }
+    //     this.collisionDetected = false;
 
-        
-
-    }
-    detectWallCollision(critter) {
-        // debugger
-        this.maze.tiles.forEach( (tile) => {
+    //     let ghostDirs = {
+    //         "Up": [0, 1],
+    //         "Down": [-1, 0],
+    //         "Left": [0, 1],
+    //         "Right": [0, -1]
+    //     }
+    // }
+    // detectWallCollision(critter) {
+    //     // debugger
+    //     this.maze.tiles.forEach( (tile) => {
             
-            if (this.isPointInTile(critter, tile)) {
-                // console.log(this.msPac.posX)
-                // console.log("collision")
-                this.collisionDetected = true;
-                console.log(this.collisionDetected)
-                // this.msPac.moveStop();
-                return 
+    //         if (this.isPointInTile(critter, tile)) {
+    //             // console.log(this.msPac.posX)
+    //             // console.log("collision")
+    //             this.collisionDetected = true;
+    //             console.log(this.collisionDetected)
+    //             // this.msPac.moveStop();
+    //             return 
                 
-            }
-            // this.collisionDetected = false;
-            // console.log(this.collisionDetected)
-            // return 
-        })
-    }
+    //         }
+    //     })
+    // }
 
-    isPointInTile(critter, tile) {
-        let tileXMin = tile.xPos;
-        let tileXMax = tile.xPos + tile.width;;
-        let tileYMin = tile.yPos;
-        let tileYMax = tile.yPos + tile.height;
+    // isPointInTile(critter, tile) {
+    //     let tileXMin = tile.xPos;
+    //     let tileXMax = tile.xPos + tile.width;;
+    //     let tileYMin = tile.yPos;
+    //     let tileYMax = tile.yPos + tile.height;
 
-        let critterXMin = critter.posX;
-        let critterXMax = critter.posX + critter.width;
-        let critterYMin = critter.posY;
-        let critterYMax = critter.posY + critter.width;
-        // console.log(critterXMax, critterXMin)
-        return (
-            ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
-             (critterXMax > tileXMin && critterXMax <= tileXMax)) && 
-            ((critterYMin >= tileYMin && critterYMin < tileYMax) ||
-             (critterYMax > tileYMin && critterYMax <= tileYMax))
-        )
-    }
+    //     let critterXMin = critter.posX;
+    //     let critterXMax = critter.posX + critter.width;
+    //     let critterYMin = critter.posY;
+    //     let critterYMax = critter.posY + critter.width;
+    //     // console.log(critterXMax, critterXMin)
+    //     return (
+    //         ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
+    //          (critterXMax > tileXMin && critterXMax <= tileXMax)) && 
+    //         ((critterYMin >= tileYMin && critterYMin < tileYMax) ||
+    //          (critterYMax > tileYMin && critterYMax <= tileYMax))
+    //     )
+    // }
 
     detectTunnelTravel() {
         
