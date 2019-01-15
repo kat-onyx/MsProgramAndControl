@@ -25,13 +25,12 @@ class Ghost extends MovingCritter {
 
 
     draw(ctx) {
-        // debugger
-    //    this.tryMove();
        this.routeToDestination();
        this.newPos();
        
        ctx.fillStyle = `${this.color}`;
        ctx.fillRect(this.posX, this.posY, this.width, this.width);
+       // TODO: Render black background for ghost and draw pixel image for ghost
     //    ctx.fillStyle = `${this.color}`;
     //    ctx.beginPath();
     //    ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI)
@@ -42,6 +41,10 @@ class Ghost extends MovingCritter {
     chaseMsPac(msPacPos) {
 
     }
+
+    // destinationPicker(gameStartTime) {
+        // TODO: Implement DestinationPicker based on time of game start
+    // }
 
     tryMove() {
         if (this.collisionDetectedGhost === false ) {
@@ -140,7 +143,7 @@ class Pinky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "pink";
-        this.purposePath = [666, 145];
+        this.purposePath = [550, 125];
         // this.randomMove();
     }
 }
@@ -176,7 +179,3 @@ module.exports = {
     clyde: Clyde,
     blinky: Blinky
  }
-// module.exports = Inky;
-// module.exports = Pinky;
-// module.exports = Blinky;
-// module.exports = Clyde;
