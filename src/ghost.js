@@ -58,7 +58,7 @@ class Ghost extends MovingCritter {
     }
 
     calculateDestPath() {
-        this.destination = [125, 116];
+        this.destination = this.purposePath;
         // debugger
 
         // if ()
@@ -93,15 +93,12 @@ class Ghost extends MovingCritter {
         // debugger
         // console.log(this.collisionDetectedGhost)
         this.calculateDestPath();
-        if (this.possiblePaths.length === 0 || this.collisionDetectedGhost) {
-            // debugger
-            // this.possiblePaths.push(this.ghostDirs["up"]);
-            // this.possiblePaths.push(this.ghostDirs["down"]);
-            // this.possiblePaths.push(this.ghostDirs["left"]);
-            // this.possiblePaths.push(this.ghostDirs["right"]);
-            
-            // return this.tryMove();
-        }
+        // if (this.possiblePaths.length === 0 || this.collisionDetectedGhost) {
+        //     // debugger
+
+               
+        //     // return this.tryMove();
+        // }
         
         // for(let i = 0; i < this.possiblePaths.length; i++) {
             if (this.collisionDetectedGhost === false) {
@@ -132,9 +129,48 @@ class Inky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "blue";
+        this.purposePath = [125, 116];
+        // this.randomMove();
+    }
+}
+class Pinky extends Ghost {
+    constructor(ctx, maze) {
+        super(maze);
+        this.ctx = ctx;
+        this.posX = 325;
+        this.posY = 350;
+        this.color = "pink";
+        this.purposePath = [125, 145];
+        // this.randomMove();
+    }
+}
+
+class Blinky extends Ghost {
+    constructor(ctx, maze) {
+        super(maze);
+        this.ctx = ctx;
+        this.posX = 325;
+        this.posY = 350;
+        this.color = "red";
+        this.purposePath = [125, 400];
+        // this.randomMove();
+    }
+}
+
+class Clyde extends Ghost {
+    constructor(ctx, maze) {
+        super(maze);
+        this.ctx = ctx;
+        this.posX = 325;
+        this.posY = 350;
+        this.color = "orange";
+        this.purposePath = [125, 300];
         // this.randomMove();
     }
 }
 
 module.exports = Ghost;
 module.exports = Inky;
+module.exports = Pinky;
+module.exports = Blinky;
+module.exports = Clyde;

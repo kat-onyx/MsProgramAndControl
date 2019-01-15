@@ -9,7 +9,7 @@ class Tile {
     }
 
     draw(ctx) {
-        ctx.fillStyle = "pink";
+        ctx.fillStyle = "#ffb591";
         ctx.fillRect(this.xPos, this.yPos, this.width, this.height);
     }
 }

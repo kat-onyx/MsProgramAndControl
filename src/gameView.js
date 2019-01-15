@@ -1,6 +1,9 @@
 const Game = require('./game')
 const MsPac = require('./msPac');
 const Inky = require('./ghost');
+const Pinky = require('./ghost');
+const Clyde = require('./ghost');
+const Blinky = require('./ghost');
 const Maze = require('./maze');
 const Util = require('./util');
 
@@ -15,7 +18,9 @@ class GameView {
         this.maze = new Maze(this.ctx);
         this.msPac = new MsPac(this.ctx, this.maze);
         this.inky = new Inky(this.ctx, this.maze);
-
+        this.pinky = new Pinky(this.ctx, this.maze);
+        this.blinky = new Blinky(this.ctx, this.maze);
+        this.clyde = new Clyde(this.ctx, this.maze);
         this.keyBinds = this.keyBinds.bind(this);
 
         // this.detectWallCollision = this.detectWallCollision.bind(this);
@@ -60,6 +65,9 @@ class GameView {
         // this.detectWallCollision(this.msPac);
         this.msPac.checkDir();
         this.inky.checkDir();
+        this.pinky.checkDir();
+        this.clyde.checkDir();
+        this.blinky.checkDir();
         this.drawUnits();
         this.updatePos();
         requestAnimationFrame(this.animate.bind(this));
@@ -76,6 +84,9 @@ class GameView {
 
         // debugger
         this.inky.draw(this.ctx);
+        this.pinky.draw(this.ctx);
+        this.blinky.draw(this.ctx);
+        this.clyde.draw(this.ctx);
     }
 
     // checkDir(critter) {

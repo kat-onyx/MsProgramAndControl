@@ -134,6 +134,9 @@ const msPac = __webpack_require__(/*! ./msPac */ "./src/msPac.js");
 const Game = __webpack_require__(/*! ./game */ "./src/game.js")
 const MsPac = __webpack_require__(/*! ./msPac */ "./src/msPac.js");
 const Inky = __webpack_require__(/*! ./ghost */ "./src/ghost.js");
+const Pinky = __webpack_require__(/*! ./ghost */ "./src/ghost.js");
+const Clyde = __webpack_require__(/*! ./ghost */ "./src/ghost.js");
+const Blinky = __webpack_require__(/*! ./ghost */ "./src/ghost.js");
 const Maze = __webpack_require__(/*! ./maze */ "./src/maze.js");
 const Util = __webpack_require__(/*! ./util */ "./src/util.js");
 
@@ -148,7 +151,9 @@ class GameView {
         this.maze = new Maze(this.ctx);
         this.msPac = new MsPac(this.ctx, this.maze);
         this.inky = new Inky(this.ctx, this.maze);
-
+        this.pinky = new Pinky(this.ctx, this.maze);
+        this.blinky = new Blinky(this.ctx, this.maze);
+        this.clyde = new Clyde(this.ctx, this.maze);
         this.keyBinds = this.keyBinds.bind(this);
 
         // this.detectWallCollision = this.detectWallCollision.bind(this);
@@ -193,6 +198,9 @@ class GameView {
         // this.detectWallCollision(this.msPac);
         this.msPac.checkDir();
         this.inky.checkDir();
+        this.pinky.checkDir();
+        this.clyde.checkDir();
+        this.blinky.checkDir();
         this.drawUnits();
         this.updatePos();
         requestAnimationFrame(this.animate.bind(this));
@@ -209,6 +217,9 @@ class GameView {
 
         // debugger
         this.inky.draw(this.ctx);
+        this.pinky.draw(this.ctx);
+        this.blinky.draw(this.ctx);
+        this.clyde.draw(this.ctx);
     }
 
     // checkDir(critter) {
@@ -339,7 +350,7 @@ class Ghost extends MovingCritter {
     }
 
     calculateDestPath() {
-        this.destination = [125, 116];
+        this.destination = this.purposePath;
         // debugger
 
         // if ()
@@ -374,15 +385,12 @@ class Ghost extends MovingCritter {
         // debugger
         // console.log(this.collisionDetectedGhost)
         this.calculateDestPath();
-        if (this.possiblePaths.length === 0 || this.collisionDetectedGhost) {
-            // debugger
-            // this.possiblePaths.push(this.ghostDirs["up"]);
-            // this.possiblePaths.push(this.ghostDirs["down"]);
-            // this.possiblePaths.push(this.ghostDirs["left"]);
-            // this.possiblePaths.push(this.ghostDirs["right"]);
-            
-            // return this.tryMove();
-        }
+        // if (this.possiblePaths.length === 0 || this.collisionDetectedGhost) {
+        //     // debugger
+
+               
+        //     // return this.tryMove();
+        // }
         
         // for(let i = 0; i < this.possiblePaths.length; i++) {
             if (this.collisionDetectedGhost === false) {
@@ -413,12 +421,51 @@ class Inky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "blue";
+        this.purposePath = [125, 116];
+        // this.randomMove();
+    }
+}
+class Pinky extends Ghost {
+    constructor(ctx, maze) {
+        super(maze);
+        this.ctx = ctx;
+        this.posX = 325;
+        this.posY = 350;
+        this.color = "pink";
+        this.purposePath = [125, 145];
+        // this.randomMove();
+    }
+}
+
+class Blinky extends Ghost {
+    constructor(ctx, maze) {
+        super(maze);
+        this.ctx = ctx;
+        this.posX = 325;
+        this.posY = 350;
+        this.color = "red";
+        this.purposePath = [125, 400];
+        // this.randomMove();
+    }
+}
+
+class Clyde extends Ghost {
+    constructor(ctx, maze) {
+        super(maze);
+        this.ctx = ctx;
+        this.posX = 325;
+        this.posY = 350;
+        this.color = "orange";
+        this.purposePath = [125, 300];
         // this.randomMove();
     }
 }
 
 module.exports = Ghost;
 module.exports = Inky;
+module.exports = Pinky;
+module.exports = Blinky;
+module.exports = Clyde;
 
 /***/ }),
 
@@ -470,9 +517,9 @@ class Maze {
                 [1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1],
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
                 [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
@@ -482,12 +529,12 @@ class Maze {
                 [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
                 [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
                 [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
                 [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
-                [1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1],
-                [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-                [1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1],
+                [1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1],
+                [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
+                [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
                 [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
                 [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
                 [1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1],
@@ -712,7 +759,7 @@ class Tile {
     }
 
     draw(ctx) {
-        ctx.fillStyle = "pink";
+        ctx.fillStyle = "#ffb591";
         ctx.fillRect(this.xPos, this.yPos, this.width, this.height);
     }
 }
