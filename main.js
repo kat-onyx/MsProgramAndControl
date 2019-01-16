@@ -193,22 +193,30 @@ class GameView {
     }
 
     animate() {
-        // this.game.draw(this.ctx);
-        
-        // this.detectWallCollision(this.msPac);
-        this.msPac.checkDir();
-        this.inky.checkDir();
-        this.pinky.checkDir();
-        this.clyde.checkDir();
-        this.blinky.checkDir();
+        this.ctx.clearRect(0, 0, 700, 750)
+        this.step();
+        this.detectPelletConsumtption();
         this.drawUnits();
         this.updatePos();
+
+        if (this.lives ===0 || this.maze.pellets.length === 0) {
+            this.gameOver();
+            return;
+        }
         requestAnimationFrame(this.animate.bind(this));
     }
 
     updatePos() {
         this.msPac.newPos();
         // this.inky.newPos();
+    }
+
+    step() {
+        this.msPac.checkDir();
+        this.inky.checkDir();
+        this.pinky.checkDir();
+        this.clyde.checkDir();
+        this.blinky.checkDir();
     }
 
     drawUnits() {
@@ -223,59 +231,48 @@ class GameView {
         this.clyde.draw(this.ctx);
     }
 
-    // checkDir(critter) {
-    //     // console.log("loop")
-    //     // debugger
-    //     this.detectWallCollision(critter);
-    //     if (this.collisionDetected === true) {
-    //         critter.moveStop();
-    //     }
-    //     this.collisionDetected = false;
-
-    //     let ghostDirs = {
-    //         "Up": [0, 1],
-    //         "Down": [-1, 0],
-    //         "Left": [0, 1],
-    //         "Right": [0, -1]
-    //     }
-    // }
-    // detectWallCollision(critter) {
-    //     // debugger
-    //     this.maze.tiles.forEach( (tile) => {
+    detectPelletConsumtption() {
+        // debugger
+        // let pellets = this.maze.pellets[1]
+        this.maze.pellets.forEach( (pellet, i) => {
             
-    //         if (this.isPointInTile(critter, tile)) {
-    //             // console.log(this.msPac.posX)
-    //             // console.log("collision")
-    //             this.collisionDetected = true;
-    //             console.log(this.collisionDetected)
-    //             // this.msPac.moveStop();
-    //             return 
+            if (this.isPointInTile(this.msPac, pellet)) {
+                this.maze.pellets.splice(i, 1)
+                return 
                 
-    //         }
-    //     })
-    // }
+            }
+        })
+    }
 
-    // isPointInTile(critter, tile) {
-    //     let tileXMin = tile.xPos;
-    //     let tileXMax = tile.xPos + tile.width;;
-    //     let tileYMin = tile.yPos;
-    //     let tileYMax = tile.yPos + tile.height;
+    isPointInTile(critter, pellet) {
+        let pelletXMin = pellet.posX;
+        let pelletXMax = pellet.posX + pellet.width;;
+        let pelletYMin = pellet.posY;
+        let pelletYMax = pellet.posY + pellet.height;
 
-    //     let critterXMin = critter.posX;
-    //     let critterXMax = critter.posX + critter.width;
-    //     let critterYMin = critter.posY;
-    //     let critterYMax = critter.posY + critter.width;
-    //     // console.log(critterXMax, critterXMin)
-    //     return (
-    //         ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
-    //          (critterXMax > tileXMin && critterXMax <= tileXMax)) && 
-    //         ((critterYMin >= tileYMin && critterYMin < tileYMax) ||
-    //          (critterYMax > tileYMin && critterYMax <= tileYMax))
-    //     )
-    // }
+        let critterXMin = critter.posX;
+        let critterXMax = critter.posX + critter.width;
+        let critterYMin = critter.posY;
+        let critterYMax = critter.posY + critter.width;
+        // console.log(critterXMax, critterXMin)
+        return (
+            ((critterXMin >= pelletXMin && critterXMin < pelletXMax) ||
+             (critterXMax > pelletXMin && critterXMax <= pelletXMax)) && 
+            ((critterYMin >= pelletYMin && critterYMin < pelletYMax) ||
+             (critterYMax > pelletYMin && critterYMax <= pelletYMax))
+        )
+    }
 
     detectTunnelTravel() {
         
+    }
+
+gameOver() {
+        this.ctx.font = "30px 'Righteous', cursive";
+        // this.ctx.fillRect(325, 425, 50, 50);
+        this.ctx.fillStyle = "red";
+        this.ctx.fillText("GAME OVER", 265, 465);
+        this.ctx.fillStyle = "black";
     }
 }
 
@@ -332,7 +329,7 @@ class Ghost extends MovingCritter {
     }
 
     chaseMsPac(msPacPos) {
-
+        
     }
 
     // destinationPicker(gameStartTime) {
@@ -488,7 +485,7 @@ const GameView = __webpack_require__(/*! ./gameView */ "./src/gameView.js");
 document.addEventListener("DOMContentLoaded", function () {
     const canvasEl = document.getElementsByTagName("canvas")[0];
     canvasEl.width = 700;
-    canvasEl.height = 750;
+    canvasEl.height = 770;
 
     const ctx = canvasEl.getContext("2d");
     // const game = new Game(ctx);
@@ -507,13 +504,14 @@ document.addEventListener("DOMContentLoaded", function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 const Tile = __webpack_require__(/*! ./tile */ "./src/tile.js");
+const Pellet = __webpack_require__(/*! ./pellet */ "./src/pellet.js");
 
 class Maze {
     constructor(ctx) {
         this.radius = 10;
         this.ctx = ctx;
         this.width = 700;
-        this.height = 750;
+        this.height = 770;
         // bitmap for the grid
         this.grid = [
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -528,10 +526,10 @@ class Maze {
                 [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
                 [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 4, 5, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 6, 7, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 4, 4, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 4, 4, 4, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 4, 4, 5, 5, 5, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 6, 6, 6, 7, 7, 7, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
                 [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
@@ -548,15 +546,17 @@ class Maze {
                 [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
             ],
-            this.blocksize = this.width / (this.grid[0].length);
+        this.blocksize = this.width / (this.grid[0].length);
         this.tiles = this.tiles();
+        this.pellets = this.pellets();
     }
 
     tiles() {
+        // debugger
         let tiles = [];
         for (let i = 0; i < this.grid.length; i++) {
             for (let j = 0; j < this.grid[i].length; j++) {
-                // .75 modifier added to reduce gridlines
+
                 if (this.grid[i][j] === 1) {
                     let tile = new Tile(j * this.blocksize, i * this.blocksize, this.blocksize, this.blocksize);
                     // tile.draw(ctx);
@@ -567,13 +567,45 @@ class Maze {
         return tiles;
     }
 
+    pellets() {
+        // debugger
+        let pellets = [];
+       
+        for (let i = 0; i < this.grid.length; i += 2) {
+            for (let j = 0; j < this.grid[i].length; j += 2) {
+                // .75 modifier added to reduce gridlines
+                // if ((this.grid[i][j] === 0 && this.grid[i][j + 1] === 0) || this.grid[i][j] === 0 && this.grid[i][j + 1] === 1) {
+                //     let pellet = new Pellet(j * this.blocksize, i * this.blocksize, this.blocksize, this.blocksize);
+                //     pellets.push(pellet)
+                
+                // } 
+                if ((j % 2 === 0) && (this.grid[i][j] === 0)) {
+                    let pellet = new Pellet(j * this.blocksize, i * this.blocksize, this.blocksize, this.blocksize);
+                     pellets.push(pellet)
+                }
+            }
+        }
+        return pellets;
+    }
     draw(ctx) {
+        this.drawBackground(ctx)
+        this.drawTiles(ctx);
+        this.drawPellets(ctx);
+    }
+
+    drawBackground(ctx) {
         ctx.beginPath()
         ctx.fillStyle = "#000000";
         ctx.fillRect(0, 0, this.width, this.height);
-        // debugger
+    }
 
+    drawTiles(ctx) {
         this.tiles.forEach( tile => tile.draw(ctx))
+    }
+
+    drawPellets(ctx) {
+        // debugger
+        this.pellets.forEach( pellet => pellet.draw(ctx))
     }
 
 }
@@ -688,10 +720,6 @@ class MsPac extends MovingCritter{
         this.radius = 25;
         this.posX = 325;
         this.posY = 425;
-        // this.position = [this.posX, this.posY]
-        // this.speed = 5;
-        // this.velX = 0;
-        // this.velY = 0;
         this.lives = 3;
         this.score = 0;
 
@@ -716,6 +744,49 @@ class MsPac extends MovingCritter{
 }
 
 module.exports = MsPac;
+
+/***/ }),
+
+/***/ "./src/pellet.js":
+/*!***********************!*\
+  !*** ./src/pellet.js ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+
+
+class Pellet {
+    constructor(posX, posY, width, height) {
+        this.width = width;
+        this.height = height;
+        // this.point = 100;
+        this.posX = posX;
+        this.posY = posY;
+
+    }
+
+    draw(ctx) {
+   
+        // debugger
+        ctx.fillStyle = "black";
+        ctx.fillRect(this.posX, this.posY, this.width, this.height);
+
+        ctx.fillStyle = "white"
+        ctx.beginPath();
+        ctx.arc(this.posX, this.posY, this.width / 4, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke()
+    }
+
+    findCenter() {
+        let centerFromX = this.posX + this.width;
+        let centerFromY = this.posY + this.height;
+    }
+}
+
+
+module.exports = Pellet;
 
 /***/ }),
 

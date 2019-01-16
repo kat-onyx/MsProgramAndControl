@@ -60,22 +60,30 @@ class GameView {
     }
 
     animate() {
-        // this.game.draw(this.ctx);
-        
-        // this.detectWallCollision(this.msPac);
-        this.msPac.checkDir();
-        this.inky.checkDir();
-        this.pinky.checkDir();
-        this.clyde.checkDir();
-        this.blinky.checkDir();
+        this.ctx.clearRect(0, 0, 700, 750)
+        this.step();
+        this.detectPelletConsumtption();
         this.drawUnits();
         this.updatePos();
+
+        if (this.lives ===0 || this.maze.pellets.length === 0) {
+            this.gameOver();
+            return;
+        }
         requestAnimationFrame(this.animate.bind(this));
     }
 
     updatePos() {
         this.msPac.newPos();
         // this.inky.newPos();
+    }
+
+    step() {
+        this.msPac.checkDir();
+        this.inky.checkDir();
+        this.pinky.checkDir();
+        this.clyde.checkDir();
+        this.blinky.checkDir();
     }
 
     drawUnits() {
@@ -90,59 +98,48 @@ class GameView {
         this.clyde.draw(this.ctx);
     }
 
-    // checkDir(critter) {
-    //     // console.log("loop")
-    //     // debugger
-    //     this.detectWallCollision(critter);
-    //     if (this.collisionDetected === true) {
-    //         critter.moveStop();
-    //     }
-    //     this.collisionDetected = false;
-
-    //     let ghostDirs = {
-    //         "Up": [0, 1],
-    //         "Down": [-1, 0],
-    //         "Left": [0, 1],
-    //         "Right": [0, -1]
-    //     }
-    // }
-    // detectWallCollision(critter) {
-    //     // debugger
-    //     this.maze.tiles.forEach( (tile) => {
+    detectPelletConsumtption() {
+        // debugger
+        // let pellets = this.maze.pellets[1]
+        this.maze.pellets.forEach( (pellet, i) => {
             
-    //         if (this.isPointInTile(critter, tile)) {
-    //             // console.log(this.msPac.posX)
-    //             // console.log("collision")
-    //             this.collisionDetected = true;
-    //             console.log(this.collisionDetected)
-    //             // this.msPac.moveStop();
-    //             return 
+            if (this.isPointInTile(this.msPac, pellet)) {
+                this.maze.pellets.splice(i, 1)
+                return 
                 
-    //         }
-    //     })
-    // }
+            }
+        })
+    }
 
-    // isPointInTile(critter, tile) {
-    //     let tileXMin = tile.xPos;
-    //     let tileXMax = tile.xPos + tile.width;;
-    //     let tileYMin = tile.yPos;
-    //     let tileYMax = tile.yPos + tile.height;
+    isPointInTile(critter, pellet) {
+        let pelletXMin = pellet.posX;
+        let pelletXMax = pellet.posX + pellet.width;;
+        let pelletYMin = pellet.posY;
+        let pelletYMax = pellet.posY + pellet.height;
 
-    //     let critterXMin = critter.posX;
-    //     let critterXMax = critter.posX + critter.width;
-    //     let critterYMin = critter.posY;
-    //     let critterYMax = critter.posY + critter.width;
-    //     // console.log(critterXMax, critterXMin)
-    //     return (
-    //         ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
-    //          (critterXMax > tileXMin && critterXMax <= tileXMax)) && 
-    //         ((critterYMin >= tileYMin && critterYMin < tileYMax) ||
-    //          (critterYMax > tileYMin && critterYMax <= tileYMax))
-    //     )
-    // }
+        let critterXMin = critter.posX;
+        let critterXMax = critter.posX + critter.width;
+        let critterYMin = critter.posY;
+        let critterYMax = critter.posY + critter.width;
+        // console.log(critterXMax, critterXMin)
+        return (
+            ((critterXMin >= pelletXMin && critterXMin < pelletXMax) ||
+             (critterXMax > pelletXMin && critterXMax <= pelletXMax)) && 
+            ((critterYMin >= pelletYMin && critterYMin < pelletYMax) ||
+             (critterYMax > pelletYMin && critterYMax <= pelletYMax))
+        )
+    }
 
     detectTunnelTravel() {
         
+    }
+
+gameOver() {
+        this.ctx.font = "30px 'Righteous', cursive";
+        // this.ctx.fillRect(325, 425, 50, 50);
+        this.ctx.fillStyle = "red";
+        this.ctx.fillText("GAME OVER", 265, 465);
+        this.ctx.fillStyle = "black";
     }
 }
 

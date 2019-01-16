@@ -1,0 +1,12 @@
+.contents-container {
+    display: flex;
+    justify-content: center;
+    font-family: 'Righteous', 'cursive';
+    background: black;
+}
+
+.canvas-title-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

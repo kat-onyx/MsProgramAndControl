@@ -39,7 +39,7 @@ class Ghost extends MovingCritter {
     }
 
     chaseMsPac(msPacPos) {
-
+        
     }
 
     // destinationPicker(gameStartTime) {

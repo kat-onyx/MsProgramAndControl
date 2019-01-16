@@ -8,10 +8,6 @@ class MsPac extends MovingCritter{
         this.radius = 25;
         this.posX = 325;
         this.posY = 425;
-        // this.position = [this.posX, this.posY]
-        // this.speed = 5;
-        // this.velX = 0;
-        // this.velY = 0;
         this.lives = 3;
         this.score = 0;
 
