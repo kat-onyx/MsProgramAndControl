@@ -712,6 +712,9 @@ module.exports = MovingCritter;
 
 const MovingCritter = __webpack_require__(/*! ./movingCritter */ "./src/movingCritter.js");
 
+const msPacImg = new Image();
+msPacImg.src = './MsPac.png';
+
 class MsPac extends MovingCritter{
     constructor(ctx, velX, velY, maze) {
         super(velX, velY, maze);
@@ -722,6 +725,7 @@ class MsPac extends MovingCritter{
         this.posY = 425;
         this.lives = 3;
         this.score = 0;
+        this.msPacImg = msPacImg;
 
         this.newPos = function() {
             this.posX += this.velX;
@@ -730,16 +734,22 @@ class MsPac extends MovingCritter{
         }
     }
 
-    draw(ctx) {
-        ctx.fillStyle = "yellow";
-        ctx.fillRect(this.posX, this.posY, this.width, this.width);
-
-        // ctx.fillStyle = "yellow"
-        // ctx.beginPath();
-        // ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);
-        // ctx.fill();
-        // ctx.stroke()
-        
+    draw(ctx) {    
+        this.imgFrameSelect(ctx);
+    }
+    
+    imgFrameSelect(ctx) {
+        if (this.velX > 0) {
+            return ctx.drawImage(this.msPacImg, 0, 0, 160, 160, this.posX - 12.5, this.posY, this.width * 1.5, this.width * 1.5);
+        } else if (this.velX < 0) {
+            return ctx.drawImage(this.msPacImg, 320 ,0, 160, 160, this.posX - 10, this.posY, this.width * 1.5, this.width * 1.5);
+        } else if (this.velY > 0) {
+            return ctx.drawImage(this.msPacImg, 960, 0, 160, 160, this.posX - 20, this.posY - 12.5, this.width * 1.5, this.width * 1.5);
+        } else if (this.velY < 0) {
+            return ctx.drawImage(this.msPacImg, 640, 0, 160, 160, this.posX - 5, this.posY - 5, this.width * 1.5, this.width * 1.5);
+        } else {
+            return ctx.drawImage(this.msPacImg, 0, 0, 160, 160, this.posX - 12.5, this.posY, this.width * 1.5, this.width * 1.5);
+        }
     }
 }
 
