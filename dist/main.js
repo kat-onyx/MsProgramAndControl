@@ -290,11 +290,23 @@ module.exports = GameView;
 
 const MovingCritter = __webpack_require__(/*! ./movingCritter */ "./src/movingCritter.js");
 
+const ghostsImg = new Image();
+ghostsImg.loaded = false;
+ghostsImg.onload = function() {
+    this.loaded = true;
+    console.log(this.loaded)
+}
+ghostsImg.src = './ghost.png';
+
+const msPacImg = new Image();
+msPacImg.src = './MsPac.png';
+
 class Ghost extends MovingCritter {
     constructor(ctx, velX, velY) {
     super(ctx, velX, velY);
     this.ctx = ctx;
-    this.radius = 20;
+    this.ghostsImg = ghostsImg;
+    this.msPacImg = msPacImg;
     this.width = 45;
     this.scared = false;
     this.randomPath = this.randomMoveDir();
@@ -317,28 +329,29 @@ class Ghost extends MovingCritter {
     draw(ctx) {
        this.routeToDestination();
        this.newPos();
-       
-       ctx.fillStyle = `${this.color}`;
-       ctx.fillRect(this.posX, this.posY, this.width, this.width);
-       // TODO: Render black background for ghost and draw pixel image for ghost
-    //    ctx.fillStyle = `${this.color}`;
-    //    ctx.beginPath();
-    //    ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI)
-    //    ctx.fill();
-    //    ctx.stroke();
+       this.selectGhostImg(ctx);
     }
 
-    chaseMsPac(msPacPos) {
-        
-    }
-
-    // destinationPicker(gameStartTime) {
-        // TODO: Implement DestinationPicker based on time of game start
+    // chaseMsPac(msPacPos) {
+        //TODO: Implement chasing mechanism.
     // }
+
+    selectGhostImg(ctx) {
+        let offsetX = null;
+        if (this instanceof Inky) {
+            offsetX = 320;
+        } else if (this instanceof Pinky) {
+            offsetX = 0;
+        } else if (this instanceof Clyde) {
+            offsetX = (160 * 3);
+        } else if (this instanceof Blinky) {
+            offsetX = 160;
+        }
+        return ctx.drawImage(this.ghostsImg, offsetX, 0, 160, 160, this.posX - 5, this.posY - 5, this.width * 1.5, this.width * 1.5)
+    }
 
     tryMove() {
         if (this.collisionDetectedGhost === false ) {
-            // console.log(this.collisionDetected)
             this.posX += this.ghostDirs[this.randomPath][0];
             this.posY += this.ghostDirs[this.randomPath][1];
         } else {
@@ -383,29 +396,17 @@ class Ghost extends MovingCritter {
 
 
     routeToDestination() {
-        // debugger
-        // console.log(this.collisionDetectedGhost)
         this.calculateDestPath();
-        // if (this.possiblePaths.length === 0 || this.collisionDetectedGhost) {
-        //     // debugger
 
-               
-        //     // return this.tryMove();
-        // }
-        
-        // for(let i = 0; i < this.possiblePaths.length; i++) {
-            if (this.collisionDetectedGhost === false) {
-                this.posX += this.possiblePaths[0][0];
-                this.posY += this.possiblePaths[0][1];
-            } else {
-                this.posX -= this.possiblePaths[0][0];
-                this.posY -= this.possiblePaths[0][1];
-                this.collisionDetectedGhost = false;
-                this.possiblePaths.splice(0, 1);
-                
-                // return
-            }
-        // }
+        if (this.collisionDetectedGhost === false) {
+            this.posX += this.possiblePaths[0][0];
+            this.posY += this.possiblePaths[0][1];
+        } else {
+            this.posX -= this.possiblePaths[0][0];
+            this.posY -= this.possiblePaths[0][1];
+            this.collisionDetectedGhost = false;
+            this.possiblePaths.splice(0, 1);
+        }
     }
 
     randomMoveDir() {
