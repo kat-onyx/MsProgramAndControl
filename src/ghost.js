@@ -8,15 +8,11 @@ ghostsImg.onload = function() {
 }
 ghostsImg.src = './ghost.png';
 
-const msPacImg = new Image();
-msPacImg.src = './MsPac.png';
-
 class Ghost extends MovingCritter {
     constructor(ctx, velX, velY) {
     super(ctx, velX, velY);
     this.ctx = ctx;
     this.ghostsImg = ghostsImg;
-    this.msPacImg = msPacImg;
     this.width = 45;
     this.scared = false;
     this.randomPath = this.randomMoveDir();
