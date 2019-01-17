@@ -47,17 +47,7 @@ class Ghost extends MovingCritter {
     // }
 
     selectGhostImg(ctx) {
-        let offsetX = null;
-        if (this instanceof Inky) {
-            offsetX = 320;
-        } else if (this instanceof Pinky) {
-            offsetX = 0;
-        } else if (this instanceof Clyde) {
-            offsetX = (160 * 3);
-        } else if (this instanceof Blinky) {
-            offsetX = 160;
-        }
-        return ctx.drawImage(this.ghostsImg, offsetX, 0, 160, 160, this.posX - 5, this.posY - 5, this.width * 1.5, this.width * 1.5)
+        return ctx.drawImage(this.ghostsImg, this.imgOffsetX, 0, 160, 160, this.posX - 5, this.posY - 10, this.width * 1.5, this.width * 1.5)
     }
 
     tryMove() {
@@ -129,6 +119,7 @@ class Ghost extends MovingCritter {
 class Inky extends Ghost {
     constructor(ctx, maze) {
         super(maze);
+        this.imgOffsetX = 320;
         this.ctx = ctx;
         this.posX = 325;
         this.posY = 350;
@@ -140,6 +131,7 @@ class Inky extends Ghost {
 class Pinky extends Ghost {
     constructor(ctx, maze) {
         super(maze);
+        this.imgOffsetX = 0;
         this.ctx = ctx;
         this.posX = 325;
         this.posY = 350;
@@ -152,6 +144,7 @@ class Pinky extends Ghost {
 class Blinky extends Ghost {
     constructor(ctx, maze) {
         super(maze);
+        this.imgOffsetX = 160;
         this.ctx = ctx;
         this.posX = 325;
         this.posY = 350;
@@ -164,6 +157,7 @@ class Blinky extends Ghost {
 class Clyde extends Ghost {
     constructor(ctx, maze) {
         super(maze);
+        this.imgOffsetX = 160 * 3;
         this.ctx = ctx;
         this.posX = 325;
         this.posY = 350;
