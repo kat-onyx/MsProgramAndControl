@@ -62,7 +62,7 @@ class GameView {
         this.updatePos();
         this.updateFrameCount();
 
-        if (this.lives ===0 || this.maze.pellets.length === 0) {
+        if (this.msPac.lives === 0 || this.maze.pellets.length === 0) {
             this.gameOver();
             return;
         }
