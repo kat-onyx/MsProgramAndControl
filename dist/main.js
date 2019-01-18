@@ -141,16 +141,16 @@ const Maze = __webpack_require__(/*! ./maze */ "./src/maze.js");
 class GameView {
     constructor(ctx) {
         this.ctx = ctx; 
-        this.ghostHouse = [];
         this.keyPressed = [];
 
         this.maze = new Maze(this.ctx);
         this.msPac = new MsPac(this.ctx, this.maze, this.frameCount);
-        // debugger
         this.inky = new Inky(this.ctx, this.maze);
         this.pinky = new Pinky(this.ctx, this.maze, this.frameCount);
         this.blinky = new Blinky(this.ctx, this.maze, this.frameCount);
         this.clyde = new Clyde(this.ctx, this.maze, this.frameCount);
+        this.ghostHouse = [this.inky, this.blinky, this.pinky, this.clyde];
+
         this.keyBinds = this.keyBinds.bind(this);
 
     }
@@ -191,6 +191,7 @@ class GameView {
         this.ctx.clearRect(0, 0, 700, 750)
         this.step();
         this.detectPelletConsumtption();
+        this.detectCritterCollision();
         this.drawUnits();
         this.updatePos();
         this.updateFrameCount();
@@ -239,7 +240,24 @@ class GameView {
         })
     }
 
+    detectCritterCollision() {
+        // debugger
+        this.ghostHouse.forEach ( ghost => {
+            if (this.isPointInTile(this.msPac, ghost)) {
+                console.log("collision")
+                this.msPac.lives -= 1;
+                this.restart();
+            }
+        })
+    }
+
+    restart() {
+        this.msPac.posX = 325;
+        this.msPac.posY = 425;
+    }
+
     isPointInTile(critter, pellet) {
+        // debugger
         let pelletXMin = pellet.posX;
         let pelletXMax = pellet.posX + pellet.width;;
         let pelletYMin = pellet.posY;
@@ -301,6 +319,7 @@ class Ghost extends MovingCritter {
     this.ctx = ctx;
     this.ghostsImg = ghostsImg;
     this.width = 45;
+    this.height = 45;
     this.scared = false;
     this.randomPath = this.randomMoveDir();
     this.purposePath = null;
@@ -727,7 +746,7 @@ class MsPac extends MovingCritter{
         this.lives = 3;
         this.score = 0;
         this.msPacImg = msPacImg;
-
+        
         this.newPos = function() {
             this.posX += this.velX;
             this.posY += this.velY;

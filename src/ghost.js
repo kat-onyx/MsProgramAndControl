@@ -14,6 +14,7 @@ class Ghost extends MovingCritter {
     this.ctx = ctx;
     this.ghostsImg = ghostsImg;
     this.width = 45;
+    this.height = 45;
     this.scared = false;
     this.randomPath = this.randomMoveDir();
     this.purposePath = null;
