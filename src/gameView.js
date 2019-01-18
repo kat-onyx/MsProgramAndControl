@@ -1,4 +1,3 @@
-const Game = require('./game')
 const MsPac = require('./msPac');
 const Inky = require('./ghost').inky;
 const Pinky = require('./ghost').pinky;
@@ -8,21 +7,19 @@ const Maze = require('./maze');
 
 class GameView {
     constructor(ctx) {
-        this.ctx = ctx;
-        
+        this.ctx = ctx; 
         this.ghostHouse = [];
-        
-        // this.game = new Game(this.ctx, this.msPac);
         this.keyPressed = [];
+
         this.maze = new Maze(this.ctx);
-        this.msPac = new MsPac(this.ctx, this.maze);
+        this.msPac = new MsPac(this.ctx, this.maze, this.frameCount);
+        // debugger
         this.inky = new Inky(this.ctx, this.maze);
-        this.pinky = new Pinky(this.ctx, this.maze);
-        this.blinky = new Blinky(this.ctx, this.maze);
-        this.clyde = new Clyde(this.ctx, this.maze);
+        this.pinky = new Pinky(this.ctx, this.maze, this.frameCount);
+        this.blinky = new Blinky(this.ctx, this.maze, this.frameCount);
+        this.clyde = new Clyde(this.ctx, this.maze, this.frameCount);
         this.keyBinds = this.keyBinds.bind(this);
 
-        // this.detectWallCollision = this.detectWallCollision.bind(this);
     }
 
     keyBinds() {
@@ -53,7 +50,6 @@ class GameView {
     }
 
     play() {
-        // debugger
         this.keyBinds();
         requestAnimationFrame(this.animate.bind(this));
     }
@@ -64,6 +60,7 @@ class GameView {
         this.detectPelletConsumtption();
         this.drawUnits();
         this.updatePos();
+        this.updateFrameCount();
 
         if (this.lives ===0 || this.maze.pellets.length === 0) {
             this.gameOver();
@@ -75,6 +72,10 @@ class GameView {
     updatePos() {
         this.detectTunnelTravel();
         this.msPac.newPos();
+    }
+
+    updateFrameCount() {
+        this.frameCount += 1;
     }
 
     step() {

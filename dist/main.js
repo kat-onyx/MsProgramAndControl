@@ -131,7 +131,6 @@ const msPac = __webpack_require__(/*! ./msPac */ "./src/msPac.js");
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Game = __webpack_require__(/*! ./game */ "./src/game.js")
 const MsPac = __webpack_require__(/*! ./msPac */ "./src/msPac.js");
 const Inky = __webpack_require__(/*! ./ghost */ "./src/ghost.js").inky;
 const Pinky = __webpack_require__(/*! ./ghost */ "./src/ghost.js").pinky;
@@ -141,21 +140,19 @@ const Maze = __webpack_require__(/*! ./maze */ "./src/maze.js");
 
 class GameView {
     constructor(ctx) {
-        this.ctx = ctx;
-        
+        this.ctx = ctx; 
         this.ghostHouse = [];
-        
-        // this.game = new Game(this.ctx, this.msPac);
         this.keyPressed = [];
+
         this.maze = new Maze(this.ctx);
-        this.msPac = new MsPac(this.ctx, this.maze);
+        this.msPac = new MsPac(this.ctx, this.maze, this.frameCount);
+        // debugger
         this.inky = new Inky(this.ctx, this.maze);
-        this.pinky = new Pinky(this.ctx, this.maze);
-        this.blinky = new Blinky(this.ctx, this.maze);
-        this.clyde = new Clyde(this.ctx, this.maze);
+        this.pinky = new Pinky(this.ctx, this.maze, this.frameCount);
+        this.blinky = new Blinky(this.ctx, this.maze, this.frameCount);
+        this.clyde = new Clyde(this.ctx, this.maze, this.frameCount);
         this.keyBinds = this.keyBinds.bind(this);
 
-        // this.detectWallCollision = this.detectWallCollision.bind(this);
     }
 
     keyBinds() {
@@ -186,7 +183,6 @@ class GameView {
     }
 
     play() {
-        // debugger
         this.keyBinds();
         requestAnimationFrame(this.animate.bind(this));
     }
@@ -197,6 +193,7 @@ class GameView {
         this.detectPelletConsumtption();
         this.drawUnits();
         this.updatePos();
+        this.updateFrameCount();
 
         if (this.lives ===0 || this.maze.pellets.length === 0) {
             this.gameOver();
@@ -208,6 +205,10 @@ class GameView {
     updatePos() {
         this.detectTunnelTravel();
         this.msPac.newPos();
+    }
+
+    updateFrameCount() {
+        this.frameCount += 1;
     }
 
     step() {
@@ -295,8 +296,8 @@ ghostsImg.onload = function() {
 ghostsImg.src = './ghost.png';
 
 class Ghost extends MovingCritter {
-    constructor(ctx, velX, velY) {
-    super(ctx, velX, velY);
+    constructor(ctx, velX, velY, frameCount) {
+    super(ctx, velX, velY, frameCount);
     this.ctx = ctx;
     this.ghostsImg = ghostsImg;
     this.width = 45;
@@ -319,30 +320,18 @@ class Ghost extends MovingCritter {
 
 
     draw(ctx) {
+       this.updateFrameCount()
        this.routeToDestination();
        this.newPos();
-       this.selectGhostImg(ctx);
+       this.drawGhost(ctx);
     }
 
     // chaseMsPac(msPacPos) {
         //TODO: Implement chasing mechanism.
     // }
 
-    selectGhostImg(ctx) {
+    drawGhost(ctx) {
         return ctx.drawImage(this.ghostsImg, this.imgOffsetX, 0, 160, 160, this.posX - 5, this.posY - 10, this.width * 1.5, this.width * 1.5)
-    }
-
-    tryMove() {
-        if (this.collisionDetectedGhost === false ) {
-            this.posX += this.ghostDirs[this.randomPath][0];
-            this.posY += this.ghostDirs[this.randomPath][1];
-        } else {
-            this.posX -= this.ghostDirs[this.randomPath][0];
-            this.posY -= this.ghostDirs[this.randomPath][1];
-            this.collisionDetectedGhost = false;
-            this.randomPath = this.randomMoveDir();
-        }
-
     }
 
     calculateDestPath() {
@@ -376,7 +365,13 @@ class Ghost extends MovingCritter {
         }
     }
 
-
+    ghostRoute() {
+        if (this.frameCount % 5 ) {
+            this.routeToDestination();
+        } else if (this.frameCount >= 30) {
+            this.randomRoute();
+        }
+    }
     routeToDestination() {
         this.calculateDestPath();
 
@@ -395,6 +390,19 @@ class Ghost extends MovingCritter {
         let selected = Math.floor(Math.random() * 4)
         let dirs = ["up", "down", "left", "right"]
         return dirs[selected]
+    }
+
+    randomRoute() {
+        if (this.collisionDetectedGhost === false) {
+            this.posX += this.ghostDirs[this.randomPath][0];
+            this.posY += this.ghostDirs[this.randomPath][1];
+        } else {
+            this.posX -= this.ghostDirs[this.randomPath][0];
+            this.posY -= this.ghostDirs[this.randomPath][1];
+            this.collisionDetectedGhost = false;
+            this.randomPath = this.randomMoveDir();
+        }
+
     }
 }
 
@@ -610,6 +618,8 @@ module.exports = Maze;
 class MovingCritter {
     constructor(maze) {
         // debugger
+        // this.ctx = ctx;
+        this.frameCount = 0;
         this.maze = maze;
         this.velX = 0;
         this.velY = 0;
@@ -617,7 +627,6 @@ class MovingCritter {
         this.posY = 0;
         this.collisionDetected = false;
         this.collisionDetectedGhost = false;
-        // this.collisionDetectedmsPac = false;
         this.detectWallCollision = this.detectWallCollision.bind(this);
     }
 
@@ -657,6 +666,12 @@ class MovingCritter {
                 (critterYMax > tileYMin && critterYMax <= tileYMax))
         )
     }
+
+    updateFrameCount() {
+        this.frameCount += 1;
+        this.frameCount = this.frameCount % 60;
+    }
+
     moveLeft() {
         this.velY = 0;
         this.velX = this.velX - 3;
@@ -702,10 +717,10 @@ const msPacImg = new Image();
 msPacImg.src = './MsPac.png';
 
 class MsPac extends MovingCritter{
-    constructor(ctx, velX, velY, maze) {
-        super(velX, velY, maze);
+    constructor(ctx, velX, velY, maze, frameCount) {
+        super(velX, velY, maze, frameCount);
         this.ctx = ctx;
-        this.width = 45;
+        this.width = 38;
         this.radius = 25;
         this.posX = 325;
         this.posY = 425;
@@ -720,21 +735,24 @@ class MsPac extends MovingCritter{
         }
     }
 
-    draw(ctx) {    
+    draw(ctx) {   
+        // ctx.fillStyle = "red";
+        // ctx.fillRect(this.posX, this.posY, this.width, this.width)
+        this.updateFrameCount();
         this.imgFrameSelect(ctx);
     }
     
     imgFrameSelect(ctx) {
         if (this.velX > 0) {
-            return ctx.drawImage(this.msPacImg, 0, 0, 160, 160, this.posX - 12.5, this.posY, this.width * 1.5, this.width * 1.5);
+            return ctx.drawImage(this.msPacImg, 0, 0, 160, 160, this.posX - 21, this.posY - 9, this.width * 2, this.width * 2);
         } else if (this.velX < 0) {
-            return ctx.drawImage(this.msPacImg, 320 ,0, 160, 160, this.posX - 10, this.posY, this.width * 1.5, this.width * 1.5);
+            return ctx.drawImage(this.msPacImg, 320 ,0, 160, 160, this.posX - 15, this.posY - 9, this.width * 2, this.width * 2);
         } else if (this.velY > 0) {
-            return ctx.drawImage(this.msPacImg, 960, 0, 160, 160, this.posX - 20, this.posY - 12.5, this.width * 1.5, this.width * 1.5);
+            return ctx.drawImage(this.msPacImg, 960, 0, 160, 160, this.posX - 30, this.posY - 9 - 12.5, this.width * 2, this.width * 2);
         } else if (this.velY < 0) {
-            return ctx.drawImage(this.msPacImg, 640, 0, 160, 160, this.posX - 5, this.posY - 5, this.width * 1.5, this.width * 1.5);
+            return ctx.drawImage(this.msPacImg, 640, 0, 160, 160, this.posX - 10, this.posY - 9 - 5, this.width * 2, this.width * 2);
         } else {
-            return ctx.drawImage(this.msPacImg, 0, 0, 160, 160, this.posX - 12.5, this.posY, this.width * 1.5, this.width * 1.5);
+            return ctx.drawImage(this.msPacImg, 0, 0, 160, 160, this.posX - 21, this.posY - 9, this.width * 2, this.width * 2);
         }
     }
 }

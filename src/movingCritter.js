@@ -1,6 +1,8 @@
 class MovingCritter {
     constructor(maze) {
         // debugger
+        // this.ctx = ctx;
+        this.frameCount = 0;
         this.maze = maze;
         this.velX = 0;
         this.velY = 0;
@@ -8,7 +10,6 @@ class MovingCritter {
         this.posY = 0;
         this.collisionDetected = false;
         this.collisionDetectedGhost = false;
-        // this.collisionDetectedmsPac = false;
         this.detectWallCollision = this.detectWallCollision.bind(this);
     }
 
@@ -48,6 +49,12 @@ class MovingCritter {
                 (critterYMax > tileYMin && critterYMax <= tileYMax))
         )
     }
+
+    updateFrameCount() {
+        this.frameCount += 1;
+        this.frameCount = this.frameCount % 60;
+    }
+
     moveLeft() {
         this.velY = 0;
         this.velX = this.velX - 3;

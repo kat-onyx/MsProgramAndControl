@@ -9,8 +9,8 @@ ghostsImg.onload = function() {
 ghostsImg.src = './ghost.png';
 
 class Ghost extends MovingCritter {
-    constructor(ctx, velX, velY) {
-    super(ctx, velX, velY);
+    constructor(ctx, velX, velY, frameCount) {
+    super(ctx, velX, velY, frameCount);
     this.ctx = ctx;
     this.ghostsImg = ghostsImg;
     this.width = 45;
@@ -33,30 +33,18 @@ class Ghost extends MovingCritter {
 
 
     draw(ctx) {
+       this.updateFrameCount()
        this.routeToDestination();
        this.newPos();
-       this.selectGhostImg(ctx);
+       this.drawGhost(ctx);
     }
 
     // chaseMsPac(msPacPos) {
         //TODO: Implement chasing mechanism.
     // }
 
-    selectGhostImg(ctx) {
+    drawGhost(ctx) {
         return ctx.drawImage(this.ghostsImg, this.imgOffsetX, 0, 160, 160, this.posX - 5, this.posY - 10, this.width * 1.5, this.width * 1.5)
-    }
-
-    tryMove() {
-        if (this.collisionDetectedGhost === false ) {
-            this.posX += this.ghostDirs[this.randomPath][0];
-            this.posY += this.ghostDirs[this.randomPath][1];
-        } else {
-            this.posX -= this.ghostDirs[this.randomPath][0];
-            this.posY -= this.ghostDirs[this.randomPath][1];
-            this.collisionDetectedGhost = false;
-            this.randomPath = this.randomMoveDir();
-        }
-
     }
 
     calculateDestPath() {
@@ -90,7 +78,13 @@ class Ghost extends MovingCritter {
         }
     }
 
-
+    ghostRoute() {
+        if (this.frameCount % 5 ) {
+            this.routeToDestination();
+        } else if (this.frameCount >= 30) {
+            this.randomRoute();
+        }
+    }
     routeToDestination() {
         this.calculateDestPath();
 
@@ -109,6 +103,19 @@ class Ghost extends MovingCritter {
         let selected = Math.floor(Math.random() * 4)
         let dirs = ["up", "down", "left", "right"]
         return dirs[selected]
+    }
+
+    randomRoute() {
+        if (this.collisionDetectedGhost === false) {
+            this.posX += this.ghostDirs[this.randomPath][0];
+            this.posY += this.ghostDirs[this.randomPath][1];
+        } else {
+            this.posX -= this.ghostDirs[this.randomPath][0];
+            this.posY -= this.ghostDirs[this.randomPath][1];
+            this.collisionDetectedGhost = false;
+            this.randomPath = this.randomMoveDir();
+        }
+
     }
 }
 
