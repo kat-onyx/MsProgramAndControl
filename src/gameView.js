@@ -5,7 +5,6 @@ const Pinky = require('./ghost').pinky;
 const Clyde = require('./ghost').clyde;
 const Blinky = require('./ghost').blinky;
 const Maze = require('./maze');
-const Util = require('./util');
 
 class GameView {
     constructor(ctx) {
@@ -74,8 +73,8 @@ class GameView {
     }
 
     updatePos() {
+        this.detectTunnelTravel();
         this.msPac.newPos();
-        // this.inky.newPos();
     }
 
     step() {
@@ -87,11 +86,8 @@ class GameView {
     }
 
     drawUnits() {
-        // debugger
         this.maze.draw(this.ctx);
         this.msPac.draw(this.ctx);
-
-        // debugger
         this.inky.draw(this.ctx);
         this.pinky.draw(this.ctx);
         this.blinky.draw(this.ctx);
@@ -99,8 +95,6 @@ class GameView {
     }
 
     detectPelletConsumtption() {
-        // debugger
-        // let pellets = this.maze.pellets[1]
         this.maze.pellets.forEach( (pellet, i) => {
             
             if (this.isPointInTile(this.msPac, pellet)) {
@@ -121,7 +115,6 @@ class GameView {
         let critterXMax = critter.posX + critter.width;
         let critterYMin = critter.posY;
         let critterYMax = critter.posY + critter.width;
-        // console.log(critterXMax, critterXMin)
         return (
             ((critterXMin >= pelletXMin && critterXMin < pelletXMax) ||
              (critterXMax > pelletXMin && critterXMax <= pelletXMax)) && 
@@ -131,12 +124,15 @@ class GameView {
     }
 
     detectTunnelTravel() {
-        
+        if (this.msPac.posX < 0) {
+            this.msPac.posX = 700;
+        } else if (this.msPac.posX > 700) {
+            this.msPac.posX = 0;
+        }
     }
 
 gameOver() {
         this.ctx.font = "30px 'Righteous', cursive";
-        // this.ctx.fillRect(325, 425, 50, 50);
         this.ctx.fillStyle = "red";
         this.ctx.fillText("GAME OVER", 265, 465);
         this.ctx.fillStyle = "black";

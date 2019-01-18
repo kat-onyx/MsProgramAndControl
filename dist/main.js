@@ -138,7 +138,6 @@ const Pinky = __webpack_require__(/*! ./ghost */ "./src/ghost.js").pinky;
 const Clyde = __webpack_require__(/*! ./ghost */ "./src/ghost.js").clyde;
 const Blinky = __webpack_require__(/*! ./ghost */ "./src/ghost.js").blinky;
 const Maze = __webpack_require__(/*! ./maze */ "./src/maze.js");
-const Util = __webpack_require__(/*! ./util */ "./src/util.js");
 
 class GameView {
     constructor(ctx) {
@@ -207,8 +206,8 @@ class GameView {
     }
 
     updatePos() {
+        this.detectTunnelTravel();
         this.msPac.newPos();
-        // this.inky.newPos();
     }
 
     step() {
@@ -220,11 +219,8 @@ class GameView {
     }
 
     drawUnits() {
-        // debugger
         this.maze.draw(this.ctx);
         this.msPac.draw(this.ctx);
-
-        // debugger
         this.inky.draw(this.ctx);
         this.pinky.draw(this.ctx);
         this.blinky.draw(this.ctx);
@@ -232,8 +228,6 @@ class GameView {
     }
 
     detectPelletConsumtption() {
-        // debugger
-        // let pellets = this.maze.pellets[1]
         this.maze.pellets.forEach( (pellet, i) => {
             
             if (this.isPointInTile(this.msPac, pellet)) {
@@ -254,7 +248,6 @@ class GameView {
         let critterXMax = critter.posX + critter.width;
         let critterYMin = critter.posY;
         let critterYMax = critter.posY + critter.width;
-        // console.log(critterXMax, critterXMin)
         return (
             ((critterXMin >= pelletXMin && critterXMin < pelletXMax) ||
              (critterXMax > pelletXMin && critterXMax <= pelletXMax)) && 
@@ -264,12 +257,15 @@ class GameView {
     }
 
     detectTunnelTravel() {
-        
+        if (this.msPac.posX < 0) {
+            this.msPac.posX = 700;
+        } else if (this.msPac.posX > 700) {
+            this.msPac.posX = 0;
+        }
     }
 
 gameOver() {
         this.ctx.font = "30px 'Righteous', cursive";
-        // this.ctx.fillRect(325, 425, 50, 50);
         this.ctx.fillStyle = "red";
         this.ctx.fillText("GAME OVER", 265, 465);
         this.ctx.fillStyle = "black";
@@ -479,7 +475,6 @@ document.addEventListener("DOMContentLoaded", function () {
     canvasEl.height = 770;
 
     const ctx = canvasEl.getContext("2d");
-    // const game = new Game(ctx);
     new GameView(ctx).play();
 });
 
@@ -815,25 +810,6 @@ class Tile {
 }
 
 module.exports = Tile;
-
-/***/ }),
-
-/***/ "./src/util.js":
-/*!*********************!*\
-  !*** ./src/util.js ***!
-  \*********************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-const Util = {
-    distance(pos1, pos2) {
-        return Math.sqrt(
-            Math.pow((pos2[0] - pos1[0]), 2) + Math.pow((pos2[1] - pos1[1]), 2)
-        )
-    }
-}
-
-module.exports = Util;
 
 /***/ })
 
