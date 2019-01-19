@@ -14,11 +14,10 @@ class MsPac extends MovingCritter{
         this.lives = 3;
         this.score = 0;
         this.msPacImg = msPacImg;
-        
+
         this.newPos = function() {
             this.posX += this.velX;
             this.posY += this.velY;
-            // this.position = [this.posX, this.posY]
         }
     }
 

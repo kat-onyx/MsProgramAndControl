@@ -322,7 +322,7 @@ class Ghost extends MovingCritter {
     this.height = 45;
     this.scared = false;
     this.randomPath = this.randomMoveDir();
-    this.purposePath = null;
+    this.initialPath = null;
     this.possiblePaths = [];
     this.ghostDirs = {
         "up": [0, -1],
@@ -345,16 +345,16 @@ class Ghost extends MovingCritter {
        this.drawGhost(ctx);
     }
 
-    // chaseMsPac(msPacPos) {
-        //TODO: Implement chasing mechanism.
-    // }
+    chaseMsPac(msPacPos) {
+       
+    }
 
     drawGhost(ctx) {
         return ctx.drawImage(this.ghostsImg, this.imgOffsetX, 0, 160, 160, this.posX - 5, this.posY - 10, this.width * 1.5, this.width * 1.5)
     }
 
     calculateDestPath() {
-        this.destination = this.purposePath;
+        this.destination = this.initialPath;
         // debugger
 
         // if ()
@@ -433,7 +433,7 @@ class Inky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "blue";
-        this.purposePath = [125, 116];
+        this.initialPath = [125, 116];
         // this.randomMove();
     }
 }
@@ -445,7 +445,7 @@ class Pinky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "pink";
-        this.purposePath = [550, 125];
+        this.initialPath = [550, 125];
         // this.randomMove();
     }
 }
@@ -458,7 +458,7 @@ class Blinky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "red";
-        this.purposePath = [500, 300];
+        this.initialPath = [500, 300];
         // this.randomMove();
     }
 }
@@ -471,7 +471,7 @@ class Clyde extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "orange";
-        this.purposePath = [125, 300];
+        this.initialPath = [125, 300];
         // this.randomMove();
     }
 }
@@ -636,8 +636,6 @@ module.exports = Maze;
 
 class MovingCritter {
     constructor(maze) {
-        // debugger
-        // this.ctx = ctx;
         this.frameCount = 0;
         this.maze = maze;
         this.velX = 0;
@@ -746,11 +744,10 @@ class MsPac extends MovingCritter{
         this.lives = 3;
         this.score = 0;
         this.msPacImg = msPacImg;
-        
+
         this.newPos = function() {
             this.posX += this.velX;
             this.posY += this.velY;
-            // this.position = [this.posX, this.posY]
         }
     }
 

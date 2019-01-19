@@ -1,7 +1,5 @@
 class MovingCritter {
     constructor(maze) {
-        // debugger
-        // this.ctx = ctx;
         this.frameCount = 0;
         this.maze = maze;
         this.velX = 0;

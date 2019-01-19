@@ -3,10 +3,24 @@
     justify-content: center;
     font-family: 'Righteous', 'cursive';
     background: black;
+    height: 100vh;
+    width: 100vw;
 }
 
 .canvas-title-container {
     display: flex;
+    align-items: center;
+}
+
+.title-intro-container {
+    display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    padding-right: 30px;
+}
+
+.info {
+    color: white;
+    font-size: 18px;
 }
