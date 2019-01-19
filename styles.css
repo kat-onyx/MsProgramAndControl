@@ -17,10 +17,30 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-right: 30px;
+    padding-right: 100px;
 }
 
 .info {
     color: white;
     font-size: 18px;
+}
+
+.github-linkedin-container {
+    color: white;
+    display: flex;
+    align-content: center;
+}
+
+.github {
+    background-image: url("GitHub-Mark-Light-32px.png");
+    height: 32px;
+    width: 32px;
+    margin: 0 10px 0 0;
+}
+
+.linkedin {
+    background-image: url("In-White-34px-R.png");
+    height: 34px;
+    width: 34px;
+    margin: 0 0 0 10px;
 }
