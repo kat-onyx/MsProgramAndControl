@@ -168,12 +168,12 @@ gameOver() {
             this.ctx.fillStyle = "red";
             this.ctx.fillText("GAME OVER", 265, 465);
             this.ctx.fillStyle = "black";
+        } else {
+             this.ctx.font = "30px 'Righteous', cursive";
+             this.ctx.fillStyle = "red";
+             this.ctx.fillText("YOU WIN! :)", 265, 465);
+             this.ctx.fillStyle = "black";
         }
-
-        this.ctx.font = "30px 'Righteous', cursive";
-        this.ctx.fillStyle = "red";
-        this.ctx.fillText("YOU WIN! :)", 265, 465);
-        this.ctx.fillStyle = "black";
     }
 }
 
