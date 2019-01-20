@@ -9,7 +9,7 @@ class GameView {
     constructor(ctx) {
         this.ctx = ctx; 
         this.keyPressed = [];
-
+        this.startTime = Math.floor(Date.now() / 1000);
         this.maze = new Maze(this.ctx);
         this.msPac = new MsPac(this.ctx, this.maze, this.frameCount);
         this.inky = new Inky(this.ctx, this.maze);
@@ -61,6 +61,7 @@ class GameView {
         this.detectCritterCollision();
         this.drawUnits();
         this.updatePos();
+        this.updateGhostBehavior();
         this.updateFrameCount();
 
         if (this.msPac.lives === 0 || this.maze.pellets.length === 0) {
@@ -81,10 +82,10 @@ class GameView {
 
     step() {
         this.msPac.checkDir();
-        this.inky.checkDir();
-        this.pinky.checkDir();
-        this.clyde.checkDir();
-        this.blinky.checkDir();
+
+        this.ghostHouse.forEach( ghost => {
+            ghost.checkDir();
+        })
     }
 
     drawUnits() {
@@ -115,6 +116,17 @@ class GameView {
                 this.msPac.lives -= 1;
                 this.restart();
             }
+        })
+    }
+
+    updateGhostBehavior() {
+        let currentTime = Math.floor(Date.now() / 1000 ); 
+        this.ghostHouse.forEach( ghost => {
+             if (currentTime - this.startTime >= 60) {
+                ghost.chaseMsPac(this.msPac);
+             } else if (currentTime - this.startTime >= 30) {
+                 ghost.randomMovePath();
+             }
         })
     }
 

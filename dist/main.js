@@ -142,7 +142,7 @@ class GameView {
     constructor(ctx) {
         this.ctx = ctx; 
         this.keyPressed = [];
-
+        this.startTime = Math.floor(Date.now() / 1000);
         this.maze = new Maze(this.ctx);
         this.msPac = new MsPac(this.ctx, this.maze, this.frameCount);
         this.inky = new Inky(this.ctx, this.maze);
@@ -194,6 +194,7 @@ class GameView {
         this.detectCritterCollision();
         this.drawUnits();
         this.updatePos();
+        this.updateGhostBehavior();
         this.updateFrameCount();
 
         if (this.msPac.lives === 0 || this.maze.pellets.length === 0) {
@@ -214,10 +215,10 @@ class GameView {
 
     step() {
         this.msPac.checkDir();
-        this.inky.checkDir();
-        this.pinky.checkDir();
-        this.clyde.checkDir();
-        this.blinky.checkDir();
+
+        this.ghostHouse.forEach( ghost => {
+            ghost.checkDir();
+        })
     }
 
     drawUnits() {
@@ -248,6 +249,17 @@ class GameView {
                 this.msPac.lives -= 1;
                 this.restart();
             }
+        })
+    }
+
+    updateGhostBehavior() {
+        let currentTime = Math.floor(Date.now() / 1000 ); 
+        this.ghostHouse.forEach( ghost => {
+             if (currentTime - this.startTime >= 60) {
+                ghost.chaseMsPac(this.msPac);
+             } else if (currentTime - this.startTime >= 30) {
+                 ghost.randomMovePath();
+             }
         })
     }
 
@@ -321,8 +333,8 @@ class Ghost extends MovingCritter {
     this.width = 45;
     this.height = 45;
     this.scared = false;
-    this.randomPath = this.randomMoveDir();
-    this.initialPath = null;
+    // this.randomPath = this.randomMoveDir();
+    this.destination = null;
     this.possiblePaths = [];
     this.ghostDirs = {
         "up": [0, -1],
@@ -340,43 +352,43 @@ class Ghost extends MovingCritter {
 
     draw(ctx) {
        this.updateFrameCount()
-       this.routeToDestination();
+       this.routeToDestination(this.destination);
        this.newPos();
        this.drawGhost(ctx);
     }
 
     chaseMsPac(msPacPos) {
-       
+       this.destination = [msPacPos.posX, msPacPos.posY]
     }
 
     drawGhost(ctx) {
         return ctx.drawImage(this.ghostsImg, this.imgOffsetX, 0, 160, 160, this.posX - 5, this.posY - 10, this.width * 1.5, this.width * 1.5)
     }
 
-    calculateDestPath() {
-        this.destination = this.initialPath;
+    calculateDestPath(currentPath) {
+
+        let destination = currentPath;
         // debugger
 
-        // if ()
         for (let k in this.ghostDirs) {
             let possibleDest = [
                 this.posX + this.ghostDirs[k][0],
                 this.posY + this.ghostDirs[k][1]
             ]
-            if (possibleDest[0] < this.posX && this.destination[0] < this.posX) {
+            if (possibleDest[0] < this.posX && destination[0] < this.posX) {
                 if (this.possiblePaths.indexOf(this.ghostDirs["left"]) === -1) {
                     this.possiblePaths.push(this.ghostDirs["left"])
                 } 
-            } else if (possibleDest[0] > this.posX && this.destination[0] > this.posX) {
+            } else if (possibleDest[0] > this.posX && destination[0] > this.posX) {
                 if (this.possiblePaths.indexOf(this.ghostDirs["right"]) === -1) {
                     this.possiblePaths.push(this.ghostDirs["right"])
                 }
-            } else if (possibleDest[1] > this.posY && this.destination[1] > this.posY) {
+            } else if (possibleDest[1] > this.posY && destination[1] > this.posY) {
                 // console.log(possibleDest[1], this.destination[1])
                 if (this.possiblePaths.indexOf(this.ghostDirs["down"]) === -1) {
                     this.possiblePaths.push(this.ghostDirs["down"])
                 }
-            } else if (possibleDest[1] < this.posY && this.destination[1] < this.posY) {
+            } else if (possibleDest[1] < this.posY && destination[1] < this.posY) {
                 if (this.possiblePaths.indexOf(this.ghostDirs["up"]) === -1) {
                 this.possiblePaths.push(this.ghostDirs["up"])
                 }
@@ -384,15 +396,16 @@ class Ghost extends MovingCritter {
         }
     }
 
-    ghostRoute() {
-        if (this.frameCount % 5 ) {
-            this.routeToDestination();
-        } else if (this.frameCount >= 30) {
-            this.randomRoute();
-        }
-    }
-    routeToDestination() {
-        this.calculateDestPath();
+    // ghostRoute() {
+    //     if (this.frameCount % 5 ) {
+    //         this.routeToDestination();
+    //     } else if (this.frameCount >= 30) {
+    //         this.randomRoute();
+    //     }
+    // }
+
+    routeToDestination(currentDestination) {
+        this.calculateDestPath(currentDestination);
 
         if (this.collisionDetectedGhost === false) {
             this.posX += this.possiblePaths[0][0];
@@ -405,13 +418,26 @@ class Ghost extends MovingCritter {
         }
     }
 
-    randomMoveDir() {
-        let selected = Math.floor(Math.random() * 4)
-        let dirs = ["up", "down", "left", "right"]
-        return dirs[selected]
+    randomMovePath() {
+        let posX = Math.floor(Math.random() * 700);
+        let posY = Math.floor(Math.random() * 770);
+        // let dirs = ["up", "down", "left", "right"]
+        this.destination = [posX, posY];
+        // return dirs[selected]
+    }
+
+    calculateNewPath(gameStartTime) {
+        let currentTime = Date.now() / 1000;
+
+        if (currentTime - gameStartTime >= 60) {
+            this.destination = this.randomPath;
+        } else if (currentTime - gameStartTime >= 120) {
+            
+        }
     }
 
     randomRoute() {
+
         if (this.collisionDetectedGhost === false) {
             this.posX += this.ghostDirs[this.randomPath][0];
             this.posY += this.ghostDirs[this.randomPath][1];
@@ -433,7 +459,7 @@ class Inky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "blue";
-        this.initialPath = [125, 116];
+        this.destination = [125, 116];
         // this.randomMove();
     }
 }
@@ -445,7 +471,7 @@ class Pinky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "pink";
-        this.initialPath = [550, 125];
+        this.destination = [550, 125];
         // this.randomMove();
     }
 }
@@ -458,7 +484,7 @@ class Blinky extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "red";
-        this.initialPath = [500, 300];
+        this.destination = [500, 300];
         // this.randomMove();
     }
 }
@@ -471,7 +497,7 @@ class Clyde extends Ghost {
         this.posX = 325;
         this.posY = 350;
         this.color = "orange";
-        this.initialPath = [125, 300];
+        this.destination = [125, 300];
         // this.randomMove();
     }
 }
@@ -499,7 +525,7 @@ const GameView = __webpack_require__(/*! ./gameView */ "./src/gameView.js");
 document.addEventListener("DOMContentLoaded", function () {
     const canvasEl = document.getElementsByTagName("canvas")[0];
     canvasEl.width = 700;
-    canvasEl.height = 770;
+    canvasEl.height = 790;
 
     const ctx = canvasEl.getContext("2d");
     new GameView(ctx).play();
