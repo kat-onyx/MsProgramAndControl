@@ -333,7 +333,6 @@ class Ghost extends MovingCritter {
     this.width = 45;
     this.height = 45;
     this.scared = false;
-    // this.randomPath = this.randomMoveDir();
     this.destination = null;
     this.possiblePaths = [];
     this.ghostDirs = {
@@ -396,14 +395,6 @@ class Ghost extends MovingCritter {
         }
     }
 
-    // ghostRoute() {
-    //     if (this.frameCount % 5 ) {
-    //         this.routeToDestination();
-    //     } else if (this.frameCount >= 30) {
-    //         this.randomRoute();
-    //     }
-    // }
-
     routeToDestination(currentDestination) {
         this.calculateDestPath(currentDestination);
 
@@ -421,19 +412,7 @@ class Ghost extends MovingCritter {
     randomMovePath() {
         let posX = Math.floor(Math.random() * 700);
         let posY = Math.floor(Math.random() * 770);
-        // let dirs = ["up", "down", "left", "right"]
         this.destination = [posX, posY];
-        // return dirs[selected]
-    }
-
-    calculateNewPath(gameStartTime) {
-        let currentTime = Date.now() / 1000;
-
-        if (currentTime - gameStartTime >= 60) {
-            this.destination = this.randomPath;
-        } else if (currentTime - gameStartTime >= 120) {
-            
-        }
     }
 
     randomRoute() {
@@ -460,7 +439,6 @@ class Inky extends Ghost {
         this.posY = 350;
         this.color = "blue";
         this.destination = [125, 116];
-        // this.randomMove();
     }
 }
 class Pinky extends Ghost {
@@ -472,7 +450,6 @@ class Pinky extends Ghost {
         this.posY = 350;
         this.color = "pink";
         this.destination = [550, 125];
-        // this.randomMove();
     }
 }
 
@@ -485,7 +462,6 @@ class Blinky extends Ghost {
         this.posY = 350;
         this.color = "red";
         this.destination = [500, 300];
-        // this.randomMove();
     }
 }
 
@@ -498,7 +474,6 @@ class Clyde extends Ghost {
         this.posY = 350;
         this.color = "orange";
         this.destination = [125, 300];
-        // this.randomMove();
     }
 }
 
