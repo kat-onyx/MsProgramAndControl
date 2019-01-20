@@ -11,7 +11,7 @@ class GameView {
         this.keyPressed = [];
         this.startTime = Math.floor(Date.now() / 1000);
         this.maze = new Maze(this.ctx);
-        this.msPac = new MsPac(this.ctx, this.maze, this.frameCount);
+        this.msPac = new MsPac(this.ctx, this.maze);
         this.inky = new Inky(this.ctx, this.maze);
         this.pinky = new Pinky(this.ctx, this.maze, this.frameCount);
         this.blinky = new Blinky(this.ctx, this.maze, this.frameCount);
@@ -44,7 +44,6 @@ class GameView {
         })
 
         document.addEventListener("keyup", (e) => {
-            // this.msPac.moveStop();
             this.keyPressed.pop();
         })
     }

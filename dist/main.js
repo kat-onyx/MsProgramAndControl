@@ -144,7 +144,7 @@ class GameView {
         this.keyPressed = [];
         this.startTime = Math.floor(Date.now() / 1000);
         this.maze = new Maze(this.ctx);
-        this.msPac = new MsPac(this.ctx, this.maze, this.frameCount);
+        this.msPac = new MsPac(this.ctx, this.maze);
         this.inky = new Inky(this.ctx, this.maze);
         this.pinky = new Pinky(this.ctx, this.maze, this.frameCount);
         this.blinky = new Blinky(this.ctx, this.maze, this.frameCount);
@@ -177,7 +177,6 @@ class GameView {
         })
 
         document.addEventListener("keyup", (e) => {
-            // this.msPac.moveStop();
             this.keyPressed.pop();
         })
     }
@@ -768,13 +767,30 @@ class MsPac extends MovingCritter{
     
     imgFrameSelect(ctx) {
         if (this.velX > 0) {
-            return ctx.drawImage(this.msPacImg, 0, 0, 160, 160, this.posX - 21, this.posY - 9, this.width * 2, this.width * 2);
+            if (this.frameCount % 15 === 0) {
+                return ctx.drawImage(this.msPacImg, 160, 0, 160, 160, this.posX - 21, this.posY - 9, this.width * 2, this.width * 2);
+            } else {
+                return ctx.drawImage(this.msPacImg, 0, 0, 160, 160, this.posX - 21, this.posY - 9, this.width * 2, this.width * 2);
+            }
+            
         } else if (this.velX < 0) {
-            return ctx.drawImage(this.msPacImg, 320 ,0, 160, 160, this.posX - 15, this.posY - 9, this.width * 2, this.width * 2);
+            if ((this.frameCount % 15 === 0)) {
+                return ctx.drawImage(this.msPacImg, (320 + 160), 0, 160, 160, this.posX - 15, this.posY - 9, this.width * 2, this.width * 2);
+            } else {
+                return ctx.drawImage(this.msPacImg, 320, 0, 160, 160, this.posX - 15, this.posY - 9, this.width * 2, this.width * 2);
+            }
         } else if (this.velY > 0) {
-            return ctx.drawImage(this.msPacImg, 960, 0, 160, 160, this.posX - 30, this.posY - 9 - 12.5, this.width * 2, this.width * 2);
+            if (this.frameCount % 15 === 0) {
+                return ctx.drawImage(this.msPacImg, (960 + 160), 0, 160, 160, this.posX - 30, this.posY - 9 - 12.5, this.width * 2, this.width * 2);
+            } else {
+                return ctx.drawImage(this.msPacImg, 960, 0, 160, 160, this.posX - 30, this.posY - 9 - 12.5, this.width * 2, this.width * 2);
+            }
         } else if (this.velY < 0) {
-            return ctx.drawImage(this.msPacImg, 640, 0, 160, 160, this.posX - 10, this.posY - 9 - 5, this.width * 2, this.width * 2);
+            if (this.frameCount % 15 === 0) {
+                return ctx.drawImage(this.msPacImg, (640 + 160), 0, 160, 160, this.posX - 10, this.posY - 9 - 5, this.width * 2, this.width * 2);
+            } else {
+                return ctx.drawImage(this.msPacImg, 640, 0, 160, 160, this.posX - 10, this.posY - 9 - 5, this.width * 2, this.width * 2);
+            }
         } else {
             return ctx.drawImage(this.msPacImg, 0, 0, 160, 160, this.posX - 21, this.posY - 9, this.width * 2, this.width * 2);
         }
