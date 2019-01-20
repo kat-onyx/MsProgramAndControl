@@ -122,9 +122,9 @@ class GameView {
     updateGhostBehavior() {
         let currentTime = Math.floor(Date.now() / 1000 ); 
         this.ghostHouse.forEach( ghost => {
-             if (currentTime - this.startTime >= 60) {
+             if (currentTime - this.startTime >= 30) {
                 ghost.chaseMsPac(this.msPac);
-             } else if (currentTime - this.startTime >= 30) {
+             } else if (currentTime - this.startTime >= 20) {
                  ghost.randomMovePath();
              }
         })
@@ -163,9 +163,16 @@ class GameView {
     }
 
 gameOver() {
+        if (this.msPac.lives === 0) {
+            this.ctx.font = "30px 'Righteous', cursive";
+            this.ctx.fillStyle = "red";
+            this.ctx.fillText("GAME OVER", 265, 465);
+            this.ctx.fillStyle = "black";
+        }
+
         this.ctx.font = "30px 'Righteous', cursive";
         this.ctx.fillStyle = "red";
-        this.ctx.fillText("GAME OVER", 265, 465);
+        this.ctx.fillText("YOU WIN! :)", 265, 465);
         this.ctx.fillStyle = "black";
     }
 }
