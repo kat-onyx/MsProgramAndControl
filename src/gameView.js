@@ -170,8 +170,8 @@ class GameView {
     // this.ctx.fillRect(660, 365, 200, 25);
     this.ctx.fillStyle = "red";
     this.ctx.font = "30px Righteous";
-    this.ctx.fillText(`Score: `, 700, 415);
-    this.ctx.fillText(parseInt(this.msPac.score), 700, 450)
+    this.ctx.fillText(`Score: `, 730, 415);
+    this.ctx.fillText(parseInt(this.msPac.score), 730, 450)
   }
 
   showLives() {
@@ -179,7 +179,7 @@ class GameView {
     // this.ctx.fillRect(660, 365, 200, 25);
     this.ctx.fillStyle = "red";
     this.ctx.font = "30px Righteous";
-    this.ctx.fillText("Lives: ", 700, 300);
+    this.ctx.fillText("Lives: ", 730, 300);
       for (let i = 0; i < this.msPac.lives; i++) {
           this.ctx.drawImage(
               this.msPac.msPacImg,
@@ -187,7 +187,7 @@ class GameView {
               0,
               160,
               160,
-              680 + (i * 40),
+              710 + (i * 40),
               300,
               this.msPac.width * 2,
               this.msPac.width * 2
