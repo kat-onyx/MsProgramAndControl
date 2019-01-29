@@ -264,7 +264,7 @@ class GameView {
 
     restart() {
         this.msPac.posX = 325;
-        this.msPac.posY = 425;
+        this.msPac.posY = 560;
     }
 
     isPointInTile(critter, pellet) {
@@ -336,8 +336,8 @@ class Ghost extends MovingCritter {
     super(ctx, velX, velY, frameCount);
     this.ctx = ctx;
     this.ghostsImg = ghostsImg;
-    this.width = 45;
-    this.height = 45;
+    this.width = 43;
+    this.height = 43;
     this.scared = false;
     this.destination = null;
     this.possiblePaths = [];
@@ -441,8 +441,8 @@ class Inky extends Ghost {
         super(maze);
         this.imgOffsetX = 320;
         this.ctx = ctx;
-        this.posX = 325;
-        this.posY = 350;
+        this.posX = 305;
+        this.posY = 380;
         this.color = "blue";
         this.destination = [125, 116];
     }
@@ -452,8 +452,8 @@ class Pinky extends Ghost {
         super(maze);
         this.imgOffsetX = 0;
         this.ctx = ctx;
-        this.posX = 325;
-        this.posY = 350;
+        this.posX = 335;
+        this.posY = 380;
         this.color = "pink";
         this.destination = [550, 125];
     }
@@ -464,7 +464,7 @@ class Blinky extends Ghost {
         super(maze);
         this.imgOffsetX = 160;
         this.ctx = ctx;
-        this.posX = 325;
+        this.posX = 335;
         this.posY = 350;
         this.color = "red";
         this.destination = [500, 300];
@@ -476,7 +476,7 @@ class Clyde extends Ghost {
         super(maze);
         this.imgOffsetX = 160 * 3;
         this.ctx = ctx;
-        this.posX = 325;
+        this.posX = 305;
         this.posY = 350;
         this.color = "orange";
         this.destination = [125, 300];
@@ -532,42 +532,31 @@ class Maze {
         this.radius = 10;
         this.ctx = ctx;
         this.width = 700;
-        this.height = 770;
+        this.height = 790;
+        // debugger
         // bitmap for the grid
         this.grid = [
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1],
-                [1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 4, 4, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 4, 4, 4, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 4, 4, 4, 5, 5, 5, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 6, 6, 6, 7, 7, 7, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1],
-                [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
-                [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
-                [1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1],
-                [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
-                [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1], 
+                [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+                [1, 1, 1, 1, 0, 1, 1, 4, 4, 1, 1, 0, 1, 1, 1, 1],
+                [0, 0, 0, 0, 0, 1, 6, 6, 7, 6, 1, 0, 0, 0, 0, 0],
+                [1, 1, 1, 1, 0, 1, 6, 6, 6, 6, 1, 0, 1, 1, 1, 1],
+                [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
+                [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1],
+                [1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1],
+                [1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
+                [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+       
             ],
-        this.blocksize = this.width / (this.grid[0].length);
+        this.blocksize = Math.floor(this.width / (this.grid[0].length));
         this.tiles = this.tiles();
         this.pellets = this.pellets();
     }
@@ -592,15 +581,15 @@ class Maze {
         // debugger
         let pellets = [];
        
-        for (let i = 0; i < this.grid.length; i += 2) {
-            for (let j = 0; j < this.grid[i].length; j += 2) {
+        for (let i = 0; i < this.grid.length; i += 1) {
+            for (let j = 0; j < this.grid[i].length; j += 1) {
                 // .75 modifier added to reduce gridlines
                 // if ((this.grid[i][j] === 0 && this.grid[i][j + 1] === 0) || this.grid[i][j] === 0 && this.grid[i][j + 1] === 1) {
                 //     let pellet = new Pellet(j * this.blocksize, i * this.blocksize, this.blocksize, this.blocksize);
                 //     pellets.push(pellet)
                 
                 // } 
-                if ((j % 2 === 0) && (this.grid[i][j] === 0)) {
+                if ((this.grid[i][j] === 0)) {
                     let pellet = new Pellet(j * this.blocksize, i * this.blocksize, this.blocksize, this.blocksize);
                      pellets.push(pellet)
                 }
@@ -699,22 +688,22 @@ class MovingCritter {
 
     moveLeft() {
         this.velY = 0;
-        this.velX = this.velX - 3;
+        this.velX = this.velX - 2;
     }
 
     moveRight() {
         this.velY = 0;
-        this.velX = this.velX + 3;
+        this.velX = this.velX + 2;
     }
 
     moveUp() {
         this.velX = 0;
-        this.velY = this.velY - 3;
+        this.velY = this.velY - 2;
     }
 
     moveDown() {
         this.velX = 0;
-        this.velY = this.velY + 3;
+        this.velY = this.velY + 2;
     }
 
     moveStop() {
@@ -745,10 +734,10 @@ class MsPac extends MovingCritter{
     constructor(ctx, velX, velY, maze, frameCount) {
         super(velX, velY, maze, frameCount);
         this.ctx = ctx;
-        this.width = 38;
+        this.width = 32;
         this.radius = 25;
         this.posX = 325;
-        this.posY = 425;
+        this.posY = 560;
         this.lives = 3;
         this.score = 0;
         this.msPacImg = msPacImg;
@@ -815,10 +804,8 @@ class Pellet {
     constructor(posX, posY, width, height) {
         this.width = width;
         this.height = height;
-        // this.point = 100;
         this.posX = posX;
         this.posY = posY;
-
     }
 
     draw(ctx) {
@@ -829,7 +816,8 @@ class Pellet {
 
         ctx.fillStyle = "white"
         ctx.beginPath();
-        ctx.arc(this.posX, this.posY, this.width / 4, 0, 2 * Math.PI);
+        //43 === width/height of each pellet's square
+        ctx.arc((this.posX + (43/2)), (this.posY + (43/2)), this.width / 8, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke()
     }

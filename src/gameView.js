@@ -131,7 +131,7 @@ class GameView {
 
     restart() {
         this.msPac.posX = 325;
-        this.msPac.posY = 425;
+        this.msPac.posY = 560;
     }
 
     isPointInTile(critter, pellet) {

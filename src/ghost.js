@@ -13,8 +13,8 @@ class Ghost extends MovingCritter {
     super(ctx, velX, velY, frameCount);
     this.ctx = ctx;
     this.ghostsImg = ghostsImg;
-    this.width = 45;
-    this.height = 45;
+    this.width = 43;
+    this.height = 43;
     this.scared = false;
     this.destination = null;
     this.possiblePaths = [];
@@ -118,8 +118,8 @@ class Inky extends Ghost {
         super(maze);
         this.imgOffsetX = 320;
         this.ctx = ctx;
-        this.posX = 325;
-        this.posY = 350;
+        this.posX = 305;
+        this.posY = 380;
         this.color = "blue";
         this.destination = [125, 116];
     }
@@ -129,8 +129,8 @@ class Pinky extends Ghost {
         super(maze);
         this.imgOffsetX = 0;
         this.ctx = ctx;
-        this.posX = 325;
-        this.posY = 350;
+        this.posX = 335;
+        this.posY = 380;
         this.color = "pink";
         this.destination = [550, 125];
     }
@@ -141,7 +141,7 @@ class Blinky extends Ghost {
         super(maze);
         this.imgOffsetX = 160;
         this.ctx = ctx;
-        this.posX = 325;
+        this.posX = 335;
         this.posY = 350;
         this.color = "red";
         this.destination = [500, 300];
@@ -153,7 +153,7 @@ class Clyde extends Ghost {
         super(maze);
         this.imgOffsetX = 160 * 3;
         this.ctx = ctx;
-        this.posX = 325;
+        this.posX = 305;
         this.posY = 350;
         this.color = "orange";
         this.destination = [125, 300];

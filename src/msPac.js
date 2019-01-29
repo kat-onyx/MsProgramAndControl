@@ -7,10 +7,10 @@ class MsPac extends MovingCritter{
     constructor(ctx, velX, velY, maze, frameCount) {
         super(velX, velY, maze, frameCount);
         this.ctx = ctx;
-        this.width = 38;
+        this.width = 32;
         this.radius = 25;
         this.posX = 325;
-        this.posY = 425;
+        this.posY = 560;
         this.lives = 3;
         this.score = 0;
         this.msPacImg = msPacImg;

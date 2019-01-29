@@ -4,10 +4,8 @@ class Pellet {
     constructor(posX, posY, width, height) {
         this.width = width;
         this.height = height;
-        // this.point = 100;
         this.posX = posX;
         this.posY = posY;
-
     }
 
     draw(ctx) {
@@ -18,7 +16,8 @@ class Pellet {
 
         ctx.fillStyle = "white"
         ctx.beginPath();
-        ctx.arc(this.posX, this.posY, this.width / 4, 0, 2 * Math.PI);
+        //43 === width/height of each pellet's square
+        ctx.arc((this.posX + (43/2)), (this.posY + (43/2)), this.width / 8, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke()
     }

@@ -55,22 +55,22 @@ class MovingCritter {
 
     moveLeft() {
         this.velY = 0;
-        this.velX = this.velX - 3;
+        this.velX = this.velX - 2;
     }
 
     moveRight() {
         this.velY = 0;
-        this.velX = this.velX + 3;
+        this.velX = this.velX + 2;
     }
 
     moveUp() {
         this.velX = 0;
-        this.velY = this.velY - 3;
+        this.velY = this.velY - 2;
     }
 
     moveDown() {
         this.velX = 0;
-        this.velY = this.velY + 3;
+        this.velY = this.velY + 2;
     }
 
     moveStop() {
