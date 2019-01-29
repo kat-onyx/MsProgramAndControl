@@ -182,7 +182,7 @@ class GameView {
     }
 
     play() {
-        this.keyBinds();
+        // this.keyBinds();
         requestAnimationFrame(this.animate.bind(this));
     }
 
@@ -503,15 +503,16 @@ module.exports = {
 const Game = __webpack_require__(/*! ./game */ "./src/game.js");
 const GameView = __webpack_require__(/*! ./gameView */ "./src/gameView.js");
 
-document.addEventListener("DOMContentLoaded", function () {
-    const canvasEl = document.getElementsByTagName("canvas")[0];
-    canvasEl.width = 700;
-    canvasEl.height = 790;
+document.addEventListener("DOMContentLoaded", function() {
+  const canvasEl = document.getElementsByTagName("canvas")[0];
+  canvasEl.width = 700;
+  canvasEl.height = 790;
 
-    const ctx = canvasEl.getContext("2d");
-    new GameView(ctx).play();
+  const ctx = canvasEl.getContext("2d");
+  const game = new GameView(ctx);
+  game.keyBinds();
+  game.play();
 });
-
 
 
 /***/ }),

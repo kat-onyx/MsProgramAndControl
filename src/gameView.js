@@ -49,7 +49,7 @@ class GameView {
     }
 
     play() {
-        this.keyBinds();
+        // this.keyBinds();
         requestAnimationFrame(this.animate.bind(this));
     }
 
