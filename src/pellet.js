@@ -6,6 +6,7 @@ class Pellet {
         this.height = height;
         this.posX = posX;
         this.posY = posY;
+        this.point = 10;
     }
 
     draw(ctx) {
