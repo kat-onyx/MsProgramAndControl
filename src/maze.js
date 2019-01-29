@@ -6,7 +6,7 @@ class Maze {
         this.radius = 10;
         this.ctx = ctx;
         this.width = 700;
-        this.height = 790;
+        this.height = 770;
         // debugger
         // bitmap for the grid
         this.grid = [
@@ -43,7 +43,6 @@ class Maze {
 
                 if (this.grid[i][j] === 1) {
                     let tile = new Tile(j * this.blocksize, i * this.blocksize, this.blocksize, this.blocksize);
-                    // tile.draw(ctx);
                     tiles.push(tile)
                 }
             }
@@ -57,12 +56,6 @@ class Maze {
        
         for (let i = 0; i < this.grid.length; i += 1) {
             for (let j = 0; j < this.grid[i].length; j += 1) {
-                // .75 modifier added to reduce gridlines
-                // if ((this.grid[i][j] === 0 && this.grid[i][j + 1] === 0) || this.grid[i][j] === 0 && this.grid[i][j + 1] === 1) {
-                //     let pellet = new Pellet(j * this.blocksize, i * this.blocksize, this.blocksize, this.blocksize);
-                //     pellets.push(pellet)
-                
-                // } 
                 if ((this.grid[i][j] === 0)) {
                     let pellet = new Pellet(j * this.blocksize, i * this.blocksize, this.blocksize, this.blocksize);
                      pellets.push(pellet)
