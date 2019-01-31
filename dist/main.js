@@ -119,19 +119,19 @@ class GameView {
   keyBinds() {
     //keyCodes obtained here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode
     document.addEventListener("keydown", e => {
-      if (e.code === "KeyD" && this.keyPressed.length <= 1) {
+      if (e.code === "KeyD") {
         this.keyPressed.push(e.code);
         this.msPac.moveRight();
       }
-      if (e.code === "KeyA" && this.keyPressed.length <= 1) {
+      if (e.code === "KeyA") {
         this.keyPressed.push(e.code);
         this.msPac.moveLeft();
       }
-      if (e.code === "KeyW" && this.keyPressed.length <= 1) {
+      if (e.code === "KeyW") {
         this.keyPressed.push(e.code);
         this.msPac.moveUp();
       }
-      if (e.code === "KeyS" && this.keyPressed.length <= 1) {
+      if (e.code === "KeyS") {
         this.keyPressed.push(e.code);
         this.msPac.moveDown();
       }
@@ -152,8 +152,9 @@ class GameView {
     this.step();
     this.detectPelletConsumtption();
     this.detectCritterCollision();
-    this.drawUnits();
     this.updatePos();
+    this.drawUnits();
+
     this.updateGhostBehavior();
     this.updateFrameCount();
     this.drawText();
@@ -167,7 +168,7 @@ class GameView {
 
   updatePos() {
     this.detectTunnelTravel();
-    this.msPac.newPos();
+    // this.msPac.newPos(this.maze);
   }
 
   updateFrameCount() {
@@ -176,6 +177,11 @@ class GameView {
 
   step() {
     this.msPac.checkDir();
+    // debugger
+    if (this.msPac.moveInput.length > 0) {
+      // debugger
+      this.checkMove(this.msPac.position);
+    }
 
     this.ghostHouse.forEach(ghost => {
       ghost.checkDir();
@@ -192,8 +198,8 @@ class GameView {
   }
 
   drawText() {
-      this.showLives();
-      this.showScore();
+    this.showLives();
+    this.showScore();
   }
 
   detectPelletConsumtption() {
@@ -229,8 +235,9 @@ class GameView {
   }
 
   restart() {
-    this.msPac.posX = 325;
-    this.msPac.posY = 560;
+    this.msPac.posX = 301;
+    this.msPac.posY = 559;
+    this.msPac.position = [7, 13];
   }
 
   isPointInTile(critter, pellet) {
@@ -260,13 +267,35 @@ class GameView {
     }
   }
 
+  checkMove(critterPosition) {
+    // debugger;
+    let currentXPos = this.msPac.position[0];
+    let currentYPos = this.msPac.position[1];
+
+    let nextXPos =
+      critterPosition[0] + this.msPac.directions[this.msPac.moveInput[0]][0];
+    let nextYPos =
+      critterPosition[1] + this.msPac.directions[this.msPac.moveInput[0]][1];
+
+    this.maze.tunnelPieces.forEach(tunnelPiece => {
+      if (
+        nextXPos === tunnelPiece.position[0] &&
+        nextYPos === tunnelPiece.position[1]
+      ) {
+        this.msPac.position = [nextXPos, nextYPos];
+        return this.msPac.newPos(this.maze, currentXPos, currentYPos);
+      }
+    });
+    this.msPac.moveInput.shift();
+  }
+
   showScore() {
     this.ctx.fillStyle = "black";
     // this.ctx.fillRect(660, 365, 200, 25);
     this.ctx.fillStyle = "red";
     this.ctx.font = "30px Righteous";
     this.ctx.fillText(`Score: `, 730, 415);
-    this.ctx.fillText(parseInt(this.msPac.score), 730, 450)
+    this.ctx.fillText(parseInt(this.msPac.score), 730, 450);
   }
 
   showLives() {
@@ -275,19 +304,19 @@ class GameView {
     this.ctx.fillStyle = "red";
     this.ctx.font = "30px Righteous";
     this.ctx.fillText("Lives: ", 730, 300);
-      for (let i = 0; i < this.msPac.lives; i++) {
-          this.ctx.drawImage(
-              this.msPac.msPacImg,
-              0,
-              0,
-              160,
-              160,
-              710 + (i * 40),
-              300,
-              this.msPac.width * 2,
-              this.msPac.width * 2
-          );
-      }
+    for (let i = 0; i < this.msPac.lives; i++) {
+      this.ctx.drawImage(
+        this.msPac.msPacImg,
+        0,
+        0,
+        160,
+        160,
+        710 + i * 40,
+        300,
+        this.msPac.width * 2,
+        this.msPac.width * 2
+      );
+    }
   }
 
   gameOver() {
@@ -545,7 +574,7 @@ class Maze {
       [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
       [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
       [1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1],
-      [1, 0, 1, 1, 0, 1, 0, 2, 2, 0, 1, 0, 1, 1, 0, 1],
+      [1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1],
       [1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1],
       [1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
       [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -560,7 +589,6 @@ class Maze {
   tiles() {
     // debugger
     let tiles = [];
-    let tunnelPieces = [];
     for (let i = 0; i < this.grid.length; i++) {
       for (let j = 0; j < this.grid[i].length; j++) {
         if (this.grid[i][j] === 1) {
@@ -571,14 +599,6 @@ class Maze {
             this.blocksize
           );
           tiles.push(tile);
-        } else if (this.grid[i][j] === 0) {
-          let tunnelPiece = new TunnelPiece(
-            j * this.blocksize,
-            i * this.blocksize,
-            this.blocksize,
-            this.blocksize
-          );
-          tunnelPieces.push(tunnelPiece);
         }
       }
     }
@@ -588,14 +608,14 @@ class Maze {
     // debugger
     let tunnelPieces = [];
     for (let i = 0; i < this.grid.length; i++) {
-      for (let j = 0; j < this.grid[i].length; j++) {
-       if (this.grid[i][j] === 0) {
+      for (let j = 0; j <= this.grid[i].length; j++) {
+        if (this.grid[i][j] === 0) {
           let tunnelPiece = new TunnelPiece(
             j * this.blocksize,
             i * this.blocksize,
             this.blocksize,
             this.blocksize,
-            [i, j]
+            [j, i]
           );
           tunnelPieces.push(tunnelPiece);
         }
@@ -625,9 +645,10 @@ class Maze {
   }
   draw(ctx) {
     this.drawBackground(ctx);
-    this.drawTiles(ctx);
     this.drawTunnelPieces(ctx);
     this.drawPellets(ctx);
+
+    this.drawTiles(ctx);
   }
 
   drawBackground(ctx) {
@@ -641,7 +662,7 @@ class Maze {
   }
 
   drawTunnelPieces(ctx) {
-      this.tunnelPieces.forEach(tunnelPiece => tunnelPiece.draw(ctx))
+    this.tunnelPieces.forEach(tunnelPiece => tunnelPiece.draw(ctx));
   }
 
   drawPellets(ctx) {
@@ -663,89 +684,126 @@ module.exports = Maze;
 /***/ (function(module, exports) {
 
 class MovingCritter {
-    constructor(maze) {
-        this.frameCount = 0;
-        this.maze = maze;
-        this.velX = 0;
-        this.velY = 0;
-        this.posX = 0;
-        this.posY = 0;
-        this.collisionDetected = false;
-        this.collisionDetectedGhost = false;
-        this.detectWallCollision = this.detectWallCollision.bind(this);
-    }
+  constructor(maze) {
+    this.frameCount = 0;
+    this.maze = maze;
+    this.velX = 0;
+    this.velY = 0;
+    this.posX = 0;
+    this.posY = 0;
+    this.collisionDetected = false;
+    this.collisionDetectedGhost = false;
+    this.moveInput = [];
+    this.detectWallCollision = this.detectWallCollision.bind(this);
 
-    checkDir() {
-        // debugger
-        this.detectWallCollision();
-        if (this.collisionDetected === true) {
-            this.collisionDetectedGhost = true;
-            this.moveStop();
-        } 
-        this.collisionDetected = false;
-    }
-    detectWallCollision() {
-        // debugger
-        this.maze.tiles.forEach((tile) => {
-            if (this.isPointInTile(tile)) {
-                this.collisionDetected = true;
-            }
-        })
-    }
+    this.directions = {
+      up: [0, -1],
+      down: [0, 1],
+      left: [-1, 0],
+      right: [1, 0]
+    };
+  }
 
-    isPointInTile(tile) {
-        let tileXMin = tile.xPos;
-        let tileXMax = tile.xPos + tile.width;;
-        let tileYMin = tile.yPos;
-        let tileYMax = tile.yPos + tile.height;
-
-        let critterXMin = this.posX;
-        let critterXMax = this.posX + this.width;
-        let critterYMin = this.posY;
-        let critterYMax = this.posY + this.width;
-        // console.log(critterXMax, critterXMin)
-        return (
-            ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
-                (critterXMax > tileXMin && critterXMax <= tileXMax)) &&
-            ((critterYMin >= tileYMin && critterYMin < tileYMax) ||
-                (critterYMax > tileYMin && critterYMax <= tileYMax))
-        )
+  checkDir() {
+    // debugger
+    this.detectWallCollision();
+    if (this.collisionDetected === true) {
+      this.collisionDetectedGhost = true;
+      this.moveStop();
     }
+    this.collisionDetected = false;
+  }
+  detectWallCollision() {
+    // debugger
+    this.maze.tiles.forEach(tile => {
+      if (this.isPointInTile(tile)) {
+        this.collisionDetected = true;
+      }
+    });
+  }
 
-    updateFrameCount() {
-        this.frameCount += 1;
-        this.frameCount = this.frameCount % 60;
-    }
+  // checkMove(critterPosition) {
+  //     debugger
+  //     let nextXPos = critterPosition[0] + this.directions[this.moveInput[0][0]];
+  //     let nextYPos = critterPosition[1] + this.directions[this.moveInput[0][1]];
 
-    moveLeft() {
-        this.velY = 0;
-        this.velX = this.velX - 2;
-    }
+  //     this.maze.tunnelPieces.forEach(tunnelPiece => {
+  //         if ([nextXPos, nextYPos] === tunnelPiece.position) {
+  //             critterPosition = [nextXPos, nextYPos];
+  //         }
+  //         this.moveInput.shift();
+  //     })
+  // }
 
-    moveRight() {
-        this.velY = 0;
-        this.velX = this.velX + 2;
-    }
+  isPointInTile(tile) {
+    let tileXMin = tile.xPos;
+    let tileXMax = tile.xPos + tile.width;
+    let tileYMin = tile.yPos;
+    let tileYMax = tile.yPos + tile.height;
 
-    moveUp() {
-        this.velX = 0;
-        this.velY = this.velY - 2;
-    }
+    let critterXMin = this.posX;
+    let critterXMax = this.posX + this.width;
+    let critterYMin = this.posY;
+    let critterYMax = this.posY + this.width;
+    // console.log(critterXMax, critterXMin)
+    return (
+      ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
+        (critterXMax > tileXMin && critterXMax <= tileXMax)) &&
+      ((critterYMin >= tileYMin && critterYMin < tileYMax) ||
+        (critterYMax > tileYMin && critterYMax <= tileYMax))
+    );
+  }
 
-    moveDown() {
-        this.velX = 0;
-        this.velY = this.velY + 2;
-    }
+  updateFrameCount() {
+    this.frameCount += 1;
+    this.frameCount = this.frameCount % 60;
+  }
 
-    moveStop() {
-        this.posX -= this.velX;
-        this.posY -= this.velY;
-        this.velX = 0;
-        this.velY = 0;
+  newPos(maze, prevXpos, prevYpos) {
+    // debugger
+    if (prevXpos != this.position[0]) {
+      this.posX = this.position[0] * 43;
+    } else if (prevYpos != this.position[1]) {
+      this.posY = this.position[1] * 43;
     }
+    // this.posX += this.velX;
+    // this.posY += this.velY;
+  }
+
+  moveLeft() {
+    this.moveInput.push("left");
+    // this.velY = 0;
+    // this.velX = this.velX - 2;
+  }
+
+  moveRight() {
+    this.moveInput.push("right");
+    // this.velY = 0;
+    // this.velX = this.velX + 2;
+  }
+
+  moveUp() {
+    this.moveInput.push("up");
+    // this.velX = 0;
+    // this.velY = this.velY - 2;
+  }
+
+  moveDown() {
+    this.moveInput.push("down");
+    // this.velX = 0;
+    // this.velY = this.velY + 2;
+  }
+
+  moveStop() {
+    // this.posX -= this.velX;
+    // this.posY -= this.velY;
+    // this.velX = 0;
+    // this.velY = 0;
+  }
 }
 
 module.exports = MovingCritter;
+
 
 /***/ }),
 
@@ -765,33 +823,26 @@ class MsPac extends MovingCritter {
   constructor(ctx, velX, velY, maze, frameCount) {
     super(velX, velY, maze, frameCount);
     this.ctx = ctx;
-    this.width = 32;
+    this.width = 43;
     this.radius = 25;
-    this.posX = 325;
-    this.posY = 560;
+    this.position = [7, 13];
+    this.posX = this.position[0] * 43;
+    this.posY = this.position[1] * 43;
     this.lives = 3;
     this.score = 0;
-    this.msPacImg = msPacImg;
 
-    this.newPos = function() {
-      this.posX += this.velX;
-      this.posY += this.velY;
-    };
+    this.msPacImg = msPacImg;
   }
 
   draw(ctx) {
-    // ctx.clearRect(0, 0, 700, 750);
-    // ctx.fillStyle = "red";
-    // ctx.fillRect(this.posX, this.posY, this.width, this.width)
-    this.updateFrameCount();
-    this.imgFrameSelect(ctx);
+    // debugger
+
+    ctx.fillStyle = "red";
+    ctx.fillRect(this.posX, this.posY, this.width, this.width);
+    // this.updateFrameCount();
+    // this.imgFrameSelect(ctx);
   }
 
-  drawLives(ctx) {
-    // debugger
-    // ctx.fillStyle = "black";
-    
-  }
 
   imgFrameSelect(ctx) {
     if (this.velX > 0) {
@@ -1008,8 +1059,8 @@ class TunnelPiece {
     }
 
     draw(ctx) {
-        ctx.fillStyle = "#000";
         //#ff7f63
+        this.fillStyle = "black"
         ctx.fillRect(this.xPos, this.yPos, this.width, this.height);
     }
 }

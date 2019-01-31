@@ -24,19 +24,19 @@ class GameView {
   keyBinds() {
     //keyCodes obtained here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode
     document.addEventListener("keydown", e => {
-      if (e.code === "KeyD" && this.keyPressed.length <= 1) {
+      if (e.code === "KeyD") {
         this.keyPressed.push(e.code);
         this.msPac.moveRight();
       }
-      if (e.code === "KeyA" && this.keyPressed.length <= 1) {
+      if (e.code === "KeyA") {
         this.keyPressed.push(e.code);
         this.msPac.moveLeft();
       }
-      if (e.code === "KeyW" && this.keyPressed.length <= 1) {
+      if (e.code === "KeyW") {
         this.keyPressed.push(e.code);
         this.msPac.moveUp();
       }
-      if (e.code === "KeyS" && this.keyPressed.length <= 1) {
+      if (e.code === "KeyS") {
         this.keyPressed.push(e.code);
         this.msPac.moveDown();
       }
@@ -57,8 +57,9 @@ class GameView {
     this.step();
     this.detectPelletConsumtption();
     this.detectCritterCollision();
-    this.drawUnits();
     this.updatePos();
+    this.drawUnits();
+
     this.updateGhostBehavior();
     this.updateFrameCount();
     this.drawText();
@@ -72,7 +73,7 @@ class GameView {
 
   updatePos() {
     this.detectTunnelTravel();
-    this.msPac.newPos();
+    // this.msPac.newPos(this.maze);
   }
 
   updateFrameCount() {
@@ -81,6 +82,11 @@ class GameView {
 
   step() {
     this.msPac.checkDir();
+    // debugger
+    if (this.msPac.moveInput.length > 0) {
+      // debugger
+      this.checkMove(this.msPac.position);
+    }
 
     this.ghostHouse.forEach(ghost => {
       ghost.checkDir();
@@ -97,8 +103,8 @@ class GameView {
   }
 
   drawText() {
-      this.showLives();
-      this.showScore();
+    this.showLives();
+    this.showScore();
   }
 
   detectPelletConsumtption() {
@@ -134,8 +140,9 @@ class GameView {
   }
 
   restart() {
-    this.msPac.posX = 325;
-    this.msPac.posY = 560;
+    this.msPac.posX = 301;
+    this.msPac.posY = 559;
+    this.msPac.position = [7, 13];
   }
 
   isPointInTile(critter, pellet) {
@@ -165,13 +172,35 @@ class GameView {
     }
   }
 
+  checkMove(critterPosition) {
+    // debugger;
+    let currentXPos = this.msPac.position[0];
+    let currentYPos = this.msPac.position[1];
+
+    let nextXPos =
+      critterPosition[0] + this.msPac.directions[this.msPac.moveInput[0]][0];
+    let nextYPos =
+      critterPosition[1] + this.msPac.directions[this.msPac.moveInput[0]][1];
+
+    this.maze.tunnelPieces.forEach(tunnelPiece => {
+      if (
+        nextXPos === tunnelPiece.position[0] &&
+        nextYPos === tunnelPiece.position[1]
+      ) {
+        this.msPac.position = [nextXPos, nextYPos];
+        return this.msPac.newPos(this.maze, currentXPos, currentYPos);
+      }
+    });
+    this.msPac.moveInput.shift();
+  }
+
   showScore() {
     this.ctx.fillStyle = "black";
     // this.ctx.fillRect(660, 365, 200, 25);
     this.ctx.fillStyle = "red";
     this.ctx.font = "30px Righteous";
     this.ctx.fillText(`Score: `, 730, 415);
-    this.ctx.fillText(parseInt(this.msPac.score), 730, 450)
+    this.ctx.fillText(parseInt(this.msPac.score), 730, 450);
   }
 
   showLives() {
@@ -180,19 +209,19 @@ class GameView {
     this.ctx.fillStyle = "red";
     this.ctx.font = "30px Righteous";
     this.ctx.fillText("Lives: ", 730, 300);
-      for (let i = 0; i < this.msPac.lives; i++) {
-          this.ctx.drawImage(
-              this.msPac.msPacImg,
-              0,
-              0,
-              160,
-              160,
-              710 + (i * 40),
-              300,
-              this.msPac.width * 2,
-              this.msPac.width * 2
-          );
-      }
+    for (let i = 0; i < this.msPac.lives; i++) {
+      this.ctx.drawImage(
+        this.msPac.msPacImg,
+        0,
+        0,
+        160,
+        160,
+        710 + i * 40,
+        300,
+        this.msPac.width * 2,
+        this.msPac.width * 2
+      );
+    }
   }
 
   gameOver() {
