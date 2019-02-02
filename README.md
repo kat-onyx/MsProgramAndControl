@@ -3,9 +3,11 @@
 
 ## Background and Overview
 
-* Striving for greater knowledge of the class system, better understanding of canvas, player movement, and AI movement.
-* Ms.Program And Control is a top-down maze-traverser, where players must eat all food-pellets in the maze in order to progress to the next level.  Players earn points for eating pellets, fruit, and scared ghosts.  Players may only eat scared ghosts after consuming larger "Power Pellets", otherwise; if a player comes into contact with a ghost, the player must restart the current level.  Ghosts will attempt to seek out the player.
-* This is a clone of Ms. Pac-man.
+Ms. Program and Control is a game inspired by the beloved Ms. Pacman.  Ms. Program And Control was created using JavaScript and HTML5's canvas.  
+
+Navigate your way through a maze to eat pellets while avoiding ghosts. At first, ghosts will move randomly throughout the map.  However, after a minute, ghosts will seek you out.  Move quickly and be careful!
+
+Pellets offer 10 points each, and consuming all pellets will grant a total of 1280 points.
 
 ## Wireframe
 
