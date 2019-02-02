@@ -1,6 +1,8 @@
 
 # Ms. Program And Control
 
+[Live Link](https://kat-onyx.github.io/MsProgramAndControl/)
+
 ## Background and Overview
 
 Ms. Program and Control is a game inspired by the beloved Ms. Pacman.  Ms. Program And Control was created using JavaScript and HTML5's canvas.  
@@ -26,9 +28,10 @@ Pellets offer 10 points each, and consuming all pellets will grant a total of 12
 * JavaScript
     * Game logic
     * Class behavior
-* HTML5
+* HTML5/Canvas
     * Map render (maze) -- Canvas
-    * Ghost/Player render -- Canvas
+    * Ghost/Ms. Pac render -- Canvas
+    * Event Listeners for keybindings
 * Webpack
     * Bundle and install scripts
    
