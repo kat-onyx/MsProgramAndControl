@@ -13,7 +13,7 @@ Pellets offer 10 points each, and consuming all pellets will grant a total of 12
 
 ## Wireframe
 
-![Screenshot](wireframe.png)
+![Screenshot](dist/Gameplay.png)
 
 ## Functionality and MVP Features
 
