@@ -82,9 +82,7 @@ class GameView {
 
   step() {
     this.msPac.checkDir();
-    // debugger
     if (this.msPac.moveInput.length > 0) {
-      // debugger
       this.checkMove(this.msPac.position);
     }
 
@@ -118,7 +116,6 @@ class GameView {
   }
 
   detectCritterCollision() {
-    // debugger
     this.ghostHouse.forEach(ghost => {
       if (this.isPointInTile(this.msPac, ghost)) {
         console.log("collision");
@@ -173,7 +170,6 @@ class GameView {
   }
 
   checkMove(critterPosition) {
-    // debugger;
     let currentXPos = this.msPac.position[0];
     let currentYPos = this.msPac.position[1];
 
@@ -188,7 +184,7 @@ class GameView {
         nextYPos === tunnelPiece.position[1]
       ) {
         this.msPac.position = [nextXPos, nextYPos];
-        return this.msPac.newPos(this.maze, currentXPos, currentYPos);
+        this.msPac.newPos(this.maze, currentXPos, currentYPos);
       }
     });
     this.msPac.moveInput.shift();

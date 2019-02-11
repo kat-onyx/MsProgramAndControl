@@ -9,6 +9,7 @@ class MovingCritter {
     this.collisionDetected = false;
     this.collisionDetectedGhost = false;
     this.moveInput = [];
+    this.movePositions = [];
     this.detectWallCollision = this.detectWallCollision.bind(this);
 
     this.directions = {
@@ -74,8 +75,23 @@ class MovingCritter {
     this.frameCount = this.frameCount % 60;
   }
 
+  animateMove(prevPos, nextPos) {
+    let endPoint = nextPos * 43;
+    let currentPos = prevPos;
+    let pointDifference =  Math.abs((prevPos * 43) - endPoint);
+
+    while (this.movePositions.length != 5) {
+      if (currentPos > endPoint) {
+        this.movePositions.push(currentPos -= 8)
+      } else if (currentPos < endPoint) {
+        this.movePositions.push(currentPos += 8)
+      }
+    }
+  }
+
   newPos(maze, prevXpos, prevYpos) {
-    // debugger
+    debugger
+    this.animateMove();
     if (prevXpos != this.position[0]) {
       this.posX = this.position[0] * 43;
     } else if (prevYpos != this.position[1]) {
@@ -87,26 +103,18 @@ class MovingCritter {
 
   moveLeft() {
     this.moveInput.push("left");
-    // this.velY = 0;
-    // this.velX = this.velX - 2;
   }
 
   moveRight() {
     this.moveInput.push("right");
-    // this.velY = 0;
-    // this.velX = this.velX + 2;
   }
 
   moveUp() {
     this.moveInput.push("up");
-    // this.velX = 0;
-    // this.velY = this.velY - 2;
   }
 
   moveDown() {
     this.moveInput.push("down");
-    // this.velX = 0;
-    // this.velY = this.velY + 2;
   }
 
   moveStop() {
