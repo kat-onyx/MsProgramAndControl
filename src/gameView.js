@@ -24,19 +24,19 @@ class GameView {
   keyBinds() {
     //keyCodes obtained here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode
     document.addEventListener("keydown", e => {
-      if (e.code === "KeyD") {
+      if (e.code === "KeyD" && this.keyPressed.length <= 1) {
         this.keyPressed.push(e.code);
         this.msPac.moveRight();
       }
-      if (e.code === "KeyA") {
+      if (e.code === "KeyA" && this.keyPressed.length <= 1) {
         this.keyPressed.push(e.code);
         this.msPac.moveLeft();
       }
-      if (e.code === "KeyW") {
+      if (e.code === "KeyW" && this.keyPressed.length <= 1) {
         this.keyPressed.push(e.code);
         this.msPac.moveUp();
       }
-      if (e.code === "KeyS") {
+      if (e.code === "KeyS" && this.keyPressed.length <= 1) {
         this.keyPressed.push(e.code);
         this.msPac.moveDown();
       }
@@ -57,9 +57,9 @@ class GameView {
     this.step();
     this.detectPelletConsumtption();
     this.detectCritterCollision();
-    this.updatePos();
-    this.drawUnits();
 
+    this.drawUnits();
+    this.updatePos();
     this.updateGhostBehavior();
     this.updateFrameCount();
     this.drawText();
@@ -164,11 +164,30 @@ class GameView {
   }
 
   detectTunnelTravel() {
-    if (this.msPac.posX < 0) {
-      this.msPac.posX = 700;
-    } else if (this.msPac.posX > 700) {
-      this.msPac.posX = 0;
-    }
+    if ((this.msPac.position[0] === 0 && 
+      this.msPac.position[1] === 8) &&
+      this.keyPressed[0] === "KeyA") {
+        this.msPac.position[0] = 15;
+        this.msPac.position[1] = 8;
+        this.msPac.posX = (16 * 44)
+        this.msPac.posY = (8 * 44)
+        this.msPac.destinationPosX = (15 * 44)
+        this.msPac.destinationPosY = (8 * 44)
+      } else if ((this.msPac.position[0] === 15 && 
+        this.msPac.position[1] === 8) && 
+        this.keyPressed[0] === "KeyD") {
+          this.msPac.position[0] = 0;
+          this.msPac.position[1] = 8;
+          this.msPac.posX = 0;
+          this.msPac.posY = (8 * 44)
+          this.msPac.destinationPosY = (8 * 44)
+          this.msPac.destinationPosX = 0;
+      }
+    // if (this.msPac.posX < 0) {
+    //   this.msPac.posX = 700;
+    // } else if (this.msPac.posX > 700) {
+    //   this.msPac.posX = 0;
+    // }
   }
 
   checkMove(critterPosition) {

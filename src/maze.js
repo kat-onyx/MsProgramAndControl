@@ -19,7 +19,7 @@ class Maze {
       [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
       [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
       [1, 1, 1, 1, 0, 1, 1, 4, 4, 1, 1, 0, 1, 1, 1, 1],
-      [0, 0, 0, 0, 0, 1, 6, 6, 7, 6, 1, 0, 0, 0, 0, 0],
+      [2, 0, 0, 0, 0, 1, 6, 6, 7, 6, 1, 0, 0, 0, 0, 2],
       [1, 1, 1, 1, 0, 1, 6, 6, 6, 6, 1, 0, 1, 1, 1, 1],
       [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
       [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
@@ -59,7 +59,7 @@ class Maze {
     let tunnelPieces = [];
     for (let i = 0; i < this.grid.length; i++) {
       for (let j = 0; j <= this.grid[i].length; j++) {
-        if (this.grid[i][j] === 0) {
+        if (this.grid[i][j] === 0 || this.grid[i][j] === 2) {
           let tunnelPiece = new TunnelPiece(
             j * this.blocksize,
             i * this.blocksize,
