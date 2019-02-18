@@ -48,6 +48,7 @@ class Ghost extends MovingCritter {
     }
 
     calculateDestPath(currentPath) {
+
         let destination = currentPath;
 
         for (let k in this.ghostDirs) {

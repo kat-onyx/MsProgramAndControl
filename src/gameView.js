@@ -168,7 +168,6 @@ class GameView {
       this.msPac.position[1] === 8) &&
       this.keyPressed[0] === "KeyA") {
         this.msPac.position[0] = 15;
-        this.msPac.position[1] = 8;
         this.msPac.posX = (16 * 44)
         this.msPac.posY = (8 * 44)
         this.msPac.destinationPosX = (15 * 44)
@@ -177,17 +176,11 @@ class GameView {
         this.msPac.position[1] === 8) && 
         this.keyPressed[0] === "KeyD") {
           this.msPac.position[0] = 0;
-          this.msPac.position[1] = 8;
           this.msPac.posX = 0;
           this.msPac.posY = (8 * 44)
           this.msPac.destinationPosY = (8 * 44)
           this.msPac.destinationPosX = 0;
       }
-    // if (this.msPac.posX < 0) {
-    //   this.msPac.posX = 700;
-    // } else if (this.msPac.posX > 700) {
-    //   this.msPac.posX = 0;
-    // }
   }
 
   checkMove(critterPosition) {
@@ -213,7 +206,6 @@ class GameView {
 
   showScore() {
     this.ctx.fillStyle = "black";
-    // this.ctx.fillRect(660, 365, 200, 25);
     this.ctx.fillStyle = "red";
     this.ctx.font = "30px Righteous";
     this.ctx.fillText(`Score: `, 730, 415);
@@ -222,7 +214,6 @@ class GameView {
 
   showLives() {
     this.ctx.fillStyle = "black";
-    // this.ctx.fillRect(660, 365, 200, 25);
     this.ctx.fillStyle = "red";
     this.ctx.font = "30px Righteous";
     this.ctx.fillText("Lives: ", 730, 300);
