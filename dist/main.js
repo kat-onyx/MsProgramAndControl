@@ -232,8 +232,10 @@ class GameView {
   }
 
   restart() {
-    this.msPac.posX = 301;
-    this.msPac.posY = 559;
+    this.msPac.posX = 308;
+    this.msPac.posY = 572;
+    this.msPac.destinationPosX = 308,
+    this.msPac.destinationPosY = 572;
     this.msPac.position = [7, 13];
   }
 
@@ -279,7 +281,7 @@ class GameView {
         nextYPos === tunnelPiece.position[1]
       ) {
         this.msPac.position = [nextXPos, nextYPos];
-        this.msPac.newPos(this.maze, currentXPos, currentYPos);
+        this.msPac.newDestination(currentXPos, currentYPos);
       }
     });
     this.msPac.moveInput.shift();
@@ -462,7 +464,7 @@ class Inky extends Ghost {
         super(maze);
         this.imgOffsetX = 320;
         this.ctx = ctx;
-        this.posX = 305;
+        this.posX = 308;
         this.posY = 380;
         this.color = "blue";
         this.destination = [125, 116];
@@ -473,7 +475,7 @@ class Pinky extends Ghost {
         super(maze);
         this.imgOffsetX = 0;
         this.ctx = ctx;
-        this.posX = 335;
+        this.posX = 345;
         this.posY = 380;
         this.color = "pink";
         this.destination = [550, 125];
@@ -485,7 +487,7 @@ class Blinky extends Ghost {
         super(maze);
         this.imgOffsetX = 160;
         this.ctx = ctx;
-        this.posX = 335;
+        this.posX = 345;
         this.posY = 350;
         this.color = "red";
         this.destination = [500, 300];
@@ -497,7 +499,7 @@ class Clyde extends Ghost {
         super(maze);
         this.imgOffsetX = 160 * 3;
         this.ctx = ctx;
-        this.posX = 305;
+        this.posX = 308;
         this.posY = 350;
         this.color = "orange";
         this.destination = [125, 300];
@@ -576,7 +578,7 @@ class Maze {
       [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     ]),
-      (this.blocksize = Math.floor(this.width / this.grid[0].length));
+      (this.blocksize = Math.ceil(this.width / this.grid[0].length));
     this.tiles = this.tiles();
     this.tunnelPieces = this.tunnelPieces();
     this.pellets = this.pellets();
@@ -690,7 +692,9 @@ class MovingCritter {
     this.collisionDetected = false;
     this.collisionDetectedGhost = false;
     this.moveInput = [];
-    this.movePositions = [];
+    this.currentPosition = null;
+    this.destinationPosX = 7 * 44;
+    this.destinationPosY = 13 * 44;
     this.detectWallCollision = this.detectWallCollision.bind(this);
 
     this.directions = {
@@ -756,27 +760,25 @@ class MovingCritter {
     this.frameCount = this.frameCount % 60;
   }
 
-  animateMove(prevPos, nextPos) {
-    let endPoint = nextPos * 43;
-    let currentPos = prevPos;
-    let pointDifference =  Math.abs((prevPos * 43) - endPoint);
-
-    while (this.movePositions.length != 5) {
-      if (currentPos > endPoint) {
-        this.movePositions.push(currentPos -= 8)
-      } else if (currentPos < endPoint) {
-        this.movePositions.push(currentPos += 8)
-      }
+  animateMove(startingPos, destinationPos) {
+    this.currentPixelPos = startingPos;
+    // debugger
+    if (this.currentPixelPos > destinationPos) {
+      return (this.currentPixelPos -= 4)
+    } else if (this.currentPixelPos < destinationPos) {
+      return (this.currentPixelPos += 4)
+    } else if (this.currentPixelPos === destinationPos) {
+      return destinationPos;
     }
+    return this.currentPixelPos;
   }
 
-  newPos(maze, prevXpos, prevYpos) {
-    debugger
-    this.animateMove();
+  newDestination(prevXpos, prevYpos) {
+    // debugger
     if (prevXpos != this.position[0]) {
-      this.posX = this.position[0] * 43;
+      this.destinationPosX = this.position[0] * 44;
     } else if (prevYpos != this.position[1]) {
-      this.posY = this.position[1] * 43;
+      this.destinationPosY = this.position[1] * 44;
     }
     // this.posX += this.velX;
     // this.posY += this.velY;
@@ -827,11 +829,11 @@ class MsPac extends MovingCritter {
   constructor(ctx, velX, velY, maze, frameCount) {
     super(velX, velY, maze, frameCount);
     this.ctx = ctx;
-    this.width = 43;
+    this.width = 44;
     this.radius = 25;
     this.position = [7, 13];
-    this.posX = this.position[0] * 43;
-    this.posY = this.position[1] * 43;
+    this.posX = this.position[0] * 44;
+    this.posY = this.position[1] * 44;
     this.lives = 3;
     this.score = 0;
 
@@ -842,6 +844,14 @@ class MsPac extends MovingCritter {
     // debugger
 
     ctx.fillStyle = "red";
+    if (this.posX != this.destinationPosX) {
+      this.posX = this.animateMove(this.posX, this.destinationPosX);
+      this.posX = Math.floor(this.posX);
+    } else if (this.posY != this.destinationPosY) {
+      this.posY = this.animateMove(this.posY, this.destinationPosY);
+      this.posY = Math.floor(this.posY)
+    }
+
     ctx.fillRect(this.posX, this.posY, this.width, this.width);
     // this.updateFrameCount();
     // this.imgFrameSelect(ctx);

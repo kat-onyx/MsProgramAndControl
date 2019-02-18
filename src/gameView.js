@@ -137,8 +137,10 @@ class GameView {
   }
 
   restart() {
-    this.msPac.posX = 301;
-    this.msPac.posY = 559;
+    this.msPac.posX = 308;
+    this.msPac.posY = 572;
+    this.msPac.destinationPosX = 308,
+    this.msPac.destinationPosY = 572;
     this.msPac.position = [7, 13];
   }
 
@@ -184,7 +186,7 @@ class GameView {
         nextYPos === tunnelPiece.position[1]
       ) {
         this.msPac.position = [nextXPos, nextYPos];
-        this.msPac.newPos(this.maze, currentXPos, currentYPos);
+        this.msPac.newDestination(currentXPos, currentYPos);
       }
     });
     this.msPac.moveInput.shift();

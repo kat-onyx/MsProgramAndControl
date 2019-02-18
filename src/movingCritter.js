@@ -9,7 +9,9 @@ class MovingCritter {
     this.collisionDetected = false;
     this.collisionDetectedGhost = false;
     this.moveInput = [];
-    this.movePositions = [];
+    this.currentPosition = null;
+    this.destinationPosX = 7 * 44;
+    this.destinationPosY = 13 * 44;
     this.detectWallCollision = this.detectWallCollision.bind(this);
 
     this.directions = {
@@ -75,27 +77,25 @@ class MovingCritter {
     this.frameCount = this.frameCount % 60;
   }
 
-  animateMove(prevPos, nextPos) {
-    let endPoint = nextPos * 43;
-    let currentPos = prevPos;
-    let pointDifference =  Math.abs((prevPos * 43) - endPoint);
-
-    while (this.movePositions.length != 5) {
-      if (currentPos > endPoint) {
-        this.movePositions.push(currentPos -= 8)
-      } else if (currentPos < endPoint) {
-        this.movePositions.push(currentPos += 8)
-      }
+  animateMove(startingPos, destinationPos) {
+    this.currentPixelPos = startingPos;
+    // debugger
+    if (this.currentPixelPos > destinationPos) {
+      return (this.currentPixelPos -= 4)
+    } else if (this.currentPixelPos < destinationPos) {
+      return (this.currentPixelPos += 4)
+    } else if (this.currentPixelPos === destinationPos) {
+      return destinationPos;
     }
+    return this.currentPixelPos;
   }
 
-  newPos(maze, prevXpos, prevYpos) {
-    debugger
-    this.animateMove();
+  newDestination(prevXpos, prevYpos) {
+    // debugger
     if (prevXpos != this.position[0]) {
-      this.posX = this.position[0] * 43;
+      this.destinationPosX = this.position[0] * 44;
     } else if (prevYpos != this.position[1]) {
-      this.posY = this.position[1] * 43;
+      this.destinationPosY = this.position[1] * 44;
     }
     // this.posX += this.velX;
     // this.posY += this.velY;

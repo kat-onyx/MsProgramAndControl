@@ -7,11 +7,11 @@ class MsPac extends MovingCritter {
   constructor(ctx, velX, velY, maze, frameCount) {
     super(velX, velY, maze, frameCount);
     this.ctx = ctx;
-    this.width = 43;
+    this.width = 44;
     this.radius = 25;
     this.position = [7, 13];
-    this.posX = this.position[0] * 43;
-    this.posY = this.position[1] * 43;
+    this.posX = this.position[0] * 44;
+    this.posY = this.position[1] * 44;
     this.lives = 3;
     this.score = 0;
 
@@ -22,6 +22,14 @@ class MsPac extends MovingCritter {
     // debugger
 
     ctx.fillStyle = "red";
+    if (this.posX != this.destinationPosX) {
+      this.posX = this.animateMove(this.posX, this.destinationPosX);
+      this.posX = Math.floor(this.posX);
+    } else if (this.posY != this.destinationPosY) {
+      this.posY = this.animateMove(this.posY, this.destinationPosY);
+      this.posY = Math.floor(this.posY)
+    }
+
     ctx.fillRect(this.posX, this.posY, this.width, this.width);
     // this.updateFrameCount();
     // this.imgFrameSelect(ctx);
