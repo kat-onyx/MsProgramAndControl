@@ -23,7 +23,6 @@ class MovingCritter {
   }
 
   checkDir() {
-    // debugger
     this.detectWallCollision();
     if (this.collisionDetected === true) {
       this.collisionDetectedGhost = true;
@@ -39,19 +38,6 @@ class MovingCritter {
       }
     });
   }
-
-  // checkMove(critterPosition) {
-  //     debugger
-  //     let nextXPos = critterPosition[0] + this.directions[this.moveInput[0][0]];
-  //     let nextYPos = critterPosition[1] + this.directions[this.moveInput[0][1]];
-
-  //     this.maze.tunnelPieces.forEach(tunnelPiece => {
-  //         if ([nextXPos, nextYPos] === tunnelPiece.position) {
-  //             critterPosition = [nextXPos, nextYPos];
-  //         }
-  //         this.moveInput.shift();
-  //     })
-  // }
 
   isPointInTile(tile) {
     let tileXMin = tile.xPos;
@@ -79,7 +65,7 @@ class MovingCritter {
 
   animateMove(startingPos, destinationPos) {
     this.currentPixelPos = startingPos;
-    // debugger
+
     if (this.currentPixelPos > destinationPos) {
       return (this.currentPixelPos -= 4)
     } else if (this.currentPixelPos < destinationPos) {
@@ -91,14 +77,11 @@ class MovingCritter {
   }
 
   newDestination(prevXpos, prevYpos) {
-    // debugger
     if (prevXpos != this.position[0]) {
       this.destinationPosX = this.position[0] * 44;
     } else if (prevYpos != this.position[1]) {
       this.destinationPosY = this.position[1] * 44;
     }
-    // this.posX += this.velX;
-    // this.posY += this.velY;
   }
 
   moveLeft() {

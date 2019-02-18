@@ -19,10 +19,10 @@ class Ghost extends MovingCritter {
     this.destination = null;
     this.possiblePaths = [];
     this.ghostDirs = {
-        "up": [0, -1],
-        "down": [0, 1],
-        "left": [-1, 0],
-        "right": [1, 0]
+        "up": [0, -2],
+        "down": [0, 2],
+        "left": [-2, 0],
+        "right": [2, 0]
     }
 
     this.newPos = function () {
@@ -48,9 +48,7 @@ class Ghost extends MovingCritter {
     }
 
     calculateDestPath(currentPath) {
-
         let destination = currentPath;
-        // debugger
 
         for (let k in this.ghostDirs) {
             let possibleDest = [
