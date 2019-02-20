@@ -9,9 +9,10 @@ class MovingCritter {
     this.collisionDetected = false;
     this.collisionDetectedGhost = false;
     this.moveInput = [];
-    this.currentPosition = null;
     this.destinationPosX = 7 * 44;
     this.destinationPosY = 13 * 44;
+    this.doneAnimatingX = true;
+    this.doneAnimatingY = true;
     this.detectWallCollision = this.detectWallCollision.bind(this);
 
     this.directions = {
@@ -63,17 +64,37 @@ class MovingCritter {
     this.frameCount = this.frameCount % 60;
   }
 
-  animateMove(startingPos, destinationPos) {
-    this.currentPixelPos = startingPos;
-
-    if (this.currentPixelPos > destinationPos) {
-      return (this.currentPixelPos -= 4)
-    } else if (this.currentPixelPos < destinationPos) {
-      return (this.currentPixelPos += 4)
-    } else if (this.currentPixelPos === destinationPos) {
+  animateMoveX(destinationPos) {
+    // debugger
+    if (this.currentPixelPosX > destinationPos) {
+      this.doneAnimatingX = false;
+      return (this.currentPixelPosX -= 4)
+    } else if (this.currentPixelPosX < destinationPos) {
+      this.doneAnimatingX = false;
+      return (this.currentPixelPosX += 4)
+    } else if (this.currentPixelPosX === destinationPos) {
+      this.doneAnimatingX = true;
       return destinationPos;
     }
-    return this.currentPixelPos;
+    // return this.currentPixelPosX;
+  }
+
+  animateMoveY(destinationPos) {
+    if (this.currentPixelPosY > destinationPos) {
+      this.doneAnimatingY = false;
+      return (this.currentPixelPosY -= 4)
+    } else if (this.currentPixelPosY < destinationPos) {
+      this.doneAnimatingY = false;
+      return (this.currentPixelPosY += 4)
+    } else if (this.currentPixelPosY === destinationPos) {
+      this.doneAnimatingY = true;
+      return destinationPos;
+    }
+    // return this.currentPixelPosY;
+  }
+
+  doneAnimating(curre) {
+
   }
 
   newDestination(prevXpos, prevYpos) {
@@ -85,19 +106,19 @@ class MovingCritter {
   }
 
   moveLeft() {
-    this.moveInput.push("left");
+    this.moveInput.unshift("left");
   }
 
   moveRight() {
-    this.moveInput.push("right");
+    this.moveInput.unshift("right");
   }
 
   moveUp() {
-    this.moveInput.push("up");
+    this.moveInput.unshift("up");
   }
 
   moveDown() {
-    this.moveInput.push("down");
+    this.moveInput.unshift("down");
   }
 
   moveStop() {

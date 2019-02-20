@@ -12,6 +12,8 @@ class MsPac extends MovingCritter {
     this.position = [7, 13];
     this.posX = this.position[0] * 44;
     this.posY = this.position[1] * 44;
+    this.currentPixelPosX = this.posX;
+    this.currentPixelPosY = this.posY;
     this.lives = 3;
     this.score = 0;
 
@@ -20,13 +22,18 @@ class MsPac extends MovingCritter {
 
   draw(ctx) {
     // debugger
-
+    if (this.posX === this.destinationPosX) {
+      this.doneAnimatingX = true;
+    }
+    if (this.posY === this.destinationPosY) {
+      this.doneAnimatingY = true;
+    }
     ctx.fillStyle = "red";
-    if (this.posX != this.destinationPosX) {
-      this.posX = this.animateMove(this.posX, this.destinationPosX);
+    if (this.posX != this.destinationPosX && this.doneAnimatingY === true) {
+      this.posX = this.animateMoveX(this.destinationPosX);
       this.posX = Math.floor(this.posX);
-    } else if (this.posY != this.destinationPosY) {
-      this.posY = this.animateMove(this.posY, this.destinationPosY);
+    } else if (this.posY != this.destinationPosY && this.doneAnimatingX === true) {
+      this.posY = this.animateMoveY(this.destinationPosY);
       this.posY = Math.floor(this.posY)
     }
 

@@ -22,28 +22,25 @@ class GameView {
   }
 
   keyBinds() {
+    // debugger
     //keyCodes obtained here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode
     document.addEventListener("keydown", e => {
-      if (e.code === "KeyD" && this.keyPressed.length <= 1) {
-        this.keyPressed.push(e.code);
+      if (e.code === "KeyD" && this.msPac.moveInput.length <= 1) {
+        this.keyPressed.unshift(e.code);
         this.msPac.moveRight();
       }
-      if (e.code === "KeyA" && this.keyPressed.length <= 1) {
-        this.keyPressed.push(e.code);
+      if (e.code === "KeyA" && this.msPac.moveInput.length <= 1) {
+        this.keyPressed.unshift(e.code);
         this.msPac.moveLeft();
       }
-      if (e.code === "KeyW" && this.keyPressed.length <= 1) {
-        this.keyPressed.push(e.code);
+      if (e.code === "KeyW" && this.msPac.moveInput.length <= 1) {
+        this.keyPressed.unshift(e.code);
         this.msPac.moveUp();
       }
-      if (e.code === "KeyS" && this.keyPressed.length <= 1) {
-        this.keyPressed.push(e.code);
+      if (e.code === "KeyS" && this.msPac.moveInput.length <= 1) {
+        this.keyPressed.unshift(e.code);
         this.msPac.moveDown();
       }
-    });
-
-    document.addEventListener("keyup", e => {
-      this.keyPressed.pop();
     });
   }
 
@@ -57,9 +54,9 @@ class GameView {
     this.step();
     this.detectPelletConsumtption();
     this.detectCritterCollision();
-
-    this.drawUnits();
     this.updatePos();
+    this.drawUnits();
+    
     this.updateGhostBehavior();
     this.updateFrameCount();
     this.drawText();
@@ -81,9 +78,9 @@ class GameView {
   }
 
   step() {
-    this.msPac.checkDir();
+    // this.msPac.checkDir();
     if (this.msPac.moveInput.length > 0) {
-      this.checkMove(this.msPac.position);
+      this.continueMovingCheck();
     }
 
     this.ghostHouse.forEach(ghost => {
@@ -141,11 +138,13 @@ class GameView {
     this.msPac.posY = 572;
     this.msPac.destinationPosX = 308,
     this.msPac.destinationPosY = 572;
+    this.msPac.currentPixelPosX = 308,
+    this.msPac.currentPixelPosY = 572;
     this.msPac.position = [7, 13];
+    this.moveInput = [];
   }
 
   isPointInTile(critter, pellet) {
-    // debugger
     let pelletXMin = pellet.posX;
     let pelletXMax = pellet.posX + pellet.width;
     let pelletYMin = pellet.posY;
@@ -172,36 +171,65 @@ class GameView {
         this.msPac.posY = (8 * 44)
         this.msPac.destinationPosX = (15 * 44)
         this.msPac.destinationPosY = (8 * 44)
+        this.msPac.currentPixelPosX = (15 * 44)
+        this.msPac.currentPixelPosY = (8 * 44)
       } else if ((this.msPac.position[0] === 15 && 
         this.msPac.position[1] === 8) && 
         this.keyPressed[0] === "KeyD") {
-          this.msPac.position[0] = 0;
-          this.msPac.posX = 0;
-          this.msPac.posY = (8 * 44)
-          this.msPac.destinationPosY = (8 * 44)
-          this.msPac.destinationPosX = 0;
+        this.msPac.position[0] = 0;
+        this.msPac.posX = 0;
+        this.msPac.posY = (8 * 44)
+        this.msPac.destinationPosY = (8 * 44)
+        this.msPac.destinationPosX = 0;
+        this.msPac.currentPixelPosY = (8 * 44)
+        this.msPac.currentPixelPosX = (0)
       }
   }
 
-  checkMove(critterPosition) {
+  checkMove(critterPosition, move) {
+    // debugger
     let currentXPos = this.msPac.position[0];
     let currentYPos = this.msPac.position[1];
 
     let nextXPos =
-      critterPosition[0] + this.msPac.directions[this.msPac.moveInput[0]][0];
+      critterPosition[0] + this.msPac.directions[move][0];
     let nextYPos =
-      critterPosition[1] + this.msPac.directions[this.msPac.moveInput[0]][1];
+      critterPosition[1] + this.msPac.directions[move][1];
 
-    this.maze.tunnelPieces.forEach(tunnelPiece => {
+    for(let i = 0; i < this.maze.tunnelPieces.length; i++) {
       if (
-        nextXPos === tunnelPiece.position[0] &&
-        nextYPos === tunnelPiece.position[1]
+        nextXPos === this.maze.tunnelPieces[i].position[0] &&
+        nextYPos === this.maze.tunnelPieces[i].position[1]
       ) {
-        this.msPac.position = [nextXPos, nextYPos];
-        this.msPac.newDestination(currentXPos, currentYPos);
+        return [nextXPos, nextYPos];
       }
-    });
-    this.msPac.moveInput.shift();
+    }
+    return false;
+  }
+
+  continueMovingCheck() {
+    // debugger
+    let currentXPos = this.msPac.position[0];
+    let currentYPos = this.msPac.position[1];
+
+    if (this.msPac.doneAnimatingX && this.msPac.doneAnimatingY) {
+      if (this.msPac.moveInput[0] && (this.checkMove(this.msPac.position, this.msPac.moveInput[0]))) {
+        // debuggers
+          this.msPac.position = this.checkMove(this.msPac.position, this.msPac.moveInput[0])
+          this.msPac.newDestination(currentXPos, currentYPos);
+          if (this.msPac.moveInput.length === 2) {
+            this.msPac.moveInput.pop();
+          }
+      } else if (this.msPac.moveInput[1] && (this.checkMove(this.msPac.position, this.msPac.moveInput[1]))) {
+        // debugger
+          this.msPac.position = this.checkMove(this.msPac.position, this.msPac.moveInput[1])
+          this.msPac.newDestination(currentXPos, currentYPos);
+      } else {
+        this.msPac.newDestination(currentXPos, currentYPos)
+        this.msPac.position = [currentXPos, currentYPos]
+        this.msPac.moveInput = []
+      }
+    }
   }
 
   showScore() {
@@ -209,14 +237,14 @@ class GameView {
     this.ctx.fillStyle = "red";
     this.ctx.font = "30px Righteous";
     this.ctx.fillText(`Score: `, 730, 415);
-    this.ctx.fillText(parseInt(this.msPac.score), 730, 450);
+    this.ctx.fillText(parseInt(this.msPac.score), 745, 450);
   }
 
   showLives() {
     this.ctx.fillStyle = "black";
     this.ctx.fillStyle = "red";
     this.ctx.font = "30px Righteous";
-    this.ctx.fillText("Lives: ", 730, 300);
+    this.ctx.fillText("Lives: ", 745, 300);
     for (let i = 0; i < this.msPac.lives; i++) {
       this.ctx.drawImage(
         this.msPac.msPacImg,
@@ -236,12 +264,12 @@ class GameView {
     if (this.msPac.lives === 0) {
       this.ctx.font = "30px 'Righteous', cursive";
       this.ctx.fillStyle = "red";
-      this.ctx.fillText("GAME OVER", 265, 465);
+      this.ctx.fillText("GAME OVER", 265, 475);
       this.ctx.fillStyle = "black";
     } else {
       this.ctx.font = "30px 'Righteous', cursive";
       this.ctx.fillStyle = "red";
-      this.ctx.fillText("YOU WIN! :)", 265, 465);
+      this.ctx.fillText("YOU WIN! :)", 265, 475);
       this.ctx.fillStyle = "black";
     }
   }
