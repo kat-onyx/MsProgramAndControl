@@ -67,9 +67,11 @@ class MovingCritter {
   animateMoveX(destinationPos) {
     // debugger
     if (this.currentPixelPosX > destinationPos) {
+      this.animFace = "left";
       this.doneAnimatingX = false;
       return (this.currentPixelPosX -= 4)
     } else if (this.currentPixelPosX < destinationPos) {
+      this.animFace = "right";
       this.doneAnimatingX = false;
       return (this.currentPixelPosX += 4)
     } else if (this.currentPixelPosX === destinationPos) {
@@ -81,9 +83,11 @@ class MovingCritter {
 
   animateMoveY(destinationPos) {
     if (this.currentPixelPosY > destinationPos) {
+      this.animFace = "up";
       this.doneAnimatingY = false;
       return (this.currentPixelPosY -= 4)
     } else if (this.currentPixelPosY < destinationPos) {
+      this.animFace = "down"
       this.doneAnimatingY = false;
       return (this.currentPixelPosY += 4)
     } else if (this.currentPixelPosY === destinationPos) {
@@ -91,10 +95,6 @@ class MovingCritter {
       return destinationPos;
     }
     // return this.currentPixelPosY;
-  }
-
-  doneAnimating(curre) {
-
   }
 
   newDestination(prevXpos, prevYpos) {

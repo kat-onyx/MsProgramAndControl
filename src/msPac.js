@@ -14,6 +14,7 @@ class MsPac extends MovingCritter {
     this.posY = this.position[1] * 44;
     this.currentPixelPosX = this.posX;
     this.currentPixelPosY = this.posY;
+    this.animFace = "right";
     this.lives = 3;
     this.score = 0;
 
@@ -37,14 +38,14 @@ class MsPac extends MovingCritter {
       this.posY = Math.floor(this.posY)
     }
 
-    ctx.fillRect(this.posX, this.posY, this.width, this.width);
-    // this.updateFrameCount();
-    // this.imgFrameSelect(ctx);
+    // ctx.fillRect(this.posX, this.posY, this.width, this.width);
+    this.updateFrameCount();
+    this.imgFrameSelect(ctx);
   }
 
 
   imgFrameSelect(ctx) {
-    if (this.velX > 0) {
+    if (this.animFace === "right") {
       if (this.frameCount % 15 === 0) {
         return ctx.drawImage(
           this.msPacImg,
@@ -52,10 +53,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 21,
-          this.posY - 9,
-          this.width * 2,
-          this.width * 2
+          this.posX - 15,
+          this.posY,
+          this.width * 1.5,
+          this.width * 1.5
         );
       } else {
         return ctx.drawImage(
@@ -64,13 +65,13 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 21,
-          this.posY - 9,
-          this.width * 2,
-          this.width * 2
+          this.posX - 15,
+          this.posY,
+          this.width * 1.5,
+          this.width * 1.5
         );
       }
-    } else if (this.velX < 0) {
+    } else if (this.animFace === "left") {
       if (this.frameCount % 15 === 0) {
         return ctx.drawImage(
           this.msPacImg,
@@ -78,10 +79,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 15,
-          this.posY - 9,
-          this.width * 2,
-          this.width * 2
+          this.posX - 10,
+          this.posY,
+          this.width * 1.5,
+          this.width * 1.5
         );
       } else {
         return ctx.drawImage(
@@ -90,13 +91,13 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 15,
-          this.posY - 9,
-          this.width * 2,
-          this.width * 2
+          this.posX - 10,
+          this.posY,
+          this.width * 1.5,
+          this.width * 1.5
         );
       }
-    } else if (this.velY > 0) {
+    } else if (this.animFace === "down") {
       if (this.frameCount % 15 === 0) {
         return ctx.drawImage(
           this.msPacImg,
@@ -104,10 +105,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 30,
-          this.posY - 9 - 12.5,
-          this.width * 2,
-          this.width * 2
+          this.posX - 15,
+          this.posY - 15,
+          this.width * 1.5,
+          this.width * 1.5
         );
       } else {
         return ctx.drawImage(
@@ -116,13 +117,13 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 30,
-          this.posY - 9 - 12.5,
-          this.width * 2,
-          this.width * 2
+          this.posX - 15,
+          this.posY - 15,
+          this.width * 1.5,
+          this.width * 1.5
         );
       }
-    } else if (this.velY < 0) {
+    } else if (this.animFace === "up") {
       if (this.frameCount % 15 === 0) {
         return ctx.drawImage(
           this.msPacImg,
@@ -130,10 +131,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 10,
-          this.posY - 9 - 5,
-          this.width * 2,
-          this.width * 2
+          this.posX - 5,
+          this.posY -5,
+          this.width * 1.5,
+          this.width * 1.5
         );
       } else {
         return ctx.drawImage(
@@ -142,10 +143,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 10,
-          this.posY - 9 - 5,
-          this.width * 2,
-          this.width * 2
+          this.posX - 5,
+          this.posY -5,
+          this.width * 1.5,
+          this.width * 1.5
         );
       }
     } else {
@@ -157,8 +158,8 @@ class MsPac extends MovingCritter {
         160,
         this.posX - 21,
         this.posY - 9,
-        this.width * 2,
-        this.width * 2
+        this.width * 1.5,
+        this.width * 1.5
       );
     }
   }

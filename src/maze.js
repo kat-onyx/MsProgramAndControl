@@ -8,7 +8,6 @@ class Maze {
     this.ctx = ctx;
     this.width = 700;
     this.height = 770;
-    // debugger
     // bitmap for the grid
     (this.grid = [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
