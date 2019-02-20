@@ -619,7 +619,6 @@ class Maze {
   }
 
   tiles() {
-    // debugger
     let tiles = [];
     for (let i = 0; i < this.grid.length; i++) {
       for (let j = 0; j < this.grid[i].length; j++) {
@@ -637,7 +636,6 @@ class Maze {
     return tiles;
   }
   tunnelPieces() {
-    // debugger
     let tunnelPieces = [];
     for (let i = 0; i < this.grid.length; i++) {
       for (let j = 0; j <= this.grid[i].length; j++) {
@@ -657,7 +655,6 @@ class Maze {
   }
 
   pellets() {
-    // debugger
     let pellets = [];
 
     for (let i = 0; i < this.grid.length; i += 1) {
@@ -698,7 +695,6 @@ class Maze {
   }
 
   drawPellets(ctx) {
-    // debugger
     this.pellets.forEach(pellet => pellet.draw(ctx));
   }
 }
@@ -744,7 +740,6 @@ class MovingCritter {
     this.detectWallCollision();
     if (this.collisionDetected === true) {
       this.collisionDetectedGhost = true;
-      this.moveStop();
     }
     this.collisionDetected = false;
   }
@@ -836,13 +831,6 @@ class MovingCritter {
 
   moveDown() {
     this.moveInput.unshift("down");
-  }
-
-  moveStop() {
-    // this.posX -= this.velX;
-    // this.posY -= this.velY;
-    // this.velX = 0;
-    // this.velY = 0;
   }
 }
 
@@ -1047,15 +1035,13 @@ class Pellet {
     }
 
     draw(ctx) {
-   
-        // debugger
         ctx.fillStyle = "black";
         ctx.fillRect(this.posX, this.posY, this.width, this.height);
 
         ctx.fillStyle = "white"
         ctx.beginPath();
-        //43 === width/height of each pellet's square
-        ctx.arc((this.posX + (43/2)), (this.posY + (43/2)), this.width / 8, 0, 2 * Math.PI);
+        //44 === width/height of each pellet's square
+        ctx.arc((this.posX + (44/2)), (this.posY + (44/2)), this.width / 8, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke()
     }

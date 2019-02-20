@@ -36,7 +36,6 @@ class Maze {
   }
 
   tiles() {
-    // debugger
     let tiles = [];
     for (let i = 0; i < this.grid.length; i++) {
       for (let j = 0; j < this.grid[i].length; j++) {
@@ -54,7 +53,6 @@ class Maze {
     return tiles;
   }
   tunnelPieces() {
-    // debugger
     let tunnelPieces = [];
     for (let i = 0; i < this.grid.length; i++) {
       for (let j = 0; j <= this.grid[i].length; j++) {
@@ -74,7 +72,6 @@ class Maze {
   }
 
   pellets() {
-    // debugger
     let pellets = [];
 
     for (let i = 0; i < this.grid.length; i += 1) {
@@ -115,7 +112,6 @@ class Maze {
   }
 
   drawPellets(ctx) {
-    // debugger
     this.pellets.forEach(pellet => pellet.draw(ctx));
   }
 }

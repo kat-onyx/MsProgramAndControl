@@ -27,7 +27,6 @@ class MovingCritter {
     this.detectWallCollision();
     if (this.collisionDetected === true) {
       this.collisionDetectedGhost = true;
-      this.moveStop();
     }
     this.collisionDetected = false;
   }
@@ -119,13 +118,6 @@ class MovingCritter {
 
   moveDown() {
     this.moveInput.unshift("down");
-  }
-
-  moveStop() {
-    // this.posX -= this.velX;
-    // this.posY -= this.velY;
-    // this.velX = 0;
-    // this.velY = 0;
   }
 }
 
