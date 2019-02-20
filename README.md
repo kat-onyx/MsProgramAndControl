@@ -9,7 +9,7 @@ Ms. Program and Control is a game inspired by the beloved Ms. Pacman.  Ms. Progr
 
 Navigate your way through a maze to eat pellets while avoiding ghosts. At first, ghosts will move randomly throughout the map.  However, after a minute, ghosts will seek you out.  Move quickly and be careful!
 
-Pellets offer 10 points each, and consuming all pellets will grant a total of 1280 points.
+Pellets offer 10 points each, and consuming all pellets will grant a total of 1270 points.
 
 
 ![Screenshot](dist/Gameplay.png)
