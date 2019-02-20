@@ -35,33 +35,28 @@ Pellets offer 10 points each, and consuming all pellets will grant a total of 12
    
 ## Core Features
 
-### Player Movement
-Player movement is handled with event listeners on the DOM, which triggers a function on the critter class.  A player's velocity is increased based on these functions, and a new position is calculated per animation frame.  No more than one key can be pressed at a time, which keeps players moving in a straight path.
+### Player Movement (Grid-based!)
+Player movement is handled with event listeners on the DOM, which triggers a function on the critter class that add a direction to a queue list.  A player is able to move depending on whether their most recent keyboard input direction exists in a list of "tunnel pieces", otherwise they will continue moving in the previously tapped direction. The player's position is updated accordingly, and a movement animation is played until the player reaches this desination position.
 
 ``` js
-keyBinds() {
-    document.addEventListener("keydown", e => {
-      if (e.code === "KeyD" && this.keyPressed.length <= 1) {
-        this.keyPressed.push(e.code);
-        this.msPac.moveRight();
-      }
-      if (e.code === "KeyA" && this.keyPressed.length <= 1) {
-        this.keyPressed.push(e.code);
-        this.msPac.moveLeft();
-      }
-      if (e.code === "KeyW" && this.keyPressed.length <= 1) {
-        this.keyPressed.push(e.code);
-        this.msPac.moveUp();
-      }
-      if (e.code === "KeyS" && this.keyPressed.length <= 1) {
-        this.keyPressed.push(e.code);
-        this.msPac.moveDown();
-      }
-    });
+checkMove(critterPosition, move) {
+    let currentXPos = this.msPac.position[0];
+    let currentYPos = this.msPac.position[1];
 
-    document.addEventListener("keyup", e => {
-      this.keyPressed.pop();
-    });
+    let nextXPos =
+      critterPosition[0] + this.msPac.directions[move][0];
+    let nextYPos =
+      critterPosition[1] + this.msPac.directions[move][1];
+
+    for(let i = 0; i < this.maze.tunnelPieces.length; i++) {
+      if (
+        nextXPos === this.maze.tunnelPieces[i].position[0] &&
+        nextYPos === this.maze.tunnelPieces[i].position[1]
+      ) {
+        return [nextXPos, nextYPos];
+      }
+    }
+    return false;
   }
 
   ```
@@ -128,7 +123,6 @@ The maze was create using a 2-d array bit-map containing 1's and 0's to indicate
 
 ## Upcoming Features
 
-* Grid based movement for MsPac
 * More, different mazes
 * Fruit
 * Power Pellets
