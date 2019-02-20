@@ -592,7 +592,7 @@ class Maze {
     this.width = 700;
     this.height = 770;
     // bitmap for the grid
-    (this.grid = [
+    this.grid = [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
       [1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1],
@@ -611,8 +611,8 @@ class Maze {
       [1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
       [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-    ]),
-      (this.blocksize = Math.ceil(this.width / this.grid[0].length));
+    ],
+    this.blocksize = Math.ceil(this.width / this.grid[0].length);
     this.tiles = this.tiles();
     this.tunnelPieces = this.tunnelPieces();
     this.pellets = this.pellets();
