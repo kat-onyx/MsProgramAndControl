@@ -19,10 +19,10 @@ class Ghost extends MovingCritter {
     this.destination = null;
     this.possiblePaths = [];
     this.ghostDirs = {
-        "up": [0, -1],
-        "down": [0, 1],
-        "left": [-1, 0],
-        "right": [1, 0]
+        "up": [0, -2],
+        "down": [0, 2],
+        "left": [-2, 0],
+        "right": [2, 0]
     }
 
     this.newPos = function () {
@@ -50,7 +50,6 @@ class Ghost extends MovingCritter {
     calculateDestPath(currentPath) {
 
         let destination = currentPath;
-        // debugger
 
         for (let k in this.ghostDirs) {
             let possibleDest = [
@@ -118,7 +117,7 @@ class Inky extends Ghost {
         super(maze);
         this.imgOffsetX = 320;
         this.ctx = ctx;
-        this.posX = 305;
+        this.posX = 308;
         this.posY = 380;
         this.color = "blue";
         this.destination = [125, 116];
@@ -129,7 +128,7 @@ class Pinky extends Ghost {
         super(maze);
         this.imgOffsetX = 0;
         this.ctx = ctx;
-        this.posX = 335;
+        this.posX = 345;
         this.posY = 380;
         this.color = "pink";
         this.destination = [550, 125];
@@ -141,7 +140,7 @@ class Blinky extends Ghost {
         super(maze);
         this.imgOffsetX = 160;
         this.ctx = ctx;
-        this.posX = 335;
+        this.posX = 345;
         this.posY = 350;
         this.color = "red";
         this.destination = [500, 300];
@@ -153,7 +152,7 @@ class Clyde extends Ghost {
         super(maze);
         this.imgOffsetX = 160 * 3;
         this.ctx = ctx;
-        this.posX = 305;
+        this.posX = 308;
         this.posY = 350;
         this.color = "orange";
         this.destination = [125, 300];

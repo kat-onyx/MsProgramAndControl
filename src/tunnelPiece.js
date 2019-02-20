@@ -9,8 +9,8 @@ class TunnelPiece {
     }
 
     draw(ctx) {
-        ctx.fillStyle = "#000";
         //#ff7f63
+        this.fillStyle = "black"
         ctx.fillRect(this.xPos, this.yPos, this.width, this.height);
     }
 }

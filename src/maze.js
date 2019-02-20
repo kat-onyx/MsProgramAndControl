@@ -8,6 +8,7 @@ class Maze {
     this.ctx = ctx;
     this.width = 700;
     this.height = 770;
+    // bitmap for the grid
     this.grid = [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
@@ -17,18 +18,18 @@ class Maze {
       [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
       [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
       [1, 1, 1, 1, 0, 1, 1, 4, 4, 1, 1, 0, 1, 1, 1, 1],
-      [0, 0, 0, 0, 0, 1, 6, 6, 7, 6, 1, 0, 0, 0, 0, 0],
+      [2, 0, 0, 0, 0, 1, 6, 6, 7, 6, 1, 0, 0, 0, 0, 2],
       [1, 1, 1, 1, 0, 1, 6, 6, 6, 6, 1, 0, 1, 1, 1, 1],
       [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
       [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
       [1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1],
-      [1, 0, 1, 1, 0, 1, 0, 2, 2, 0, 1, 0, 1, 1, 0, 1],
+      [1, 0, 1, 1, 0, 1, 0, 2, 0, 0, 1, 0, 1, 1, 0, 1],
       [1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1],
       [1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
       [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     ],
-      (this.blocksize = Math.floor(this.width / this.grid[0].length));
+    this.blocksize = Math.ceil(this.width / this.grid[0].length);
     this.tiles = this.tiles();
     this.tunnelPieces = this.tunnelPieces();
     this.pellets = this.pellets();
@@ -37,7 +38,6 @@ class Maze {
   tiles() {
     // debugger
     let tiles = [];
-    let tunnelPieces = [];
     for (let i = 0; i < this.grid.length; i++) {
       for (let j = 0; j < this.grid[i].length; j++) {
         if (this.grid[i][j] === 1) {
@@ -48,14 +48,6 @@ class Maze {
             this.blocksize
           );
           tiles.push(tile);
-        } else if (this.grid[i][j] === 0) {
-          let tunnelPiece = new TunnelPiece(
-            j * this.blocksize,
-            i * this.blocksize,
-            this.blocksize,
-            this.blocksize
-          );
-          tunnelPieces.push(tunnelPiece);
         }
       }
     }
@@ -65,14 +57,14 @@ class Maze {
     // debugger
     let tunnelPieces = [];
     for (let i = 0; i < this.grid.length; i++) {
-      for (let j = 0; j < this.grid[i].length; j++) {
-       if (this.grid[i][j] === 0) {
+      for (let j = 0; j <= this.grid[i].length; j++) {
+        if (this.grid[i][j] === 0 || this.grid[i][j] === 2) {
           let tunnelPiece = new TunnelPiece(
             j * this.blocksize,
             i * this.blocksize,
             this.blocksize,
             this.blocksize,
-            [i, j]
+            [j, i]
           );
           tunnelPieces.push(tunnelPiece);
         }
@@ -102,9 +94,10 @@ class Maze {
   }
   draw(ctx) {
     this.drawBackground(ctx);
-    this.drawTiles(ctx);
     this.drawTunnelPieces(ctx);
     this.drawPellets(ctx);
+
+    this.drawTiles(ctx);
   }
 
   drawBackground(ctx) {
@@ -118,7 +111,7 @@ class Maze {
   }
 
   drawTunnelPieces(ctx) {
-      this.tunnelPieces.forEach(tunnelPiece => tunnelPiece.draw(ctx))
+    this.tunnelPieces.forEach(tunnelPiece => tunnelPiece.draw(ctx));
   }
 
   drawPellets(ctx) {

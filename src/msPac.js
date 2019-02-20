@@ -7,36 +7,45 @@ class MsPac extends MovingCritter {
   constructor(ctx, velX, velY, maze, frameCount) {
     super(velX, velY, maze, frameCount);
     this.ctx = ctx;
-    this.width = 32;
+    this.width = 44;
     this.radius = 25;
-    this.posX = 325;
-    this.posY = 560;
+    this.position = [7, 13];
+    this.posX = this.position[0] * 44;
+    this.posY = this.position[1] * 44;
+    this.currentPixelPosX = this.posX;
+    this.currentPixelPosY = this.posY;
+    this.animFace = "right";
     this.lives = 3;
     this.score = 0;
-    this.msPacImg = msPacImg;
 
-    this.newPos = function() {
-      this.posX += this.velX;
-      this.posY += this.velY;
-    };
+    this.msPacImg = msPacImg;
   }
 
   draw(ctx) {
-    // ctx.clearRect(0, 0, 700, 750);
-    // ctx.fillStyle = "red";
-    // ctx.fillRect(this.posX, this.posY, this.width, this.width)
+    // debugger
+    if (this.posX === this.destinationPosX) {
+      this.doneAnimatingX = true;
+    }
+    if (this.posY === this.destinationPosY) {
+      this.doneAnimatingY = true;
+    }
+    ctx.fillStyle = "red";
+    if (this.posX != this.destinationPosX && this.doneAnimatingY === true) {
+      this.posX = this.animateMoveX(this.destinationPosX);
+      this.posX = Math.floor(this.posX);
+    } else if (this.posY != this.destinationPosY && this.doneAnimatingX === true) {
+      this.posY = this.animateMoveY(this.destinationPosY);
+      this.posY = Math.floor(this.posY)
+    }
+
+    // ctx.fillRect(this.posX, this.posY, this.width, this.width);
     this.updateFrameCount();
     this.imgFrameSelect(ctx);
   }
 
-  drawLives(ctx) {
-    // debugger
-    // ctx.fillStyle = "black";
-    
-  }
 
   imgFrameSelect(ctx) {
-    if (this.velX > 0) {
+    if (this.animFace === "right") {
       if (this.frameCount % 15 === 0) {
         return ctx.drawImage(
           this.msPacImg,
@@ -44,10 +53,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 21,
-          this.posY - 9,
-          this.width * 2,
-          this.width * 2
+          this.posX - 15,
+          this.posY,
+          this.width * 1.5,
+          this.width * 1.5
         );
       } else {
         return ctx.drawImage(
@@ -56,13 +65,13 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 21,
-          this.posY - 9,
-          this.width * 2,
-          this.width * 2
+          this.posX - 15,
+          this.posY,
+          this.width * 1.5,
+          this.width * 1.5
         );
       }
-    } else if (this.velX < 0) {
+    } else if (this.animFace === "left") {
       if (this.frameCount % 15 === 0) {
         return ctx.drawImage(
           this.msPacImg,
@@ -70,10 +79,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 15,
-          this.posY - 9,
-          this.width * 2,
-          this.width * 2
+          this.posX - 10,
+          this.posY,
+          this.width * 1.5,
+          this.width * 1.5
         );
       } else {
         return ctx.drawImage(
@@ -82,13 +91,13 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 15,
-          this.posY - 9,
-          this.width * 2,
-          this.width * 2
+          this.posX - 10,
+          this.posY,
+          this.width * 1.5,
+          this.width * 1.5
         );
       }
-    } else if (this.velY > 0) {
+    } else if (this.animFace === "down") {
       if (this.frameCount % 15 === 0) {
         return ctx.drawImage(
           this.msPacImg,
@@ -96,10 +105,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 30,
-          this.posY - 9 - 12.5,
-          this.width * 2,
-          this.width * 2
+          this.posX - 15,
+          this.posY - 15,
+          this.width * 1.5,
+          this.width * 1.5
         );
       } else {
         return ctx.drawImage(
@@ -108,13 +117,13 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 30,
-          this.posY - 9 - 12.5,
-          this.width * 2,
-          this.width * 2
+          this.posX - 15,
+          this.posY - 15,
+          this.width * 1.5,
+          this.width * 1.5
         );
       }
-    } else if (this.velY < 0) {
+    } else if (this.animFace === "up") {
       if (this.frameCount % 15 === 0) {
         return ctx.drawImage(
           this.msPacImg,
@@ -122,10 +131,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 10,
-          this.posY - 9 - 5,
-          this.width * 2,
-          this.width * 2
+          this.posX - 5,
+          this.posY -5,
+          this.width * 1.5,
+          this.width * 1.5
         );
       } else {
         return ctx.drawImage(
@@ -134,10 +143,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 10,
-          this.posY - 9 - 5,
-          this.width * 2,
-          this.width * 2
+          this.posX - 5,
+          this.posY -5,
+          this.width * 1.5,
+          this.width * 1.5
         );
       }
     } else {
@@ -149,8 +158,8 @@ class MsPac extends MovingCritter {
         160,
         this.posX - 21,
         this.posY - 9,
-        this.width * 2,
-        this.width * 2
+        this.width * 1.5,
+        this.width * 1.5
       );
     }
   }

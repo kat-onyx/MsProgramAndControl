@@ -117,28 +117,25 @@ class GameView {
   }
 
   keyBinds() {
+    // debugger
     //keyCodes obtained here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode
     document.addEventListener("keydown", e => {
-      if (e.code === "KeyD" && this.keyPressed.length <= 1) {
-        this.keyPressed.push(e.code);
+      if (e.code === "KeyD" && this.msPac.moveInput.length <= 1) {
+        this.keyPressed.unshift(e.code);
         this.msPac.moveRight();
       }
-      if (e.code === "KeyA" && this.keyPressed.length <= 1) {
-        this.keyPressed.push(e.code);
+      if (e.code === "KeyA" && this.msPac.moveInput.length <= 1) {
+        this.keyPressed.unshift(e.code);
         this.msPac.moveLeft();
       }
-      if (e.code === "KeyW" && this.keyPressed.length <= 1) {
-        this.keyPressed.push(e.code);
+      if (e.code === "KeyW" && this.msPac.moveInput.length <= 1) {
+        this.keyPressed.unshift(e.code);
         this.msPac.moveUp();
       }
-      if (e.code === "KeyS" && this.keyPressed.length <= 1) {
-        this.keyPressed.push(e.code);
+      if (e.code === "KeyS" && this.msPac.moveInput.length <= 1) {
+        this.keyPressed.unshift(e.code);
         this.msPac.moveDown();
       }
-    });
-
-    document.addEventListener("keyup", e => {
-      this.keyPressed.pop();
     });
   }
 
@@ -152,8 +149,9 @@ class GameView {
     this.step();
     this.detectPelletConsumtption();
     this.detectCritterCollision();
-    this.drawUnits();
     this.updatePos();
+    this.drawUnits();
+    
     this.updateGhostBehavior();
     this.updateFrameCount();
     this.drawText();
@@ -167,7 +165,7 @@ class GameView {
 
   updatePos() {
     this.detectTunnelTravel();
-    this.msPac.newPos();
+    // this.msPac.newPos(this.maze);
   }
 
   updateFrameCount() {
@@ -175,7 +173,10 @@ class GameView {
   }
 
   step() {
-    this.msPac.checkDir();
+    // this.msPac.checkDir();
+    if (this.msPac.moveInput.length > 0) {
+      this.continueMovingCheck();
+    }
 
     this.ghostHouse.forEach(ghost => {
       ghost.checkDir();
@@ -192,8 +193,8 @@ class GameView {
   }
 
   drawText() {
-      this.showLives();
-      this.showScore();
+    this.showLives();
+    this.showScore();
   }
 
   detectPelletConsumtption() {
@@ -207,7 +208,6 @@ class GameView {
   }
 
   detectCritterCollision() {
-    // debugger
     this.ghostHouse.forEach(ghost => {
       if (this.isPointInTile(this.msPac, ghost)) {
         console.log("collision");
@@ -229,12 +229,17 @@ class GameView {
   }
 
   restart() {
-    this.msPac.posX = 325;
-    this.msPac.posY = 560;
+    this.msPac.posX = 308;
+    this.msPac.posY = 572;
+    this.msPac.destinationPosX = 308,
+    this.msPac.destinationPosY = 572;
+    this.msPac.currentPixelPosX = 308,
+    this.msPac.currentPixelPosY = 572;
+    this.msPac.position = [7, 13];
+    this.moveInput = [];
   }
 
   isPointInTile(critter, pellet) {
-    // debugger
     let pelletXMin = pellet.posX;
     let pelletXMax = pellet.posX + pellet.width;
     let pelletYMin = pellet.posY;
@@ -253,53 +258,111 @@ class GameView {
   }
 
   detectTunnelTravel() {
-    if (this.msPac.posX < 0) {
-      this.msPac.posX = 700;
-    } else if (this.msPac.posX > 700) {
-      this.msPac.posX = 0;
+    if ((this.msPac.position[0] === 0 && 
+      this.msPac.position[1] === 8) &&
+      this.keyPressed[0] === "KeyA") {
+        this.msPac.position[0] = 15;
+        this.msPac.posX = (16 * 44)
+        this.msPac.posY = (8 * 44)
+        this.msPac.destinationPosX = (15 * 44)
+        this.msPac.destinationPosY = (8 * 44)
+        this.msPac.currentPixelPosX = (15 * 44)
+        this.msPac.currentPixelPosY = (8 * 44)
+      } else if ((this.msPac.position[0] === 15 && 
+        this.msPac.position[1] === 8) && 
+        this.keyPressed[0] === "KeyD") {
+        this.msPac.position[0] = 0;
+        this.msPac.posX = 0;
+        this.msPac.posY = (8 * 44)
+        this.msPac.destinationPosY = (8 * 44)
+        this.msPac.destinationPosX = 0;
+        this.msPac.currentPixelPosY = (8 * 44)
+        this.msPac.currentPixelPosX = (0)
+      }
+  }
+
+  checkMove(critterPosition, move) {
+    // debugger
+    let currentXPos = this.msPac.position[0];
+    let currentYPos = this.msPac.position[1];
+
+    let nextXPos =
+      critterPosition[0] + this.msPac.directions[move][0];
+    let nextYPos =
+      critterPosition[1] + this.msPac.directions[move][1];
+
+    for(let i = 0; i < this.maze.tunnelPieces.length; i++) {
+      if (
+        nextXPos === this.maze.tunnelPieces[i].position[0] &&
+        nextYPos === this.maze.tunnelPieces[i].position[1]
+      ) {
+        return [nextXPos, nextYPos];
+      }
+    }
+    return false;
+  }
+
+  continueMovingCheck() {
+    // debugger
+    let currentXPos = this.msPac.position[0];
+    let currentYPos = this.msPac.position[1];
+
+    if (this.msPac.doneAnimatingX && this.msPac.doneAnimatingY) {
+      if (this.msPac.moveInput[0] && (this.checkMove(this.msPac.position, this.msPac.moveInput[0]))) {
+          this.msPac.position = this.checkMove(this.msPac.position, this.msPac.moveInput[0])
+          this.msPac.newDestination(currentXPos, currentYPos);
+          if (this.msPac.moveInput.length === 2) {
+            this.msPac.moveInput.pop();
+          }
+      } else if (this.msPac.moveInput[1] && (this.checkMove(this.msPac.position, this.msPac.moveInput[1]))) {
+          this.msPac.position = this.checkMove(this.msPac.position, this.msPac.moveInput[1])
+          this.msPac.newDestination(currentXPos, currentYPos);
+      } else {
+        this.msPac.newDestination(currentXPos, currentYPos)
+        this.msPac.position = [currentXPos, currentYPos]
+        this.msPac.moveInput = []
+      }
     }
   }
 
   showScore() {
     this.ctx.fillStyle = "black";
-    // this.ctx.fillRect(660, 365, 200, 25);
     this.ctx.fillStyle = "red";
     this.ctx.font = "30px Righteous";
     this.ctx.fillText(`Score: `, 730, 415);
-    this.ctx.fillText(parseInt(this.msPac.score), 730, 450)
+    this.ctx.fillText(parseInt(this.msPac.score), 745, 450);
   }
 
   showLives() {
     this.ctx.fillStyle = "black";
-    // this.ctx.fillRect(660, 365, 200, 25);
     this.ctx.fillStyle = "red";
     this.ctx.font = "30px Righteous";
     this.ctx.fillText("Lives: ", 730, 300);
-      for (let i = 0; i < this.msPac.lives; i++) {
-          this.ctx.drawImage(
-              this.msPac.msPacImg,
-              0,
-              0,
-              160,
-              160,
-              710 + (i * 40),
-              300,
-              this.msPac.width * 2,
-              this.msPac.width * 2
-          );
-      }
+    for (let i = 0; i < this.msPac.lives; i++) {
+      this.ctx.drawImage(
+        this.msPac.msPacImg,
+        0,
+        0,
+        160,
+        160,
+        710 + i * 40,
+        300,
+        this.msPac.width * 1.5,
+        this.msPac.width * 1.5
+      );
+    }
   }
 
   gameOver() {
     if (this.msPac.lives === 0) {
       this.ctx.font = "30px 'Righteous', cursive";
       this.ctx.fillStyle = "red";
-      this.ctx.fillText("GAME OVER", 265, 465);
+      this.ctx.fillText("GAME OVER", 265, 475);
       this.ctx.fillStyle = "black";
     } else {
       this.ctx.font = "30px 'Righteous', cursive";
       this.ctx.fillStyle = "red";
-      this.ctx.fillText("YOU WIN! :)", 265, 465);
+      this.ctx.fillText("YOU WIN! :)", 265, 475);
       this.ctx.fillStyle = "black";
     }
   }
@@ -338,10 +401,10 @@ class Ghost extends MovingCritter {
     this.destination = null;
     this.possiblePaths = [];
     this.ghostDirs = {
-        "up": [0, -1],
-        "down": [0, 1],
-        "left": [-1, 0],
-        "right": [1, 0]
+        "up": [0, -2],
+        "down": [0, 2],
+        "left": [-2, 0],
+        "right": [2, 0]
     }
 
     this.newPos = function () {
@@ -369,7 +432,6 @@ class Ghost extends MovingCritter {
     calculateDestPath(currentPath) {
 
         let destination = currentPath;
-        // debugger
 
         for (let k in this.ghostDirs) {
             let possibleDest = [
@@ -437,7 +499,7 @@ class Inky extends Ghost {
         super(maze);
         this.imgOffsetX = 320;
         this.ctx = ctx;
-        this.posX = 305;
+        this.posX = 308;
         this.posY = 380;
         this.color = "blue";
         this.destination = [125, 116];
@@ -448,7 +510,7 @@ class Pinky extends Ghost {
         super(maze);
         this.imgOffsetX = 0;
         this.ctx = ctx;
-        this.posX = 335;
+        this.posX = 345;
         this.posY = 380;
         this.color = "pink";
         this.destination = [550, 125];
@@ -460,7 +522,7 @@ class Blinky extends Ghost {
         super(maze);
         this.imgOffsetX = 160;
         this.ctx = ctx;
-        this.posX = 335;
+        this.posX = 345;
         this.posY = 350;
         this.color = "red";
         this.destination = [500, 300];
@@ -472,7 +534,7 @@ class Clyde extends Ghost {
         super(maze);
         this.imgOffsetX = 160 * 3;
         this.ctx = ctx;
-        this.posX = 305;
+        this.posX = 308;
         this.posY = 350;
         this.color = "orange";
         this.destination = [125, 300];
@@ -502,7 +564,7 @@ const GameView = __webpack_require__(/*! ./gameView */ "./src/gameView.js");
 document.addEventListener("DOMContentLoaded", function() {
   const canvasEl = document.getElementsByTagName("canvas")[0];
   canvasEl.width = 870;
-  canvasEl.height = 770;
+  canvasEl.height = 790;
   const ctx = canvasEl.getContext("2d");
   const game = new GameView(ctx);
   game.keyBinds();
@@ -529,6 +591,7 @@ class Maze {
     this.ctx = ctx;
     this.width = 700;
     this.height = 770;
+    // bitmap for the grid
     this.grid = [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1],
@@ -538,18 +601,18 @@ class Maze {
       [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
       [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
       [1, 1, 1, 1, 0, 1, 1, 4, 4, 1, 1, 0, 1, 1, 1, 1],
-      [0, 0, 0, 0, 0, 1, 6, 6, 7, 6, 1, 0, 0, 0, 0, 0],
+      [2, 0, 0, 0, 0, 1, 6, 6, 7, 6, 1, 0, 0, 0, 0, 2],
       [1, 1, 1, 1, 0, 1, 6, 6, 6, 6, 1, 0, 1, 1, 1, 1],
       [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
       [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
       [1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1],
-      [1, 0, 1, 1, 0, 1, 0, 2, 2, 0, 1, 0, 1, 1, 0, 1],
+      [1, 0, 1, 1, 0, 1, 0, 2, 0, 0, 1, 0, 1, 1, 0, 1],
       [1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1],
       [1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1],
       [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
     ],
-      (this.blocksize = Math.floor(this.width / this.grid[0].length));
+    this.blocksize = Math.ceil(this.width / this.grid[0].length);
     this.tiles = this.tiles();
     this.tunnelPieces = this.tunnelPieces();
     this.pellets = this.pellets();
@@ -558,7 +621,6 @@ class Maze {
   tiles() {
     // debugger
     let tiles = [];
-    let tunnelPieces = [];
     for (let i = 0; i < this.grid.length; i++) {
       for (let j = 0; j < this.grid[i].length; j++) {
         if (this.grid[i][j] === 1) {
@@ -569,14 +631,6 @@ class Maze {
             this.blocksize
           );
           tiles.push(tile);
-        } else if (this.grid[i][j] === 0) {
-          let tunnelPiece = new TunnelPiece(
-            j * this.blocksize,
-            i * this.blocksize,
-            this.blocksize,
-            this.blocksize
-          );
-          tunnelPieces.push(tunnelPiece);
         }
       }
     }
@@ -586,14 +640,14 @@ class Maze {
     // debugger
     let tunnelPieces = [];
     for (let i = 0; i < this.grid.length; i++) {
-      for (let j = 0; j < this.grid[i].length; j++) {
-       if (this.grid[i][j] === 0) {
+      for (let j = 0; j <= this.grid[i].length; j++) {
+        if (this.grid[i][j] === 0 || this.grid[i][j] === 2) {
           let tunnelPiece = new TunnelPiece(
             j * this.blocksize,
             i * this.blocksize,
             this.blocksize,
             this.blocksize,
-            [i, j]
+            [j, i]
           );
           tunnelPieces.push(tunnelPiece);
         }
@@ -623,9 +677,10 @@ class Maze {
   }
   draw(ctx) {
     this.drawBackground(ctx);
-    this.drawTiles(ctx);
     this.drawTunnelPieces(ctx);
     this.drawPellets(ctx);
+
+    this.drawTiles(ctx);
   }
 
   drawBackground(ctx) {
@@ -639,7 +694,7 @@ class Maze {
   }
 
   drawTunnelPieces(ctx) {
-      this.tunnelPieces.forEach(tunnelPiece => tunnelPiece.draw(ctx))
+    this.tunnelPieces.forEach(tunnelPiece => tunnelPiece.draw(ctx));
   }
 
   drawPellets(ctx) {
@@ -661,89 +716,138 @@ module.exports = Maze;
 /***/ (function(module, exports) {
 
 class MovingCritter {
-    constructor(maze) {
-        this.frameCount = 0;
-        this.maze = maze;
-        this.velX = 0;
-        this.velY = 0;
-        this.posX = 0;
-        this.posY = 0;
-        this.collisionDetected = false;
-        this.collisionDetectedGhost = false;
-        this.detectWallCollision = this.detectWallCollision.bind(this);
-    }
+  constructor(maze) {
+    this.frameCount = 0;
+    this.maze = maze;
+    this.velX = 0;
+    this.velY = 0;
+    this.posX = 0;
+    this.posY = 0;
+    this.collisionDetected = false;
+    this.collisionDetectedGhost = false;
+    this.moveInput = [];
+    this.destinationPosX = 7 * 44;
+    this.destinationPosY = 13 * 44;
+    this.doneAnimatingX = true;
+    this.doneAnimatingY = true;
+    this.detectWallCollision = this.detectWallCollision.bind(this);
 
-    checkDir() {
-        // debugger
-        this.detectWallCollision();
-        if (this.collisionDetected === true) {
-            this.collisionDetectedGhost = true;
-            this.moveStop();
-        } 
-        this.collisionDetected = false;
-    }
-    detectWallCollision() {
-        // debugger
-        this.maze.tiles.forEach((tile) => {
-            if (this.isPointInTile(tile)) {
-                this.collisionDetected = true;
-            }
-        })
-    }
+    this.directions = {
+      up: [0, -1],
+      down: [0, 1],
+      left: [-1, 0],
+      right: [1, 0]
+    };
+  }
 
-    isPointInTile(tile) {
-        let tileXMin = tile.xPos;
-        let tileXMax = tile.xPos + tile.width;;
-        let tileYMin = tile.yPos;
-        let tileYMax = tile.yPos + tile.height;
-
-        let critterXMin = this.posX;
-        let critterXMax = this.posX + this.width;
-        let critterYMin = this.posY;
-        let critterYMax = this.posY + this.width;
-        // console.log(critterXMax, critterXMin)
-        return (
-            ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
-                (critterXMax > tileXMin && critterXMax <= tileXMax)) &&
-            ((critterYMin >= tileYMin && critterYMin < tileYMax) ||
-                (critterYMax > tileYMin && critterYMax <= tileYMax))
-        )
+  checkDir() {
+    this.detectWallCollision();
+    if (this.collisionDetected === true) {
+      this.collisionDetectedGhost = true;
+      this.moveStop();
     }
+    this.collisionDetected = false;
+  }
+  detectWallCollision() {
+    // debugger
+    this.maze.tiles.forEach(tile => {
+      if (this.isPointInTile(tile)) {
+        this.collisionDetected = true;
+      }
+    });
+  }
 
-    updateFrameCount() {
-        this.frameCount += 1;
-        this.frameCount = this.frameCount % 60;
-    }
+  isPointInTile(tile) {
+    let tileXMin = tile.xPos;
+    let tileXMax = tile.xPos + tile.width;
+    let tileYMin = tile.yPos;
+    let tileYMax = tile.yPos + tile.height;
 
-    moveLeft() {
-        this.velY = 0;
-        this.velX = this.velX - 2;
-    }
+    let critterXMin = this.posX;
+    let critterXMax = this.posX + this.width;
+    let critterYMin = this.posY;
+    let critterYMax = this.posY + this.width;
+    // console.log(critterXMax, critterXMin)
+    return (
+      ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
+        (critterXMax > tileXMin && critterXMax <= tileXMax)) &&
+      ((critterYMin >= tileYMin && critterYMin < tileYMax) ||
+        (critterYMax > tileYMin && critterYMax <= tileYMax))
+    );
+  }
 
-    moveRight() {
-        this.velY = 0;
-        this.velX = this.velX + 2;
-    }
+  updateFrameCount() {
+    this.frameCount += 1;
+    this.frameCount = this.frameCount % 60;
+  }
 
-    moveUp() {
-        this.velX = 0;
-        this.velY = this.velY - 2;
+  animateMoveX(destinationPos) {
+    // debugger
+    if (this.currentPixelPosX > destinationPos) {
+      this.animFace = "left";
+      this.doneAnimatingX = false;
+      return (this.currentPixelPosX -= 4)
+    } else if (this.currentPixelPosX < destinationPos) {
+      this.animFace = "right";
+      this.doneAnimatingX = false;
+      return (this.currentPixelPosX += 4)
+    } else if (this.currentPixelPosX === destinationPos) {
+      this.doneAnimatingX = true;
+      return destinationPos;
     }
+    // return this.currentPixelPosX;
+  }
 
-    moveDown() {
-        this.velX = 0;
-        this.velY = this.velY + 2;
+  animateMoveY(destinationPos) {
+    if (this.currentPixelPosY > destinationPos) {
+      this.animFace = "up";
+      this.doneAnimatingY = false;
+      return (this.currentPixelPosY -= 4)
+    } else if (this.currentPixelPosY < destinationPos) {
+      this.animFace = "down"
+      this.doneAnimatingY = false;
+      return (this.currentPixelPosY += 4)
+    } else if (this.currentPixelPosY === destinationPos) {
+      this.doneAnimatingY = true;
+      return destinationPos;
     }
+    // return this.currentPixelPosY;
+  }
 
-    moveStop() {
-        this.posX -= this.velX;
-        this.posY -= this.velY;
-        this.velX = 0;
-        this.velY = 0;
+  newDestination(prevXpos, prevYpos) {
+    if (prevXpos != this.position[0]) {
+      this.destinationPosX = this.position[0] * 44;
+    } else if (prevYpos != this.position[1]) {
+      this.destinationPosY = this.position[1] * 44;
     }
+  }
+
+  moveLeft() {
+    this.moveInput.unshift("left");
+  }
+
+  moveRight() {
+    this.moveInput.unshift("right");
+  }
+
+  moveUp() {
+    this.moveInput.unshift("up");
+  }
+
+  moveDown() {
+    this.moveInput.unshift("down");
+  }
+
+  moveStop() {
+    // this.posX -= this.velX;
+    // this.posY -= this.velY;
+    // this.velX = 0;
+    // this.velY = 0;
+  }
 }
 
 module.exports = MovingCritter;
+
 
 /***/ }),
 
@@ -763,36 +867,45 @@ class MsPac extends MovingCritter {
   constructor(ctx, velX, velY, maze, frameCount) {
     super(velX, velY, maze, frameCount);
     this.ctx = ctx;
-    this.width = 32;
+    this.width = 44;
     this.radius = 25;
-    this.posX = 325;
-    this.posY = 560;
+    this.position = [7, 13];
+    this.posX = this.position[0] * 44;
+    this.posY = this.position[1] * 44;
+    this.currentPixelPosX = this.posX;
+    this.currentPixelPosY = this.posY;
+    this.animFace = "right";
     this.lives = 3;
     this.score = 0;
-    this.msPacImg = msPacImg;
 
-    this.newPos = function() {
-      this.posX += this.velX;
-      this.posY += this.velY;
-    };
+    this.msPacImg = msPacImg;
   }
 
   draw(ctx) {
-    // ctx.clearRect(0, 0, 700, 750);
-    // ctx.fillStyle = "red";
-    // ctx.fillRect(this.posX, this.posY, this.width, this.width)
+    // debugger
+    if (this.posX === this.destinationPosX) {
+      this.doneAnimatingX = true;
+    }
+    if (this.posY === this.destinationPosY) {
+      this.doneAnimatingY = true;
+    }
+    ctx.fillStyle = "red";
+    if (this.posX != this.destinationPosX && this.doneAnimatingY === true) {
+      this.posX = this.animateMoveX(this.destinationPosX);
+      this.posX = Math.floor(this.posX);
+    } else if (this.posY != this.destinationPosY && this.doneAnimatingX === true) {
+      this.posY = this.animateMoveY(this.destinationPosY);
+      this.posY = Math.floor(this.posY)
+    }
+
+    // ctx.fillRect(this.posX, this.posY, this.width, this.width);
     this.updateFrameCount();
     this.imgFrameSelect(ctx);
   }
 
-  drawLives(ctx) {
-    // debugger
-    // ctx.fillStyle = "black";
-    
-  }
 
   imgFrameSelect(ctx) {
-    if (this.velX > 0) {
+    if (this.animFace === "right") {
       if (this.frameCount % 15 === 0) {
         return ctx.drawImage(
           this.msPacImg,
@@ -800,10 +913,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 21,
-          this.posY - 9,
-          this.width * 2,
-          this.width * 2
+          this.posX - 15,
+          this.posY,
+          this.width * 1.5,
+          this.width * 1.5
         );
       } else {
         return ctx.drawImage(
@@ -812,13 +925,13 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 21,
-          this.posY - 9,
-          this.width * 2,
-          this.width * 2
+          this.posX - 15,
+          this.posY,
+          this.width * 1.5,
+          this.width * 1.5
         );
       }
-    } else if (this.velX < 0) {
+    } else if (this.animFace === "left") {
       if (this.frameCount % 15 === 0) {
         return ctx.drawImage(
           this.msPacImg,
@@ -826,10 +939,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 15,
-          this.posY - 9,
-          this.width * 2,
-          this.width * 2
+          this.posX - 10,
+          this.posY,
+          this.width * 1.5,
+          this.width * 1.5
         );
       } else {
         return ctx.drawImage(
@@ -838,13 +951,13 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 15,
-          this.posY - 9,
-          this.width * 2,
-          this.width * 2
+          this.posX - 10,
+          this.posY,
+          this.width * 1.5,
+          this.width * 1.5
         );
       }
-    } else if (this.velY > 0) {
+    } else if (this.animFace === "down") {
       if (this.frameCount % 15 === 0) {
         return ctx.drawImage(
           this.msPacImg,
@@ -852,10 +965,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 30,
-          this.posY - 9 - 12.5,
-          this.width * 2,
-          this.width * 2
+          this.posX - 15,
+          this.posY - 15,
+          this.width * 1.5,
+          this.width * 1.5
         );
       } else {
         return ctx.drawImage(
@@ -864,13 +977,13 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 30,
-          this.posY - 9 - 12.5,
-          this.width * 2,
-          this.width * 2
+          this.posX - 15,
+          this.posY - 15,
+          this.width * 1.5,
+          this.width * 1.5
         );
       }
-    } else if (this.velY < 0) {
+    } else if (this.animFace === "up") {
       if (this.frameCount % 15 === 0) {
         return ctx.drawImage(
           this.msPacImg,
@@ -878,10 +991,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 10,
-          this.posY - 9 - 5,
-          this.width * 2,
-          this.width * 2
+          this.posX - 5,
+          this.posY -5,
+          this.width * 1.5,
+          this.width * 1.5
         );
       } else {
         return ctx.drawImage(
@@ -890,10 +1003,10 @@ class MsPac extends MovingCritter {
           0,
           160,
           160,
-          this.posX - 10,
-          this.posY - 9 - 5,
-          this.width * 2,
-          this.width * 2
+          this.posX - 5,
+          this.posY -5,
+          this.width * 1.5,
+          this.width * 1.5
         );
       }
     } else {
@@ -905,8 +1018,8 @@ class MsPac extends MovingCritter {
         160,
         this.posX - 21,
         this.posY - 9,
-        this.width * 2,
-        this.width * 2
+        this.width * 1.5,
+        this.width * 1.5
       );
     }
   }
@@ -1006,8 +1119,8 @@ class TunnelPiece {
     }
 
     draw(ctx) {
-        ctx.fillStyle = "#000";
         //#ff7f63
+        this.fillStyle = "black"
         ctx.fillRect(this.xPos, this.yPos, this.width, this.height);
     }
 }
