@@ -309,14 +309,12 @@ class GameView {
 
     if (this.msPac.doneAnimatingX && this.msPac.doneAnimatingY) {
       if (this.msPac.moveInput[0] && (this.checkMove(this.msPac.position, this.msPac.moveInput[0]))) {
-        // debuggers
           this.msPac.position = this.checkMove(this.msPac.position, this.msPac.moveInput[0])
           this.msPac.newDestination(currentXPos, currentYPos);
           if (this.msPac.moveInput.length === 2) {
             this.msPac.moveInput.pop();
           }
       } else if (this.msPac.moveInput[1] && (this.checkMove(this.msPac.position, this.msPac.moveInput[1]))) {
-        // debugger
           this.msPac.position = this.checkMove(this.msPac.position, this.msPac.moveInput[1])
           this.msPac.newDestination(currentXPos, currentYPos);
       } else {
