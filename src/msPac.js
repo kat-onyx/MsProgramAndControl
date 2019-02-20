@@ -22,7 +22,6 @@ class MsPac extends MovingCritter {
   }
 
   draw(ctx) {
-    // debugger
     if (this.posX === this.destinationPosX) {
       this.doneAnimatingX = true;
     }
@@ -38,7 +37,6 @@ class MsPac extends MovingCritter {
       this.posY = Math.floor(this.posY)
     }
 
-    // ctx.fillRect(this.posX, this.posY, this.width, this.width);
     this.updateFrameCount();
     this.imgFrameSelect(ctx);
   }

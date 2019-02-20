@@ -36,7 +36,7 @@ Pellets offer 10 points each, and consuming all pellets will grant a total of 12
 ## Core Features
 
 ### Player Movement (Grid-based!)
-Player movement is handled with event listeners on the DOM, which triggers a function on the critter class that add a direction to a queue list.  A player is able to move depending on whether their most recent keyboard input direction exists in a list of "tunnel pieces", otherwise they will continue moving in the previously tapped direction. The player's position is updated accordingly, and a movement animation is played until the player reaches this desination position.
+Player movement is handled with event listeners on the DOM, which triggers a function on the critter class that adds a direction to a queue list.  A player is able to move depending on whether their most recent keyboard input direction exists in a list of "tunnel pieces", otherwise they will continue moving in the previously tapped direction. The player's position is updated accordingly, and a movement animation is played until the player reaches this desination position.
 
 ``` js
 checkMove(critterPosition, move) {
