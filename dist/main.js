@@ -744,7 +744,6 @@ class MovingCritter {
     this.collisionDetected = false;
   }
   detectWallCollision() {
-    // debugger
     this.maze.tiles.forEach(tile => {
       if (this.isPointInTile(tile)) {
         this.collisionDetected = true;
@@ -762,7 +761,7 @@ class MovingCritter {
     let critterXMax = this.posX + this.width;
     let critterYMin = this.posY;
     let critterYMax = this.posY + this.width;
-    // console.log(critterXMax, critterXMin)
+
     return (
       ((critterXMin >= tileXMin && critterXMin < tileXMax) ||
         (critterXMax > tileXMin && critterXMax <= tileXMax)) &&
@@ -777,7 +776,6 @@ class MovingCritter {
   }
 
   animateMoveX(destinationPos) {
-    // debugger
     if (this.currentPixelPosX > destinationPos) {
       this.animFace = "left";
       this.doneAnimatingX = false;
@@ -790,7 +788,6 @@ class MovingCritter {
       this.doneAnimatingX = true;
       return destinationPos;
     }
-    // return this.currentPixelPosX;
   }
 
   animateMoveY(destinationPos) {
@@ -806,7 +803,6 @@ class MovingCritter {
       this.doneAnimatingY = true;
       return destinationPos;
     }
-    // return this.currentPixelPosY;
   }
 
   newDestination(prevXpos, prevYpos) {
