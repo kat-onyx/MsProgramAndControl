@@ -120,26 +120,26 @@ class GameView {
     // debugger
     //keyCodes obtained here: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode#Value_of_keyCode
     document.addEventListener("keydown", e => {
-      if (e.code === "KeyD" && this.msPac.moveInput.length <= 1) {
+      if ((e.code === "KeyD" || e.code === "ArrowRight") && this.msPac.moveInput.length <= 1) {
         this.keyPressed.unshift(e.code);
         if (this.msPac.moveInput[0] !== "right") {
           this.msPac.moveRight();
         }
         
       }
-      if (e.code === "KeyA" && this.msPac.moveInput.length <= 1) {
+      if ((e.code === "KeyA" || e.code === "ArrowLeft") && this.msPac.moveInput.length <= 1) {
         this.keyPressed.unshift(e.code);
         if (this.msPac.moveInput[0] !== "left") {
           this.msPac.moveLeft();
         }
       }
-      if (e.code === "KeyW" && this.msPac.moveInput.length <= 1) {
+      if ((e.code === "KeyW" || e.code === "ArrowUp") && this.msPac.moveInput.length <= 1) {
         this.keyPressed.unshift(e.code);
         if (this.msPac.moveInput[0] !== "up") {
           this.msPac.moveUp();
         }
       }
-      if (e.code === "KeyS" && this.msPac.moveInput.length <= 1) {
+      if ((e.code === "KeyS" || e.code === "ArrowDown") && this.msPac.moveInput.length <= 1) {
         this.keyPressed.unshift(e.code);
         if (this.msPac.moveInput[0] !== "down") {
           this.msPac.moveDown();
@@ -269,7 +269,7 @@ class GameView {
   detectTunnelTravel() {
     if ((this.msPac.position[0] === 0 && 
       this.msPac.position[1] === 8) &&
-      this.keyPressed[0] === "KeyA") {
+      this.msPac.moveInput[0] === "left") {
         this.msPac.position[0] = 15;
         this.msPac.posX = (16 * 44)
         this.msPac.posY = (8 * 44)
@@ -279,7 +279,7 @@ class GameView {
         this.msPac.currentPixelPosY = (8 * 44)
       } else if ((this.msPac.position[0] === 15 && 
         this.msPac.position[1] === 8) && 
-        this.keyPressed[0] === "KeyD") {
+        this.msPac.moveInput[0] === "right") {
         this.msPac.position[0] = 0;
         this.msPac.posX = 0;
         this.msPac.posY = (8 * 44)
