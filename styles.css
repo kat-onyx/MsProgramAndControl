@@ -8,6 +8,13 @@
     overflow: scroll;
 }
 
+p {
+    letter-spacing: .5px;
+}
+span#input-color {
+    color: #ffef00;
+}
+
 .canvas-title-container {
     display: flex;
     align-items: center;
