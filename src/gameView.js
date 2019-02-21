@@ -27,19 +27,28 @@ class GameView {
     document.addEventListener("keydown", e => {
       if (e.code === "KeyD" && this.msPac.moveInput.length <= 1) {
         this.keyPressed.unshift(e.code);
-        this.msPac.moveRight();
+        if (this.msPac.moveInput[0] !== "right") {
+          this.msPac.moveRight();
+        }
+        
       }
       if (e.code === "KeyA" && this.msPac.moveInput.length <= 1) {
         this.keyPressed.unshift(e.code);
-        this.msPac.moveLeft();
+        if (this.msPac.moveInput[0] !== "left") {
+          this.msPac.moveLeft();
+        }
       }
       if (e.code === "KeyW" && this.msPac.moveInput.length <= 1) {
         this.keyPressed.unshift(e.code);
-        this.msPac.moveUp();
+        if (this.msPac.moveInput[0] !== "up") {
+          this.msPac.moveUp();
+        }
       }
       if (e.code === "KeyS" && this.msPac.moveInput.length <= 1) {
         this.keyPressed.unshift(e.code);
-        this.msPac.moveDown();
+        if (this.msPac.moveInput[0] !== "down") {
+          this.msPac.moveDown();
+        }
       }
     });
   }
