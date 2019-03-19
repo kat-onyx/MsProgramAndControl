@@ -14,14 +14,6 @@ Pellets offer 10 points each, and consuming all pellets will grant a total of 12
 
 ![Screenshot](dist/Gameplay.png)
 
-## Functionality and MVP Features
-
-* Users can press arrow keys or WASD in order to move left/right, up/down.
-* Player starts with 3 lives. A player will lose a life each time they collide with a ghost.
-* Ghosts will chase a player once a certain time-interval is met.
-* A player score is kept updated as the player consumes food.
-* Player's life count is kept up to date.
-
 ## Architecture and Technologies
 * JavaScript
     * Game logic
@@ -32,6 +24,15 @@ Pellets offer 10 points each, and consuming all pellets will grant a total of 12
     * Event Listeners for keybindings
 * Webpack
     * Bundle and install scripts
+
+
+## Functionality and MVP Features
+
+* Users can press arrow keys or WASD in order to move left/right, up/down.
+* Player starts with 3 lives. A player will lose a life each time they collide with a ghost.
+* Ghosts will chase a player once a certain time-interval is met.
+* A player score is kept updated as the player consumes food.
+* Player's life count is kept up to date.
    
 ## Core Features
 

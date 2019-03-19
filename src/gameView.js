@@ -126,7 +126,7 @@ class GameView {
       if (this.isPointInTile(this.msPac, ghost)) {
         console.log("collision");
         this.msPac.lives -= 1;
-        this.restart();
+        this.resetPos();
       }
     });
   }
@@ -142,7 +142,7 @@ class GameView {
     });
   }
 
-  restart() {
+  resetPos() {
     this.msPac.posX = 308;
     this.msPac.posY = 572;
     this.msPac.destinationPosX = 308,
