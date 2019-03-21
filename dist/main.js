@@ -116,7 +116,7 @@ class GameView {
     this.ghostHouse = [this.inky, this.blinky, this.pinky, this.clyde];
 
     this.keyBinds = this.keyBinds.bind(this);
-    this.startAudio = startAudio;
+    // this.startAudio = startAudio;
 
   }
 
@@ -155,7 +155,7 @@ class GameView {
   play() {
     // this.keyBinds();
     requestAnimationFrame(this.animate.bind(this));
-    this.startAudio.volume = 1;
+    // this.startAudio.volume = 1;
     // this.startAudio.play();
   }
 
@@ -402,7 +402,7 @@ ghostsImg.loaded = false;
 ghostsImg.onload = function() {
     this.loaded = true;
 }
-ghostsImg.src = '../dist/assets/images/ghost.png';
+ghostsImg.src = '/Users/kat/Desktop/MsProgramAndControl/dist/assets/images/ghost.png';
 
 class Ghost extends MovingCritter {
     constructor(ctx, velX, velY, frameCount) {
@@ -860,7 +860,7 @@ module.exports = MovingCritter;
 const MovingCritter = __webpack_require__(/*! ./movingCritter */ "./src/movingCritter.js");
 
 const msPacImg = new Image();
-msPacImg.src = "../dist/assets/images/MsPac.png";
+msPacImg.src = "/Users/kat/Desktop/MsProgramAndControl/dist/assets/images/MsPac.png";
 
 class MsPac extends MovingCritter {
   constructor(ctx, velX, velY, maze, frameCount) {
