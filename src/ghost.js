@@ -5,7 +5,8 @@ ghostsImg.loaded = false;
 ghostsImg.onload = function() {
     this.loaded = true;
 }
-ghostsImg.src = '/Users/kat/Desktop/MsProgramAndControl/dist/assets/images/ghost.png';
+const ghostImgScr = require('../dist/assets/images/ghost.png');
+ghostsImg.src = ghostImgScr;
 
 class Ghost extends MovingCritter {
     constructor(ctx, velX, velY, frameCount) {

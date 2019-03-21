@@ -402,7 +402,7 @@ ghostsImg.loaded = false;
 ghostsImg.onload = function() {
     this.loaded = true;
 }
-ghostsImg.src = '/Users/kat/Desktop/MsProgramAndControl/dist/assets/images/ghost.png';
+ghostsImg.src = '../dist/assets/images/ghost.png';
 
 class Ghost extends MovingCritter {
     constructor(ctx, velX, velY, frameCount) {
