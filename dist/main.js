@@ -401,8 +401,9 @@ const ghostsImg = new Image();
 ghostsImg.loaded = false;
 ghostsImg.onload = function() {
     this.loaded = true;
+    // console.log(this.loaded)
 }
-ghostsImg.src = '../dist/assets/images/ghost.png';
+ghostsImg.src = 'dist/assets/images/ghost.png';
 
 class Ghost extends MovingCritter {
     constructor(ctx, velX, velY, frameCount) {
@@ -860,7 +861,7 @@ module.exports = MovingCritter;
 const MovingCritter = __webpack_require__(/*! ./movingCritter */ "./src/movingCritter.js");
 
 const msPacImg = new Image();
-msPacImg.src = "/Users/kat/Desktop/MsProgramAndControl/dist/assets/images/MsPac.png";
+msPacImg.src = "dist/assets/images/MsPac.png";
 
 class MsPac extends MovingCritter {
   constructor(ctx, velX, velY, maze, frameCount) {

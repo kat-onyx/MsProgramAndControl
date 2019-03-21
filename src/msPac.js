@@ -1,8 +1,7 @@
 const MovingCritter = require("./movingCritter");
 
 const msPacImg = new Image();
-const msPacimgsrc = require("../dist/assets/images/MsPac.png");
-msPacImg.src = msPacimgsrc;
+msPacImg.src = "dist/assets/images/MsPac.png";
 
 class MsPac extends MovingCritter {
   constructor(ctx, velX, velY, maze, frameCount) {
