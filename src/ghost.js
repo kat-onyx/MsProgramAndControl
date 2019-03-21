@@ -4,9 +4,8 @@ const ghostsImg = new Image();
 ghostsImg.loaded = false;
 ghostsImg.onload = function() {
     this.loaded = true;
-    console.log(this.loaded)
 }
-ghostsImg.src = './ghost.png';
+ghostsImg.src = '../dist/assets/images/ghost.png';
 
 class Ghost extends MovingCritter {
     constructor(ctx, velX, velY, frameCount) {

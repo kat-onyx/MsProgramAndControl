@@ -39,14 +39,14 @@ span#input-color {
 }
 
 .github {
-    background-image: url("GitHub-Mark-Light-32px.png");
+    background-image: url("../dist/assets/images/GitHub-Mark-Light-32px.png");
     height: 32px;
     width: 32px;
     margin: 0 10px 0 0;
 }
 
 .linkedin {
-    background-image: url("In-White-34px-R.png");
+    background-image: url("../dist/assets/images/In-White-34px-R.png");
     height: 34px;
     width: 34px;
     margin: 0 0 0 10px;

@@ -2,7 +2,8 @@
 const GameView = require("./gameView");
 
 document.addEventListener("DOMContentLoaded", function() {
-  const canvasEl = document.getElementsByTagName("canvas")[0];
+
+  const canvasEl = document.getElementById("myCanvas");
   canvasEl.width = 870;
   canvasEl.height = 790;
   const ctx = canvasEl.getContext("2d");

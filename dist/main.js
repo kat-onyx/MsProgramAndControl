@@ -100,6 +100,8 @@ const Clyde = __webpack_require__(/*! ./ghost */ "./src/ghost.js").clyde;
 const Blinky = __webpack_require__(/*! ./ghost */ "./src/ghost.js").blinky;
 const Maze = __webpack_require__(/*! ./maze */ "./src/maze.js");
 
+// const startAudio = new Audio("../dist/assets/sounds/01_Game_Start.mp3");
+
 class GameView {
   constructor(ctx) {
     this.ctx = ctx;
@@ -114,6 +116,8 @@ class GameView {
     this.ghostHouse = [this.inky, this.blinky, this.pinky, this.clyde];
 
     this.keyBinds = this.keyBinds.bind(this);
+    this.startAudio = startAudio;
+
   }
 
   keyBinds() {
@@ -151,6 +155,8 @@ class GameView {
   play() {
     // this.keyBinds();
     requestAnimationFrame(this.animate.bind(this));
+    this.startAudio.volume = 1;
+    // this.startAudio.play();
   }
 
   animate() {
@@ -219,7 +225,7 @@ class GameView {
   detectCritterCollision() {
     this.ghostHouse.forEach(ghost => {
       if (this.isPointInTile(this.msPac, ghost)) {
-        console.log("collision");
+       
         this.msPac.lives -= 1;
         this.resetPos();
       }
@@ -395,9 +401,8 @@ const ghostsImg = new Image();
 ghostsImg.loaded = false;
 ghostsImg.onload = function() {
     this.loaded = true;
-    console.log(this.loaded)
 }
-ghostsImg.src = './ghost.png';
+ghostsImg.src = '../dist/assets/images/ghost.png';
 
 class Ghost extends MovingCritter {
     constructor(ctx, velX, velY, frameCount) {
@@ -571,7 +576,8 @@ module.exports = {
 const GameView = __webpack_require__(/*! ./gameView */ "./src/gameView.js");
 
 document.addEventListener("DOMContentLoaded", function() {
-  const canvasEl = document.getElementsByTagName("canvas")[0];
+
+  const canvasEl = document.getElementById("myCanvas");
   canvasEl.width = 870;
   canvasEl.height = 790;
   const ctx = canvasEl.getContext("2d");
@@ -854,7 +860,7 @@ module.exports = MovingCritter;
 const MovingCritter = __webpack_require__(/*! ./movingCritter */ "./src/movingCritter.js");
 
 const msPacImg = new Image();
-msPacImg.src = "./MsPac.png";
+msPacImg.src = "../dist/assets/images/MsPac.png";
 
 class MsPac extends MovingCritter {
   constructor(ctx, velX, velY, maze, frameCount) {
