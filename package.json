@@ -20,5 +20,8 @@
   "dependencies": {
     "webpack": "^4.28.1",
     "webpack-cli": "^3.2.1"
+  },
+  "devDependencies": {
+    "cssnano": "^4.1.10"
   }
 }
