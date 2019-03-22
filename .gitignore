@@ -1,3 +1,4 @@
 node_modules/
 main.js.map
 .cache
+.DS_Store

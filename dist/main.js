@@ -861,6 +861,11 @@ module.exports = MovingCritter;
 const MovingCritter = __webpack_require__(/*! ./movingCritter */ "./src/movingCritter.js");
 
 const msPacImg = new Image();
+msPacImg.loaded = false;
+msPacImg.onload = function () {
+  this.loaded = true;
+  // console.log(this.loaded)
+}
 msPacImg.src = "dist/assets/images/MsPac.png";
 
 class MsPac extends MovingCritter {
