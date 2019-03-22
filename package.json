@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --watch --mode=development"
+    "start": "webpack --watch --mode=development",
+    "build": "npx parcel build ./index.html --out-dir docs --public-url https://kat-onyx.github.io/MsProgramAndControl/"
   },
   "repository": {
     "type": "git",
