@@ -5,7 +5,7 @@ const Clyde = require("./ghost").clyde;
 const Blinky = require("./ghost").blinky;
 const Maze = require("./maze");
 
-// const startAudio = new Audio("../dist/assets/sounds/01_Game_Start.mp3");
+const startAudio = new Audio("dist/assets/sounds/01_Game_Start.mp3");
 
 class GameView {
   constructor(ctx) {
@@ -21,7 +21,7 @@ class GameView {
     this.ghostHouse = [this.inky, this.blinky, this.pinky, this.clyde];
 
     this.keyBinds = this.keyBinds.bind(this);
-    // this.startAudio = startAudio;
+    this.startAudio = startAudio;
 
   }
 
@@ -56,12 +56,19 @@ class GameView {
       }
     });
   }
+  
+  startScreen() {
+    this.ctx.fillStyle = "black";
+    this.ctx.fillStyle = "red";
+    this.ctx.font = "30px Righteous";
+    this.ctx.fillText(`Score: `, 730, 415);
+    this.ctx.fillText(parseInt(this.msPac.score), 745, 450);
+  }
 
   play() {
     // this.keyBinds();
     requestAnimationFrame(this.animate.bind(this));
     // this.startAudio.volume = 1;
-    // this.startAudio.play();
   }
 
   animate() {
@@ -91,7 +98,10 @@ class GameView {
   updateFrameCount() {
     this.frameCount += 1;
   }
+  
+  playAudioStart() {
 
+  }
   step() {
     // this.msPac.checkDir();
     if (this.msPac.moveInput.length > 0) {
